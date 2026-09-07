@@ -1,0 +1,11 @@
+# CODEOWNERS
+#
+# Este archivo define quién debe revisar obligatoriamente los cambios
+# en cada parte del repositorio. GitHub pedirá automáticamente su review
+# en los PRs que toquen esas rutas.
+
+* @AlfonsoJimena
+* @cmartinezmeco
+* @djfuga
+* @Antonio2070
+* @guilleeca
