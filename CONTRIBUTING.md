@@ -78,7 +78,7 @@ fix(security): actualizar dependencia con vulnerabilidad conocida
 ## Issues
 
 - Usa la plantilla al abrir una Issue nueva.
-- Usa etiquetas (labels) para clasificar: `bug`, `feat`, `doc`...
+- Usa etiquetas (labels) para clasificar: `fix`, `feat`, `docs`...
 - Sé específico en el título; evita títulos genéricos como "arreglar cosas".
 
 ## Pull Requests
@@ -86,7 +86,7 @@ fix(security): actualizar dependencia con vulnerabilidad conocida
 - Usa la plantilla de PR.
 - Vincula la Issue correspondiente (`Closes #12`).
 - Descripción clara de qué cambia y por qué.
-- Debe recibir la aprobación de todos los miempros del grupo (somos 5, por tanto, 5 aprobaciones).
+- Debe recibir la aprobación de todos los miempros del grupo.
 - Resuelve los comentarios de revisión antes de mergear.
 - Se recomienda usar "Squash and merge" para mantener el historial de `main` limpio y legible.
 
