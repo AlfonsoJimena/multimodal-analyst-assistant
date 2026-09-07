@@ -3,22 +3,9 @@
 # Este archivo define quién debe revisar obligatoriamente los cambios
 # en cada parte del repositorio. GitHub pedirá automáticamente su review
 # en los PRs que toquen esas rutas.
-#
-# Sintaxis: <patrón de archivos>   <usuarios o equipos>
-# Las reglas se aplican en orden, y la última coincidencia gana.
 
-# Dueño por defecto de todo el repo (se pedirá su review en cualquier PR
-# que no coincida con una regla más específica de abajo)
-*   @tu-usuario-github
-
-# --- Ejemplos: descomenta y ajusta cuando defináis la estructura real ---
-# /notebooks/          @usuario2 @usuario3
-# /src/                @usuario4
-# /src/preprocessing/  @usuario2
-# /src/models/         @usuario3 @usuario4
-# /docs/               @usuario5
-# *.md                 @usuario5
-# /tests/              @usuario4
-
-# Nota: para que esto pida reviews automáticamente, en Settings > Branches >
-# protección de "main" debes activar "Require review from Code Owners".
+* @AlfonsoJimena
+* @cmartinezmeco
+* @djfuga
+* @Antonio2070
+* @guilleeca
