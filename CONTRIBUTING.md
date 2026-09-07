@@ -13,14 +13,21 @@ Guía rápida para que todo el equipo trabaje de forma coherente y sin pisarse e
 
 ## Nomenclatura de ramas
 
-- `feature/nombre-corto` — nueva funcionalidad
-- `fix/nombre-corto` — corrección de un bug
-- `docs/nombre-corto` — documentación
-- `chore/nombre-corto` — mantenimiento (configuración, dependencias, etc.)
+Cada rama debe empezar con un prefijo que indique el tipo de cambio, seguido de una breve descripción en minúsculas separada por guiones:
 
-Ejemplos: `feature/login-usuario`, `fix/error-calculo-notas`
+| Prefijo     | Uso                                                         | Ejemplo                          |
+|-------------|--------------------------------------------------------------|-----------------------------------|
+| `feat/`     | Nueva funcionalidad                                          | `feat/entrenamiento-skipgram`     |
+| `fix/`      | Corrección de errores                                         | `fix/calculo-softmax`             |
+| `chore/`    | Tareas de mantenimiento, configuración, dependencias          | `chore/repo-conventions`          |
+| `docs/`     | Cambios solo en documentación                                 | `docs/actualizar-readme`          |
+| `refactor/` | Cambios internos de código que no alteran el comportamiento   | `refactor/optimizar-forward-pass` |
+| `test/`     | Añadir o corregir tests                                       | `test/cobertura-negative-sampling`|
+| `build/`    | Cambios en el sistema de build o dependencias (setup.py, requirements.txt) | `build/actualizar-numpy`  |
+| `ci/`       | Cambios en la configuración de integración continua           | `ci/anadir-workflow-tests`        |
 
-## Commits
+
+## Commits (Conventional Commits)
 
 Usamos un formato tipo *Conventional Commits*:
 
@@ -71,7 +78,7 @@ fix(security): actualizar dependencia con vulnerabilidad conocida
 ## Issues
 
 - Usa la plantilla al abrir una Issue nueva.
-- Usa etiquetas (labels) para clasificar: `bug`, `feature`, `documentation`, `question`...
+- Usa etiquetas (labels) para clasificar: `bug`, `feat`, `doc`...
 - Sé específico en el título; evita títulos genéricos como "arreglar cosas".
 
 ## Pull Requests
@@ -79,7 +86,7 @@ fix(security): actualizar dependencia con vulnerabilidad conocida
 - Usa la plantilla de PR.
 - Vincula la Issue correspondiente (`Closes #12`).
 - Descripción clara de qué cambia y por qué.
-- Al menos **1 aprobación** de otro miembro del equipo antes de mergear (según la protección de `main`).
+- Debe recibir la aprobación de todos los miempros del grupo (somos 5, por tanto, 5 aprobaciones).
 - Resuelve los comentarios de revisión antes de mergear.
 - Se recomienda usar "Squash and merge" para mantener el historial de `main` limpio y legible.
 
