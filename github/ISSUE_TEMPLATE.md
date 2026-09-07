@@ -24,7 +24,7 @@ Describe claramente de qué se trata.
 ## Contexto / motivación
 ¿Por qué es necesario esto? (si aplica)
 
-## Pasos para reproducir (solo si es `fix`)
+## Pasos para reproducir (solo si estas reportando un bug o problema)
 1. 
 2. 
 3. 
@@ -33,7 +33,7 @@ Describe claramente de qué se trata.
 ¿Qué debería pasar?
 
 ## Comportamiento actual
-¿Qué pasa en realidad? (solo `fix`)
+¿Qué pasa en realidad? (solo si estas reportando un bug o problema)
 
 ## Criterios de aceptación
 - [ ] 
