@@ -196,6 +196,8 @@ Propuesta inicial (ajustable a medida que avance el proyecto), alineada con el [
 
 ```
 .
+.
+.
 ├── README.md
 ├── LICENSE
 ├── docs/
@@ -221,6 +223,7 @@ Propuesta inicial (ajustable a medida que avance el proyecto), alineada con el [
 │
 └── .github/
     └── workflows/                        # CI (opcional)
+    └── ISSUE_TEMPLATE/                   # Plantilla para las issues
 ```
 
 ---
