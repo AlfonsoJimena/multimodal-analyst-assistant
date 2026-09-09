@@ -4,7 +4,7 @@ Todos los cambios notables del proyecto **multimodal-analyst-assistant** se docu
 
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/) y este proyecto se adhiere al [Versionado Semántico](https://semver.org/lang/es/).
 
-## [Unreleased] - 2026-09-07
+## [Innitial Setup] - 2026-09-07
 ### Added
 - Se crea el readme (David)
 - Se crea el archivo changelog para llevar un registro de las cosas que se hacen
