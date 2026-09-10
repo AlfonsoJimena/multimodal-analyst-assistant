@@ -1,0 +1,45 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Sep 29 12:49:11 2017
+
+@author: ffm
+"""
+
+RASPI = 1
+debug = 0
+
+TRAINING_LENGTH_PER_ACTIVITY=4
+#TRAINING_LENGTH_PER_ACTIVITY=30
+
+#CLASSIFIER_NAME="model_LSTM_raw_2023"
+CLASSIFIER_NAME="DRIVE_BACKHAND_SERVE_LOB-LSTM_from_raw"
+
+#CLASSIFIER_NAME="weka.classifiers.trees.J48"
+#CLASSIFIER_OPTIONS=["-C","0.25","-M","2"]
+#CLASSIFIER_NAME='weka.classifiers.trees.RandomForest'
+#CLASSIFIER_OPTIONS=["-I","100","-K","0","-S","1"]
+
+MODELS_PATH="/home/pi/workspace/HAR_inercial/models/"
+#MODELS_PREFIX="UP_SIT_PITCH_ROLL_YAW"
+#MODELS_PREFIX="RUN_STEP_SQUAD_CIRCLES"
+#MODELS_PREFIX="TRIANGLE_CIRCLE_SQUARE_RHOMBUS_PENTAGON"
+#MODELS_PREFIX="DRIVE_BACKHAND_SERVE_LOB"
+
+#MODELS_PREFIX="SHAKE_CIRCLES_TILT"
+
+#FEATURES_PATH="/home/pi/HAR_inercial/scripts/features/online/"
+
+#directorio donde guardamos los datos del recorder
+DATA_PATH="/home/pi/workspace/HAR_inercial/data/raw_data/"
+
+NUM_USERS=1
+
+#DATA_SET="UP_SIT_PITCH_ROLL_YAW.arff"
+#DATA_SET="RUN_STEP_SQUAD_CIRCLES"
+#DATA_SET="SHAKE_CIRCLES_TILT"
+DATA_SET="DRIVE_BACKHAND_SERVE_LOB"
+#DATA_SET="TRIANGLE_CIRCLE_SQUARE_RHOMBUS_PENTAGON.arff"
+#DATA_SET="raspi_training_data_mfcc_plp_online_TRIANGLE_CIRCLE_SQUARE_RHOMBUS_PENTAGON_2018-09-25_16:42:19.arff"
+
+#RAW_DATA_PATH="/home/pi/H_SMARTPHONE_WATCH_FFM_LITE/scripts/raw_data/online/"
+#RAW_DATA_PATH="/var/activityRecognizer/" # CUIDADO!!! UBICACION EN RAM!!! LIMITE 100MB!!! VOLATILIDAD POR REBOOT!!!

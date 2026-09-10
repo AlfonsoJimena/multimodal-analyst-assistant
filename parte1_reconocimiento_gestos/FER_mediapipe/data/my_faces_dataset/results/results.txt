@@ -1,0 +1,7 @@
+Model Type: CNN
+Normalization: ['L0', 'size']
+Accuracy: 0.8472222222222222
+F-measure (Unweighted): 0.8494531784005468
+F-measure (Weighted): 0.8494531784005468
+Execution Time: 181.46947407722473 seconds
+
