@@ -205,11 +205,17 @@ Propuesta inicial (ajustable a medida que avance el proyecto), alineada con el [
 │   ├── presentacion/                 # Presentación final (PDF) — entrega oficial
 │   └── decisiones/                   # Decisiones técnicas (ADR)
 │
-├── parte1_reconocimiento_gestos/
+├── parte1_reconocimiento_gestos/      #Con repositorio facilitado integrado
+│   ├── common/                        
 │   ├── datos_anotados/                # Dataset anotado (≥500 muestras, ≥5 gestos nuevos)
-│   ├── notebooks/                     # Exploración y entrenamiento
-│   ├── src/                           # Código ejecutable del modelo
-│   └── modelos/                       # Modelos entrenados (comparativa de 3 modelos)
+│   ├── FER_ICERI_2024/                     
+│   ├── FER__mediapipe/                           
+│   ├── HAR_inercial/                           
+│   ├── HAR_mediapipe/                           
+│   ├── image_recognition/                           
+│   ├── modelos/                       # Modelos entrenados (comparativa de 3 modelos)
+│   ├── notebooks/                     #Exploración y entrenamiento      
+│   └── src/                           # Código ejecutable del modelo
 │
 ├── parte2_infraestructura_datos/
 │   ├── despliegue/                     # docker-compose, kubernetes, etc.
