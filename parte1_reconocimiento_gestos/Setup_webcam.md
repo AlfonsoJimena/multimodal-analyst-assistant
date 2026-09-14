@@ -7,7 +7,7 @@ Los fixes de código (`gui.py`, `demo-custom-dataset.py`, `landmarksLib.py`) ya 
 ## 0. Requisitos
 
 - Git y Python 3.11 (64 bits) instalados.
-- Usar **PowerShell** (icono azul, prompt `PS C:\...>`), no el Símbolo del sistema/cmd.
+- Usar **PowerShell**.
 
 ⚠️ Si vuestro repo está dentro de OneDrive, crear el venv **fuera** de esa carpeta (OneDrive puede corromper/ralentizar el `venv` al intentar sincronizarlo).
 
