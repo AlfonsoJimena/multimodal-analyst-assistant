@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import mediapipe as mp
 #from mediapipe import solutions
-#from mediapipe.framework.formats import landmark_pb2
+from mediapipe.framework.formats import landmark_pb2
 
 """ 
 Así se fuerza el recargo de la librería después de modificarla, para que los cambios se reflejen en el notebook sin necesidad de reiniciar el kernel.
@@ -16,9 +16,9 @@ import evaluation
 importlib.reload(landmarksLib)
 importlib.reload(evaluation)
  """
-mp_hands = mp.tasks.vision.HandLandmarksConnections
-mp_drawing = mp.tasks.vision.drawing_utils
-mp_drawing_styles = mp.tasks.vision.drawing_styles
+mp_hands = mp.solutions.hands
+mp_drawing = mp.solutions.drawing_utils
+mp_drawing_styles = mp.solutions.drawing_styles
 
 MARGIN = 10  # pixels
 FONT_SIZE = 1
@@ -61,10 +61,16 @@ def draw_landmarks_on_image(rgb_image, detection_result):
       hand_landmarks = hand_landmarks_list[idx]
       handedness = handedness_list[idx]
 
+      # Convert to the legacy protobuf format expected by mp_drawing.draw_landmarks
+      hand_landmarks_proto = landmark_pb2.NormalizedLandmarkList()
+      hand_landmarks_proto.landmark.extend([
+          landmark_pb2.NormalizedLandmark(x=lm.x, y=lm.y, z=lm.z) for lm in hand_landmarks
+      ])
+
       # Draw the hand landmarks.
       mp_drawing.draw_landmarks(
           annotated_image,
-          hand_landmarks,
+          hand_landmarks_proto,
           mp_hands.HAND_CONNECTIONS,
           mp_drawing_styles.get_default_hand_landmarks_style(),
           mp_drawing_styles.get_default_hand_connections_style())
