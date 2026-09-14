@@ -177,8 +177,7 @@ def main():
         now = time.time()
         
         # Convert the image to RGB for Mediapipe
-        if ON_RASPBERRY_PI == False:
-            image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         
         # Process the image and get hand landmarks
         mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=image_rgb)

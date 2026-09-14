@@ -88,10 +88,7 @@ def DisplayPreviewScreen(cam, detector, messages=None):
 
         if config.use_landmarks:
             # Convert the image to RGB for Mediapipe
-            if ON_RASPBERRY_PI:
-                image_rgb = image  # Assuming the image is already in RGB format
-            else:
-                image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             
             # Process the image and get hand landmarks
             mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=image_rgb)
@@ -158,10 +155,7 @@ def StartRecordingImages(cam, detector, num_images_to_record, messages=None):
        
         if config.use_landmarks:
             # Convert the image to RGB for Mediapipe
-            if ON_RASPBERRY_PI:
-                image_rgb = image  # Assuming the image is already in RGB format
-            else:
-                image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
             # Process the image and get hand landmarks
             mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=image_rgb)
