@@ -21,6 +21,7 @@
 *.out
 *.csv
 *.arff
+venv/
 
 
 # Ignorar todo dentro de data

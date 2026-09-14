@@ -36,7 +36,8 @@ class CVCamera(Camera):
         return frame
 
     def start(self):
-        self.vid = cv2.VideoCapture(self.index_cam) # OpenCV entrega normalmente los fotogramas de tres canales en orden BGR, igual que cv2.imread().
+        self.vid = cv2.VideoCapture(self.index_cam, cv2.CAP_V4L2) # Forzamos backend V4L2: en Linux/WSL con cámaras compartidas vía usbipd, el backend automático no negocia bien el formato y la captura se queda esperando indefinidamente.
+        self.vid.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*'MJPG')) # Forzamos MJPG: es el formato que la cámara sirve de forma fiable a 30 fps en las resoluciones habituales.
         self.vid.set(cv2.CAP_PROP_FRAME_WIDTH, self.rec_res[0])
         self.vid.set(cv2.CAP_PROP_FRAME_HEIGHT, self.rec_res[1])
 
