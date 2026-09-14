@@ -1,9 +1,15 @@
 import cv2
 import sys
-import tty
-import termios
 import numpy as np
 import random
+
+try:
+    import tty
+    import termios
+    _IS_WINDOWS = False
+except ImportError:
+    import msvcrt
+    _IS_WINDOWS = True
 
 class Colors:
     def __init__(self):
@@ -58,10 +64,24 @@ class Colors:
 
 def wait_for_keypress(target_key, exit_key, yes_to_all_key):
     print(f"Press '{target_key}' to continue or '{exit_key}' to exit... ('{yes_to_all_key}') if YES to all...")
+    yes_to_all_result = False
+
+    if _IS_WINDOWS:
+        while True:
+            char = msvcrt.getch().decode(errors='ignore')
+            if char == target_key:
+                break
+            elif char == yes_to_all_key:
+                print("Yes to all...")
+                yes_to_all_result = True
+                break
+            elif char == exit_key:
+                print("Exiting...")
+                sys.exit(0)
+        return yes_to_all_result
+
     fd = sys.stdin.fileno()
     old_settings = termios.tcgetattr(fd)
-    yes_to_all_result = False
-    
     try:
         tty.setraw(sys.stdin.fileno())
         while True:

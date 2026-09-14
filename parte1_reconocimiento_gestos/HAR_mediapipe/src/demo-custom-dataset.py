@@ -10,24 +10,14 @@ import os
 PROJECT_DIR = Path(__file__).resolve().parent.parent
 
 root_path = os.getcwd()
-path_har = os.path.join(root_path, "FER_mediapipe", "src")
 path_common = os.path.join(root_path, "common")
 
-# 3. Añadirlas al path y verificar si existen
-for p in [path_har, path_common]:
-    if p not in sys.path:
-        sys.path.append(p)
-    if not os.path.exists(p):
-        print(f"⚠️ ¡OJO! La ruta no existe: {p}")
-    else:
-        print(f"✅ Ruta añadida: {p}")
-
-# 4. Intentar la importación
-try:
-    import landmarks_utils
-    print("🚀 landmarks_utils importado con éxito")
-except ModuleNotFoundError as e:
-    print(f"❌ Error: {e}")
+if path_common not in sys.path:
+    sys.path.append(path_common)
+if not os.path.exists(path_common):
+    print(f"⚠️ ¡OJO! La ruta no existe: {path_common}")
+else:
+    print(f"✅ Ruta añadida: {path_common}")
 
 ON_RASPBERRY_PI = False
 
