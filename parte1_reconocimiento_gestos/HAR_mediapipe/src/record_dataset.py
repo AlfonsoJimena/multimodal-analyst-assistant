@@ -50,7 +50,7 @@ else:
 # Instantiate the configuration
 window_title = "Hand gestures recorder"
 colors = Colors()
-config = Config(classes=['shoot', 'stop', 'forward', 'backward', 'left', 'right'], # Classes to be recognized; ATENTION: if 'None' class is included, it must be the last one; the others must be specified in the order they were trained (alphabetical order)
+config = Config(classes=['No_Ok', 'OK', 'Perfecto', 'Puno_de_frente', 'Spiderman', 'Uno'], # Classes to be recognized; ATENTION: if 'None' class is included, it must be the last one; the others must be specified in the order they were trained (alphabetical order)
                 dataset_dir='HAR_mediapipe/data/new_dataset/', # Path to the dataset directory
                 num_images_per_class=50, # Number of images to record per class
                 training_percentage=70, # Percentage of images to be used for training (the rest will be used for testing)
