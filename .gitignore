@@ -33,3 +33,11 @@ venv/
 
 # Ni su contenido
 #!HAR_mediapipe/data/new_dataset/**
+
+# Datos del dataset de gestos (van por Drive, no por git)
+# Datos del dataset de gestos (van por Drive, no por git)
+parte1_reconocimiento_gestos/HAR_mediapipe/data/Grabaciones PIDS/
+parte1_reconocimiento_gestos/HAR_mediapipe/data/new_dataset/
+parte1_reconocimiento_gestos/HAR_mediapipe/data/new_dataset_final/
+parte1_reconocimiento_gestos/HAR_mediapipe/data/new_dataset_final.zip
+parte1_reconocimiento_gestos/HAR_mediapipe/data/raw_*/
