@@ -218,18 +218,18 @@ Propuesta inicial (ajustable a medida que avance el proyecto), alineada con el [
 │   └── src/                           # Código ejecutable del modelo
 │
 ├── parte2_infraestructura_datos/
-│   ├── despliegue/                     # docker-compose, kubernetes, etc.
-│   ├── src/                            # Ingesta, procesamiento batch, acceso a resultados
-│   └── datos/                          # Datos de ejemplo / prueba
+│   ├── atocha/                        # Localización 1
+│   ├── central/                       # Localización Central
+│   └── chamartin/                     # Localización 2
 │
 ├── parte3_agente_conversacional/
-│   ├── despliegue/                      # Ficheros de despliegue (si es local)
-│   ├── src/                             # Lógica del agente
-│   └── casos_uso/                       # Documentación de los 3 casos de uso
+│   ├── despliegue/                    # Ficheros de despliegue (si es local)
+│   ├── src/                           # Lógica del agente
+│   └── casos_uso/                     # Documentación de los 3 casos de uso
 │
 └── .github/
-    └── workflows/                        # CI (opcional)
-    └── ISSUE_TEMPLATE/                   # Plantilla para las issues
+    └── workflows/                     # CI (opcional)
+    └── ISSUE_TEMPLATE/                # Plantilla para las issues
 ```
 
 ---
