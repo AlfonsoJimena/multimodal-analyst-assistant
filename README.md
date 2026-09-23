@@ -100,9 +100,9 @@ flowchart LR
 ## Requisitos mínimos
 
 ### Parte 1 — Reconocimiento de gestos · 35%
-- [ ] Reconocer, como mínimo, **5 gestos nuevos**.
-- [ ] Construir un **conjunto de datos balanceado y superior a 500 muestras**.
-- [ ] Entrenar y comparar **3 modelos diferentes**.
+- [x] Reconocer, como mínimo, **5 gestos nuevos**.
+- [x] Construir un **conjunto de datos balanceado y superior a 500 muestras**.
+- [x] Entrenar y comparar **3 modelos diferentes**.
 
 ### Parte 2 — Infraestructura de captura y análisis de datos · 45%
 - [ ] Implementar la **ingesta de datos en bruto**.
@@ -121,9 +121,9 @@ flowchart LR
 ## Retos técnicos
 
 ### Parte 1
-- [ ] Aprendizaje de las herramientas de visión por computador y reconocimiento gestual.
-- [ ] Análisis de los modelos existentes (estado del arte).
-- [ ] Generación de un conjunto de datos propio y de calidad.
+- [x] Aprendizaje de las herramientas de visión por computador y reconocimiento gestual.
+- [x] Análisis de los modelos existentes (estado del arte).
+- [x] Generación de un conjunto de datos propio y de calidad.
 
 ### Parte 2
 - [ ] Análisis de las tecnologías existentes para ingesta, almacenamiento y procesamiento por lotes.
@@ -218,9 +218,7 @@ Propuesta inicial (ajustable a medida que avance el proyecto), alineada con el [
 │   └── src/                           # Código ejecutable del modelo
 │
 ├── parte2_infraestructura_datos/
-│   ├── atocha/                        # Localización 1
-│   ├── central/                       # Localización Central
-│   └── chamartin/                     # Localización 2
+
 │
 ├── parte3_agente_conversacional/
 │   ├── despliegue/                    # Ficheros de despliegue (si es local)
