@@ -100,9 +100,9 @@ flowchart LR
 ## Requisitos mínimos
 
 ### Parte 1 — Reconocimiento de gestos · 35%
-- [ ] Reconocer, como mínimo, **5 gestos nuevos**.
-- [ ] Construir un **conjunto de datos balanceado y superior a 500 muestras**.
-- [ ] Entrenar y comparar **3 modelos diferentes**.
+- [x] Reconocer, como mínimo, **5 gestos nuevos**.
+- [x] Construir un **conjunto de datos balanceado y superior a 500 muestras**.
+- [x] Entrenar y comparar **3 modelos diferentes**.
 
 ### Parte 2 — Infraestructura de captura y análisis de datos · 45%
 - [ ] Implementar la **ingesta de datos en bruto**.
@@ -121,9 +121,9 @@ flowchart LR
 ## Retos técnicos
 
 ### Parte 1
-- [ ] Aprendizaje de las herramientas de visión por computador y reconocimiento gestual.
-- [ ] Análisis de los modelos existentes (estado del arte).
-- [ ] Generación de un conjunto de datos propio y de calidad.
+- [x] Aprendizaje de las herramientas de visión por computador y reconocimiento gestual.
+- [x] Análisis de los modelos existentes (estado del arte).
+- [x] Generación de un conjunto de datos propio y de calidad.
 
 ### Parte 2
 - [ ] Análisis de las tecnologías existentes para ingesta, almacenamiento y procesamiento por lotes.
@@ -201,9 +201,9 @@ Propuesta inicial (ajustable a medida que avance el proyecto), alineada con el [
 ├── README.md
 ├── LICENSE
 ├── docs/
-│   ├── memoria/                     # Memoria del proyecto
-│   ├── presentacion/                 # Presentación final (PDF) — entrega oficial
-│   └── decisiones/                   # Decisiones técnicas (ADR)
+│   ├── memoria/                       # Memoria del proyecto
+│   ├── presentacion/                  # Presentación final (PDF) — entrega oficial
+│   └── decisiones/                    # Decisiones técnicas (ADR)
 │
 ├── parte1_reconocimiento_gestos/      #Con repositorio facilitado integrado
 │   ├── common/                        
@@ -218,9 +218,50 @@ Propuesta inicial (ajustable a medida que avance el proyecto), alineada con el [
 │   └── src/                           # Código ejecutable del modelo
 │
 ├── parte2_infraestructura_datos/
-│   ├── atocha/                        # Localización 1
-│   ├── central/                       # Localización Central
-│   └── chamartin/                     # Localización 2
+│   ├── data/
+│   │   └── raw/                       # CSV original, no versionado (.gitignore)
+│   ├── scripts/
+│   │   └── prepare_data.py            # reparto por site_id (PULocationID) + separa histórico/realtime
+│   ├── src/
+│   │   ├── common/
+│   │   │   ├── schema.py              # esquema canónico: trip_id, site_id, source, schema_version, ingest_ts
+│   │   │   └── cleaning.py            # reglas de limpieza compartidas por batch y streaming
+│   │   ├── producer/
+│   │   │   ├── producer.py            # reenvía filas con timestamps desplazados (mismo shift pickup/dropoff)
+│   │   │   └── Dockerfile
+│   │   ├── spark_jobs/
+│   │   │   ├── batch_bronze.py
+│   │   │   ├── stream_bronze.py       # Structured Streaming desde Kafka
+│   │   │   ├── silver.py              # limpieza + reglas de cuarentena
+│   │   │   ├── gold.py                # agregados por hora/día/zona/método de pago
+│   │   │   └── sink_postgres.py       # foreachBatch con upsert (INSERT ... ON CONFLICT)
+│   │   ├── site_api/
+│   │   │   ├── main.py                # FastAPI: expone solo agregados (nunca medias)
+│   │   │   └── Dockerfile
+│   │   └── coordinator/
+│   │       ├── main.py                # combina agregados, marca sites_ok/sites_failed/partial
+│   │       ├── clients.py             # llamadas HTTP a las 3 site_api con timeout
+│   │       └── Dockerfile
+│   ├── deploy/
+│   │   ├── docker-compose.site.yml    # pipeline de sede + coordinador con profile opcional
+│   │   ├── docker-compose.central.yml # Prometheus + Grafana (única instancia, en Central)
+│   │   └── sites/
+│   │       ├── central.env
+│   │       ├── chamartin.env
+│   │       └── atocha.env
+│   ├── sql/
+│   │   ├── init.sql                   # tablas gold (idénticas en las 3 sedes)
+│   │   └── quarantine.sql             # tabla silver_rejected
+│   ├── tests/
+│   │   ├── test_m1_availability.py    # % de consultas respondidas con una sede caída
+│   │   ├── test_m2_transfer.py        # bytes crudos que salen de cada sede (debe dar 0)
+│   │   └── test_m3_accuracy.py        # coordinador vs cálculo centralizado de referencia
+│   ├── monitoring/
+│   │   └── grafana/                   # dashboards exportados (JSON)
+│   ├── .env.example
+│   ├── .gitignore
+│   ├── Makefile                       # make up SITE=atocha / make down SITE=atocha / make demo
+│   └── README.md                      # decisiones cerradas: restricción E2, criterio de reparto, esquema
 │
 ├── parte3_agente_conversacional/
 │   ├── despliegue/                    # Ficheros de despliegue (si es local)
@@ -231,7 +272,6 @@ Propuesta inicial (ajustable a medida que avance el proyecto), alineada con el [
     └── workflows/                     # CI (opcional)
     └── ISSUE_TEMPLATE/                # Plantilla para las issues
 ```
-
 ---
 
 <a id="primeros-pasos"></a>
