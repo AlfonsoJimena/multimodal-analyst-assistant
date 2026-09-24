@@ -109,9 +109,16 @@ def add_ingest_timestamp(df: DataFrame) -> DataFrame:
 
 
 def write_bronze(df: DataFrame, path: str) -> None:
+    """
+    Overwrites only the touched partitions (site_id=<SITE>/source=historical),
+    not the whole Bronze path. Spark's default "static" overwrite mode
+    deletes the entire output directory, which would also wipe out any
+    realtime data stream_bronze.py had already appended for this site.
+    """
     (
         df.write
         .mode("overwrite")
+        .option("partitionOverwriteMode", "dynamic")
         .partitionBy("site_id", "source")
         .parquet(path)
     )
