@@ -40,4 +40,6 @@ parte1_reconocimiento_gestos/HAR_mediapipe/data/Grabaciones PIDS/
 parte1_reconocimiento_gestos/HAR_mediapipe/data/new_dataset/
 parte1_reconocimiento_gestos/HAR_mediapipe/data/new_dataset_final/
 parte1_reconocimiento_gestos/HAR_mediapipe/data/new_dataset_final.zip
+parte1_reconocimiento_gestos/HAR_mediapipe/data/raw_*/parte2_infraestructura_datos/data/lakehouse/
+parte2_infraestructura_datos/data/checkpoints/
 parte1_reconocimiento_gestos/HAR_mediapipe/data/raw_*/.venv/
