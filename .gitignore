@@ -45,3 +45,6 @@ parte1_reconocimiento_gestos/HAR_mediapipe/data/raw_*/
 
 parte2_infraestructura_datos/data/lakehouse/
 parte2_infraestructura_datos/data/checkpoints/
+parte1_reconocimiento_gestos/HAR_mediapipe/data/raw_*/parte2_infraestructura_datos/data/lakehouse/
+parte2_infraestructura_datos/data/checkpoints/
+parte1_reconocimiento_gestos/HAR_mediapipe/data/raw_*/.venv/
