@@ -11,9 +11,9 @@
 #*.h5
 #*.pth
 #*.json
-# We do not keep track of zip files
+# We do not keep track of zip files
 *.zip
-# We do not keep track of log, txt, lis, bat, out, csv or arff files
+# We do not keep track of log, txt, lis, bat, out, csv or arff files
 *.log
 #*.txt
 *.lis
@@ -22,6 +22,7 @@
 *.csv
 *.arff
 venv/
+.venv/
 
 
 # Ignorar todo dentro de data
@@ -40,5 +41,7 @@ parte1_reconocimiento_gestos/HAR_mediapipe/data/Grabaciones PIDS/
 parte1_reconocimiento_gestos/HAR_mediapipe/data/new_dataset/
 parte1_reconocimiento_gestos/HAR_mediapipe/data/new_dataset_final/
 parte1_reconocimiento_gestos/HAR_mediapipe/data/new_dataset_final.zip
-parte1_reconocimiento_gestos/HAR_mediapipe/data/raw_*/parte2_infraestructura_datos/data/lakehouse/
+parte1_reconocimiento_gestos/HAR_mediapipe/data/raw_*/
+
+parte2_infraestructura_datos/data/lakehouse/
 parte2_infraestructura_datos/data/checkpoints/
