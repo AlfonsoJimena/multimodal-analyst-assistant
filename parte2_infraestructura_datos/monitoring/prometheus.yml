@@ -1,0 +1,29 @@
+# Configuracion de Prometheus - nodo central
+# Issue #62 - Parte D
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  # Prometheus se monitoriza a si mismo
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  # --- Servicios de la plataforma (activar cuando expongan /metrics) ---
+  # Descomentar y ajustar host:puerto a medida que cada servicio este disponible.
+
+  # - job_name: "site_api"
+  #   metrics_path: /metrics
+  #   static_configs:
+  #     - targets: ["site_api:8000"]
+
+  # - job_name: "coordinator"
+  #   metrics_path: /metrics
+  #   static_configs:
+  #     - targets: ["coordinator:8001"]
+
+  # - job_name: "producer"
+  #   metrics_path: /metrics
+  #   static_configs:
+  #     - targets: ["producer:8002"]
