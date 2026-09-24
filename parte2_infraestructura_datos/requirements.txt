@@ -5,3 +5,4 @@ py4j==0.10.9.9
 pyspark==4.2.0
 python-dateutil==2.9.0.post0
 six==1.17.0
+psycopg2-binary==2.9.13
