@@ -1,0 +1,13 @@
+# Proveedor de dashboards de Grafana
+# Issue #62 - Parte D
+apiVersion: 1
+
+providers:
+  - name: "default"
+    orgId: 1
+    folder: ""
+    type: file
+    disableDeletion: false
+    editable: true
+    options:
+      path: /etc/grafana/provisioning/dashboards
