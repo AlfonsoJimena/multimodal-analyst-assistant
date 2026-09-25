@@ -36,15 +36,12 @@ venv/
 #!HAR_mediapipe/data/new_dataset/**
 
 # Datos del dataset de gestos (van por Drive, no por git)
-# Datos del dataset de gestos (van por Drive, no por git)
 parte1_reconocimiento_gestos/HAR_mediapipe/data/Grabaciones PIDS/
 parte1_reconocimiento_gestos/HAR_mediapipe/data/new_dataset/
 parte1_reconocimiento_gestos/HAR_mediapipe/data/new_dataset_final/
 parte1_reconocimiento_gestos/HAR_mediapipe/data/new_dataset_final.zip
 parte1_reconocimiento_gestos/HAR_mediapipe/data/raw_*/
 
+# Datos generados por el pipeline de la Parte 2 (no versionados)
 parte2_infraestructura_datos/data/lakehouse/
 parte2_infraestructura_datos/data/checkpoints/
-parte1_reconocimiento_gestos/HAR_mediapipe/data/raw_*/parte2_infraestructura_datos/data/lakehouse/
-parte2_infraestructura_datos/data/checkpoints/
-parte1_reconocimiento_gestos/HAR_mediapipe/data/raw_*/.venv/
