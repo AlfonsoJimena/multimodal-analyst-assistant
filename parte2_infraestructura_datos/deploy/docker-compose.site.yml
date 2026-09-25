@@ -1,0 +1,224 @@
+# =====================================================================
+# Plantilla de despliegue de UNA sede 
+#
+# El mismo fichero sirve para las tres sedes; solo cambia el .env.
+# Uso:
+#   docker compose -p <sede> --env-file sites/<sede>.env \
+#       -f deploy/docker-compose.site.yml up -d
+#
+# Servicios: kafka + postgres + producer + spark (stream/silver/sink) + site_api
+# El coordinator es opcional y solo se levanta con el profile "central".
+#
+# Variables esperadas del .env:
+#   SITE_ID, SITE_API_PORT, POSTGRES_PORT,
+#   POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD,
+#   KAFKA_TOPIC, ACCELERATION_FACTOR, SPARK_VERSION
+# =====================================================================
+
+services:
+
+  # ------------------------------------------------------------------
+  # Bus de mensajes (Kafka en modo KRaft, un solo nodo)
+  # ------------------------------------------------------------------
+  kafka:
+    image: apache/kafka:3.8.0
+    container_name: ${SITE_ID:-site}-kafka
+    restart: unless-stopped
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:9092 || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    networks:
+      - site
+
+  # ------------------------------------------------------------------
+  # Base de datos de la sede (Gold + cuarentena)
+  # ------------------------------------------------------------------
+  postgres:
+    image: postgres:16
+    container_name: ${SITE_ID:-site}-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-pids}
+      POSTGRES_USER: ${POSTGRES_USER:-pids}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-pids}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ../sql/init.sql:/docker-entrypoint-initdb.d/01_init.sql:ro
+      - ../sql/quarantine.sql:/docker-entrypoint-initdb.d/02_quarantine.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-pids} -d ${POSTGRES_DB:-pids}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - site
+
+  # ------------------------------------------------------------------
+  # Producer: publica los viajes realtime de esta sede a Kafka
+  # ------------------------------------------------------------------
+  producer:
+    build:
+      context: ..
+      dockerfile: src/producer/Dockerfile
+    container_name: ${SITE_ID:-site}-producer
+    restart: on-failure
+    environment:
+      SITE_ID: ${SITE_ID}
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      KAFKA_TOPIC: ${KAFKA_TOPIC:-taxi-trips}
+      REALTIME_FILE: data/prepared/${SITE_ID}/realtime.csv
+      ACCELERATION_FACTOR: ${ACCELERATION_FACTOR:-60}
+    volumes:
+      # Datos de entrada preparados (issue #48). Solo lectura.
+      - ../data:/app/data:ro
+    depends_on:
+      kafka:
+        condition: service_healthy
+    networks:
+      - site
+
+  # ------------------------------------------------------------------
+  # Spark job 1/3: ingesta desde Kafka -> Bronze (streaming)
+  # (unico que necesita el conector Kafka de Spark)
+  # ------------------------------------------------------------------
+  spark_stream_bronze:
+    build:
+      context: ..
+      dockerfile: src/spark_jobs/Dockerfile
+    container_name: ${SITE_ID:-site}-spark-stream-bronze
+    restart: on-failure
+    command: ["python", "-m", "src.spark_jobs.stream_bronze"]
+    environment:
+      SITE_ID: ${SITE_ID}
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      KAFKA_TOPIC: ${KAFKA_TOPIC:-taxi-trips}
+      BRONZE_PATH: data/lakehouse/bronze
+      CHECKPOINT_PATH: data/checkpoints/stream_bronze/${SITE_ID}
+      PYSPARK_SUBMIT_ARGS: "--packages org.apache.spark:spark-sql-kafka-0-10_2.13:${SPARK_VERSION:-4.2.0} pyspark-shell"
+    volumes:
+      - lakehouse:/app/data/lakehouse
+      - checkpoints:/app/data/checkpoints
+    depends_on:
+      kafka:
+        condition: service_healthy
+    networks:
+      - site
+
+  # ------------------------------------------------------------------
+  # Spark job 2/3: Bronze -> Silver (+ cuarentena) (streaming)
+  # ------------------------------------------------------------------
+  spark_silver:
+    build:
+      context: ..
+      dockerfile: src/spark_jobs/Dockerfile
+    container_name: ${SITE_ID:-site}-spark-silver
+    restart: on-failure
+    command: ["python", "-m", "src.spark_jobs.silver"]
+    environment:
+      SITE_ID: ${SITE_ID}
+      BRONZE_PATH: data/lakehouse/bronze
+      SILVER_PATH: data/lakehouse/silver
+      QUARANTINE_PATH: data/lakehouse/quarantine
+      CHECKPOINT_PATH: data/checkpoints/silver/${SITE_ID}
+    volumes:
+      - lakehouse:/app/data/lakehouse
+      - checkpoints:/app/data/checkpoints
+    depends_on:
+      - spark_stream_bronze
+    networks:
+      - site
+
+  # ------------------------------------------------------------------
+  # Spark job 3/3: Silver -> Postgres (upsert de agregados Gold) (streaming)
+  # ------------------------------------------------------------------
+  spark_sink_postgres:
+    build:
+      context: ..
+      dockerfile: src/spark_jobs/Dockerfile
+    container_name: ${SITE_ID:-site}-spark-sink-postgres
+    restart: on-failure
+    command: ["python", "-m", "src.spark_jobs.sink_postgres"]
+    environment:
+      SITE_ID: ${SITE_ID}
+      SILVER_PATH: data/lakehouse/silver
+      CHECKPOINT_PATH: data/checkpoints/sink_postgres/${SITE_ID}
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB:-pids}
+      POSTGRES_USER: ${POSTGRES_USER:-pids}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-pids}
+    volumes:
+      - lakehouse:/app/data/lakehouse
+      - checkpoints:/app/data/checkpoints
+    depends_on:
+      postgres:
+        condition: service_healthy
+      spark_silver:
+        condition: service_started
+    networks:
+      - site
+
+  # ------------------------------------------------------------------
+  # API de la sede: unica salida de datos (agregados combinables)
+  # ------------------------------------------------------------------
+  site_api:
+    build:
+      context: ..
+      dockerfile: src/site_api/Dockerfile
+    container_name: ${SITE_ID:-site}-site-api
+    restart: unless-stopped
+    environment:
+      SITE_ID: ${SITE_ID}
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB:-pids}
+      POSTGRES_USER: ${POSTGRES_USER:-pids}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-pids}
+    ports:
+      - "${SITE_API_PORT:-8000}:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - site
+
+  # ------------------------------------------------------------------
+  # Coordinador central: OPCIONAL, solo con el profile "central".
+  # Pendiente: la parte C (#57/#58) debe aportar src/coordinator/Dockerfile.
+  # ------------------------------------------------------------------
+  coordinator:
+    profiles: ["central"]
+    build:
+      context: ..
+      dockerfile: src/coordinator/Dockerfile
+    container_name: ${SITE_ID:-site}-coordinator
+    restart: unless-stopped
+    environment:
+      SITE_ID: central
+    networks:
+      - site
+
+volumes:
+  pgdata:
+  lakehouse:
+  checkpoints:
+
+networks:
+  site:
+    driver: bridge

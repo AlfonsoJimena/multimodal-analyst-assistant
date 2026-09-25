@@ -1,5 +1,4 @@
 # Stack de monitorizacion central (Prometheus + Grafana)
-# Issue #62 - Parte D (Despliegue e infraestructura)
 #
 # Uso:
 #   docker compose -f deploy/docker-compose.central.yml up -d

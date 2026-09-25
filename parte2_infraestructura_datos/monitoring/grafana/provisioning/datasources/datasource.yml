@@ -1,5 +1,4 @@
 # Fuente de datos Prometheus autoprovisionada en Grafana
-# Issue #62 - Parte D
 apiVersion: 1
 
 datasources:
