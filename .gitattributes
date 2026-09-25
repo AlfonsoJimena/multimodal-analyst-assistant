@@ -1,0 +1,17 @@
+# Normalize line endings for text files: store as LF in the repo and
+# check out as LF, regardless of each contributor's local
+# core.autocrlf. Mixed Windows/Mac line endings on the same file are
+# what corrupted .gitignore across PR #78/#79 -- this prevents that
+# class of bug repo-wide, not just there.
+* text=auto eol=lf
+
+# Binary files: never run through line-ending or text diff/merge
+# machinery.
+*.png binary
+*.keras binary
+*.h5 binary
+*.pth binary
+*.pkl binary
+*.npy binary
+*.task binary
+*.xlsx binary
