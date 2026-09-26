@@ -16,8 +16,15 @@ sites_ok/sites_failed/partial reflect exactly what clients.py saw: a
 site that errored or timed out lands in sites_failed and its data is
 simply missing from the combined totals, rather than failing the
 whole request.
+
+The coordinator is stateless, so it is replicated as-is on every site
+(profile "coordinator" in deploy/docker-compose.site.yml, #59). No
+instance knows about the others: failover is the caller's job, trying
+FAILOVER_ORDER in order (see scripts/coordinator_failover.py).
 """
 
+import os
+from contextlib import asynccontextmanager
 from datetime import date, datetime
 from decimal import Decimal
 from typing import Generic, Optional, TypeVar
@@ -25,10 +32,45 @@ from typing import Generic, Optional, TypeVar
 from fastapi import FastAPI, Query
 from pydantic import BaseModel
 
+from src.common.schema import VALID_SITE_IDS
+from src.coordinator import clients
 from src.coordinator.clients import SiteResult, fetch_all_sites
 
 
-app = FastAPI(title="coordinator")
+# ============================================================
+# Configuration
+# ============================================================
+
+# Site hosting THIS coordinator replica (not the sites it queries --
+# every replica queries all three).
+SITE_ID = os.getenv("SITE_ID", "central")
+
+# Order in which callers must try the coordinator replicas:
+# 1st central (primary), then chamartin, then atocha (backups).
+FAILOVER_ORDER = ["central", "chamartin", "atocha"]
+
+
+# ============================================================
+# Configuration validation
+# ============================================================
+
+def validate_configuration() -> None:
+    if SITE_ID not in VALID_SITE_IDS:
+        raise ValueError(
+            f"Invalid SITE_ID '{SITE_ID}'. "
+            f"Expected one of {sorted(VALID_SITE_IDS)}."
+        )
+
+    clients.validate_configuration()
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    validate_configuration()
+    yield
+
+
+app = FastAPI(title=f"coordinator-{SITE_ID}", lifespan=lifespan)
 
 T = TypeVar("T")
 
@@ -157,7 +199,11 @@ def _add_averages(bucket: dict) -> dict:
 
 @app.get("/health")
 def health() -> dict:
-    return {"status": "ok"}
+    return {
+        "status": "ok",
+        "site_id": SITE_ID,
+        "failover_priority": FAILOVER_ORDER.index(SITE_ID) + 1,
+    }
 
 
 # ============================================================

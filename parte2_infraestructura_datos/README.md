@@ -229,3 +229,82 @@ pipeline de procesamiento.
 
 Por tanto, será asignado por el proceso de entrada a Bronze tanto para
 el flujo histórico como para el flujo realtime.
+
+---
+
+## Coordinador replicado y failover
+
+El coordinador (`src/coordinator/`) consulta las tres `site_api`, suma
+sus agregados combinables y calcula las medias una sola vez. Es
+**stateless**: no guarda nada entre peticiones. Por eso se puede replicar
+tal cual en las tres sedes sin sincronizar nada entre las instancias.
+
+### Despliegue
+
+El coordinador es un servicio opcional de `deploy/docker-compose.site.yml`
+bajo el profile `coordinator`, y se puede activar de forma independiente
+en cualquier sede:
+
+```bash
+make up-coordinator SITE=central     # primario
+make up-coordinator SITE=chamartin   # respaldo 1
+make up-coordinator SITE=atocha      # respaldo 2
+make up-all-coordinators             # las tres de una vez
+```
+
+Sin el profile (`make up`), la sede se levanta sin coordinador.
+
+Cada réplica tiene que llegar a las APIs de las tres sedes, no solo a la
+suya. Para eso, `site_api` y `coordinator` se unen a una red docker
+compartida, `pids-interconnect`, que el Makefile crea automáticamente
+(`make network`). Dentro de esa red, cada API es accesible como
+`http://site-api-<sede>:8000`. Si las sedes se despliegan en máquinas
+distintas, las URLs se sobreescriben con `SITE_API_URL_CENTRAL`,
+`SITE_API_URL_CHAMARTIN` y `SITE_API_URL_ATOCHA` (ver
+`sites/.env.example`).
+
+### Orden de failover
+
+| Prioridad | Sede | Rol | URL (host) |
+|---|---|---|---|
+| 1º | `central` | primario | `http://localhost:8100` |
+| 2º | `chamartin` | respaldo | `http://localhost:8101` |
+| 3º | `atocha` | respaldo | `http://localhost:8102` |
+
+Las réplicas no se conocen entre sí, así que **el failover lo hace quien
+consume el coordinador** (por ejemplo, el agente conversacional, #66):
+
+1. Llamar a la réplica de mayor prioridad.
+2. Si no se puede conectar, hay timeout o devuelve un `5xx`, pasar a la
+   siguiente.
+3. Si devuelve un `4xx`, no reintentar en las demás: todas ejecutan el
+   mismo código y fallarían igual.
+4. Si ninguna responde, informar del error.
+
+La implementación de referencia está en `scripts/coordinator_failover.py`.
+Las URLs se pueden cambiar con `COORDINATOR_URLS` (lista separada por
+comas, **en orden de failover**).
+
+`GET /health` de cada réplica indica qué réplica ha respondido:
+
+```json
+{"status": "ok", "site_id": "chamartin", "failover_priority": 2}
+```
+
+No hay que confundir esto con la **degradación parcial**, que es algo
+distinto: si una *sede* (su `site_api`) está caída, cualquier réplica del
+coordinador sigue respondiendo con las otras dos y lo indica con
+`partial: true` y `sites_failed`.
+
+### Demo: parar Central y comprobar que responde Chamartín
+
+```bash
+make up-all-coordinators
+make failover-check                  # Answered by: http://localhost:8100 ... "site_id": "central"
+
+make stop-coordinator SITE=central
+make failover-check                  # Skipped: http://localhost:8100: ConnectError
+                                     # Answered by: http://localhost:8101 ... "site_id": "chamartin"
+
+make failover-check FAILOVER_PATH=/metrics/daily   # los datos siguen llegando
+```
