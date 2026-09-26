@@ -1,7 +1,9 @@
 # Imagen para los jobs de Spark de una sede (stream_bronze / silver / sink_postgres).
 # pyspark (pip) necesita una JVM, por eso instalamos un JRE.
 # El job concreto se selecciona con 'command' en docker-compose.site.yml.
-FROM python:3.12-slim
+# Base fijada a Debian 12 (bookworm): la etiqueta python:3.12-slim pasó a
+# Debian 13 (trixie), que ya no incluye openjdk-17-jre-headless.
+FROM python:3.12-slim-bookworm
 
 WORKDIR /app
 
