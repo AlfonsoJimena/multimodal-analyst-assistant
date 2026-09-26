@@ -1,0 +1,195 @@
+{
+  "generated_at": "2026-09-26T15:22:56+00:00",
+  "scenarios": [
+    {
+      "scenario": "S0_todo_ok",
+      "description": "Las tres sedes en pie",
+      "sites_down": [],
+      "coordinators_down": [],
+      "requests": 20,
+      "answered": 20,
+      "availability": 1.0,
+      "completeness": 1.0,
+      "flag_accuracy": 1.0,
+      "answered_by": {
+        "central": 20
+      },
+      "expected_replica": "central",
+      "latency_ms_p50": 43.24406849997331,
+      "latency_ms_p95": 49.57242099999348,
+      "latency_ms_max": 68.48372900003596
+    },
+    {
+      "scenario": "S1_api_central_caida",
+      "description": "site_api de Central parada",
+      "sites_down": [
+        "central"
+      ],
+      "coordinators_down": [],
+      "requests": 20,
+      "answered": 20,
+      "availability": 1.0,
+      "completeness": 0.0,
+      "flag_accuracy": 1.0,
+      "answered_by": {
+        "central": 20
+      },
+      "expected_replica": "central",
+      "latency_ms_p50": 68.69812900004035,
+      "latency_ms_p95": 117.53935000001547,
+      "latency_ms_max": 136.5430580000293
+    },
+    {
+      "scenario": "S2_api_chamartin_caida",
+      "description": "site_api de Chamartín parada",
+      "sites_down": [
+        "chamartin"
+      ],
+      "coordinators_down": [],
+      "requests": 20,
+      "answered": 20,
+      "availability": 1.0,
+      "completeness": 0.0,
+      "flag_accuracy": 1.0,
+      "answered_by": {
+        "central": 20
+      },
+      "expected_replica": "central",
+      "latency_ms_p50": 43.22970200007603,
+      "latency_ms_p95": 49.5891020000272,
+      "latency_ms_max": 68.0288029999474
+    },
+    {
+      "scenario": "S3_api_atocha_caida",
+      "description": "site_api de Atocha parada",
+      "sites_down": [
+        "atocha"
+      ],
+      "coordinators_down": [],
+      "requests": 20,
+      "answered": 20,
+      "availability": 1.0,
+      "completeness": 0.0,
+      "flag_accuracy": 1.0,
+      "answered_by": {
+        "central": 20
+      },
+      "expected_replica": "central",
+      "latency_ms_p50": 42.980451999994784,
+      "latency_ms_p95": 50.729101999991144,
+      "latency_ms_max": 94.6320040000046
+    },
+    {
+      "scenario": "S4_api_atocha_colgada",
+      "description": "site_api de Atocha congelada (docker pause)",
+      "sites_down": [
+        "atocha"
+      ],
+      "coordinators_down": [],
+      "requests": 20,
+      "answered": 0,
+      "availability": 0.0,
+      "completeness": 0.0,
+      "flag_accuracy": 0.0,
+      "answered_by": {},
+      "expected_replica": "central",
+      "latency_ms_p50": 15091.770146999977,
+      "latency_ms_p95": 15106.222858000023,
+      "latency_ms_max": 15109.273729000051
+    },
+    {
+      "scenario": "S5_sede_central_caida",
+      "description": "Central entera (API + coordinador primario)",
+      "sites_down": [
+        "central"
+      ],
+      "coordinators_down": [
+        "central"
+      ],
+      "requests": 20,
+      "answered": 20,
+      "availability": 1.0,
+      "completeness": 0.0,
+      "flag_accuracy": 1.0,
+      "answered_by": {
+        "chamartin": 20
+      },
+      "expected_replica": "chamartin",
+      "latency_ms_p50": 51.192947500112496,
+      "latency_ms_p95": 56.74309699998048,
+      "latency_ms_max": 57.169697000063024
+    },
+    {
+      "scenario": "S6_dos_sedes_caidas",
+      "description": "Chamartín y Atocha enteras",
+      "sites_down": [
+        "atocha",
+        "chamartin"
+      ],
+      "coordinators_down": [
+        "atocha",
+        "chamartin"
+      ],
+      "requests": 20,
+      "answered": 20,
+      "availability": 1.0,
+      "completeness": 0.0,
+      "flag_accuracy": 1.0,
+      "answered_by": {
+        "central": 20
+      },
+      "expected_replica": "central",
+      "latency_ms_p50": 42.76459850007086,
+      "latency_ms_p95": 54.69109699993169,
+      "latency_ms_max": 75.4811960000552
+    },
+    {
+      "scenario": "S7_central_y_chamartin_caidas",
+      "description": "Central y Chamartín enteras",
+      "sites_down": [
+        "central",
+        "chamartin"
+      ],
+      "coordinators_down": [
+        "central",
+        "chamartin"
+      ],
+      "requests": 20,
+      "answered": 20,
+      "availability": 1.0,
+      "completeness": 0.0,
+      "flag_accuracy": 1.0,
+      "answered_by": {
+        "atocha": 20
+      },
+      "expected_replica": "atocha",
+      "latency_ms_p50": 57.00859799992486,
+      "latency_ms_p95": 135.22899399981725,
+      "latency_ms_max": 146.0564940000495
+    },
+    {
+      "scenario": "S8_tres_sedes_caidas",
+      "description": "Las tres sedes caídas",
+      "sites_down": [
+        "atocha",
+        "central",
+        "chamartin"
+      ],
+      "coordinators_down": [
+        "atocha",
+        "central",
+        "chamartin"
+      ],
+      "requests": 20,
+      "answered": 0,
+      "availability": 0.0,
+      "completeness": 0.0,
+      "flag_accuracy": 0.0,
+      "answered_by": {},
+      "expected_replica": null,
+      "latency_ms_p50": 20.79624899999999,
+      "latency_ms_p95": 27.886599000112255,
+      "latency_ms_max": 34.35739899987311
+    }
+  ]
+}
