@@ -1,0 +1,182 @@
+{
+  "generated_at": "2026-09-26T18:45:13+00:00",
+  "comparisons": {
+    "sites": {
+      "central": [
+        {
+          "path": "/metrics/hourly",
+          "keys_compared": 1,
+          "trips_expected": 316,
+          "trips_observed": 316,
+          "mismatches": []
+        },
+        {
+          "path": "/metrics/daily",
+          "keys_compared": 1,
+          "trips_expected": 316,
+          "trips_observed": 316,
+          "mismatches": []
+        },
+        {
+          "path": "/metrics/zone",
+          "keys_compared": 27,
+          "trips_expected": 316,
+          "trips_observed": 316,
+          "mismatches": []
+        },
+        {
+          "path": "/metrics/payment",
+          "keys_compared": 3,
+          "trips_expected": 316,
+          "trips_observed": 316,
+          "mismatches": []
+        }
+      ],
+      "chamartin": [
+        {
+          "path": "/metrics/hourly",
+          "keys_compared": 2,
+          "trips_expected": 307,
+          "trips_observed": 307,
+          "mismatches": []
+        },
+        {
+          "path": "/metrics/daily",
+          "keys_compared": 2,
+          "trips_expected": 307,
+          "trips_observed": 307,
+          "mismatches": []
+        },
+        {
+          "path": "/metrics/zone",
+          "keys_compared": 26,
+          "trips_expected": 307,
+          "trips_observed": 307,
+          "mismatches": []
+        },
+        {
+          "path": "/metrics/payment",
+          "keys_compared": 3,
+          "trips_expected": 307,
+          "trips_observed": 307,
+          "mismatches": []
+        }
+      ],
+      "atocha": [
+        {
+          "path": "/metrics/hourly",
+          "keys_compared": 2,
+          "trips_expected": 371,
+          "trips_observed": 371,
+          "mismatches": []
+        },
+        {
+          "path": "/metrics/daily",
+          "keys_compared": 2,
+          "trips_expected": 371,
+          "trips_observed": 371,
+          "mismatches": []
+        },
+        {
+          "path": "/metrics/zone",
+          "keys_compared": 29,
+          "trips_expected": 371,
+          "trips_observed": 371,
+          "mismatches": []
+        },
+        {
+          "path": "/metrics/payment",
+          "keys_compared": 4,
+          "trips_expected": 371,
+          "trips_observed": 371,
+          "mismatches": []
+        }
+      ]
+    },
+    "coordinator": [
+      {
+        "path": "/metrics/hourly",
+        "keys_compared": 3,
+        "trips_expected": 994,
+        "trips_observed": 994,
+        "mismatches": []
+      },
+      {
+        "path": "/metrics/daily",
+        "keys_compared": 3,
+        "trips_expected": 994,
+        "trips_observed": 994,
+        "mismatches": []
+      },
+      {
+        "path": "/metrics/zone",
+        "keys_compared": 82,
+        "trips_expected": 994,
+        "trips_observed": 994,
+        "mismatches": []
+      },
+      {
+        "path": "/metrics/payment",
+        "keys_compared": 4,
+        "trips_expected": 994,
+        "trips_observed": 994,
+        "mismatches": []
+      }
+    ]
+  },
+  "average_of_averages": [
+    {
+      "grupo": "global: todas",
+      "viajes_por_sede": [
+        316,
+        307,
+        371
+      ],
+      "media_correcta": 12.795181086519115,
+      "media_de_medias": 12.845414581217785,
+      "error_relativo": 0.003925969813088115
+    },
+    {
+      "grupo": "por método de pago: 1",
+      "viajes_por_sede": [
+        213,
+        212,
+        260
+      ],
+      "media_correcta": 12.621766423357665,
+      "media_de_medias": 12.712186159206489,
+      "error_relativo": 0.007163794101077247
+    },
+    {
+      "grupo": "por método de pago: 2",
+      "viajes_por_sede": [
+        101,
+        94,
+        103
+      ],
+      "media_correcta": 12.895973154362416,
+      "media_de_medias": 12.885693945349916,
+      "error_relativo": 0.0007970867254033304
+    },
+    {
+      "grupo": "por método de pago: 3",
+      "viajes_por_sede": [
+        2,
+        7
+      ],
+      "media_correcta": 23.333333333333332,
+      "media_de_medias": 34.642857142857146,
+      "error_relativo": 0.4846938775510204
+    },
+    {
+      "grupo": "por método de pago: 4",
+      "viajes_por_sede": [
+        1,
+        1
+      ],
+      "media_correcta": 9.75,
+      "media_de_medias": 9.75,
+      "error_relativo": 0.0
+    }
+  ]
+}
