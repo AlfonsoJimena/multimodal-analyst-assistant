@@ -43,6 +43,22 @@ HISTORICAL_FILE = Path(
 
 BRONZE_PATH = os.getenv("BRONZE_PATH", "data/lakehouse/bronze")
 
+# Historical (batch) and realtime (streaming) trips live in two separate
+# Bronze roots. stream_bronze.py writes with Spark's file sink, which keeps
+# a _spark_metadata log in its output directory; any reader of a directory
+# with that log (silver.py included) only sees the files the log lists, so
+# historical files written next to them by batch_bronze.py would be
+# silently ignored. silver.py reads both roots with two separate queries.
+HISTORICAL_BRONZE_PATH = f"{BRONZE_PATH}/historical"
+
+# Re-running this job would write the same historical trips again under
+# NEW file names. silver.py reads Bronze as a file stream, so it would
+# treat them as new input, and sink_postgres.py's additive upsert would
+# count them twice in Gold. The job therefore loads each site's history
+# only once; FORCE_RELOAD=1 overrides that (only safe after wiping the
+# downstream Silver/Gold state, e.g. `make clean`).
+FORCE_RELOAD = os.getenv("FORCE_RELOAD", "0") == "1"
+
 # Every canonical field except ingest_ts, which does not exist yet
 # in the prepared CSV -- it is added by this job.
 CANONICAL_FIELDS = [
@@ -65,6 +81,11 @@ def validate_configuration() -> None:
         raise FileNotFoundError(
             f"Historical file not found: {HISTORICAL_FILE}"
         )
+
+
+def historical_already_loaded() -> bool:
+    partition = Path(HISTORICAL_BRONZE_PATH) / f"site_id={SITE_ID}" / "source=historical"
+    return any(partition.glob("*.parquet"))
 
 
 # ============================================================
@@ -131,6 +152,14 @@ def write_bronze(df: DataFrame, path: str) -> None:
 def main() -> None:
     validate_configuration()
 
+    if historical_already_loaded() and not FORCE_RELOAD:
+        print(
+            f"Historical data for site '{SITE_ID}' is already in Bronze "
+            f"({HISTORICAL_BRONZE_PATH}) -- skipping to avoid double counting in Gold. "
+            "Set FORCE_RELOAD=1 only after `make clean`."
+        )
+        return
+
     spark = (
         SparkSession.builder
         .appName(f"batch-bronze-{SITE_ID}")
@@ -143,7 +172,7 @@ def main() -> None:
     print("========================================")
     print(f"Site:            {SITE_ID}")
     print(f"Historical file: {HISTORICAL_FILE}")
-    print(f"Bronze path:     {BRONZE_PATH}")
+    print(f"Bronze path:     {HISTORICAL_BRONZE_PATH}")
 
     df = read_historical(spark, HISTORICAL_FILE)
     df = cast_to_canonical_types(df)
@@ -151,7 +180,7 @@ def main() -> None:
 
     input_count = df.count()
 
-    write_bronze(df, BRONZE_PATH)
+    write_bronze(df, HISTORICAL_BRONZE_PATH)
 
     print()
     print(f"Rows written to bronze: {input_count:,}")

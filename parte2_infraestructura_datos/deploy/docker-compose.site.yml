@@ -136,6 +136,30 @@ services:
       - site
 
   # ------------------------------------------------------------------
+  # Spark job batch (one-shot): historico CSV -> Bronze
+  # Se ejecuta una vez y termina. Si el historico de la sede ya esta en
+  # Bronze no vuelve a cargarlo (ver batch_bronze.py): cargarlo dos veces
+  # duplicaria los viajes en Gold.
+  # ------------------------------------------------------------------
+  spark_batch_bronze:
+    build:
+      context: ..
+      dockerfile: src/spark_jobs/Dockerfile
+    container_name: ${SITE_ID:-site}-spark-batch-bronze
+    restart: "no"
+    command: ["python", "-m", "src.spark_jobs.batch_bronze"]
+    environment:
+      SITE_ID: ${SITE_ID}
+      HISTORICAL_FILE: data/prepared/${SITE_ID}/historical.csv
+      BRONZE_PATH: data/lakehouse/bronze
+    volumes:
+      # Datos preparados (issue #48). Solo lectura.
+      - ../data/prepared:/app/data/prepared:ro
+      - lakehouse:/app/data/lakehouse
+    networks:
+      - site
+
+  # ------------------------------------------------------------------
   # Spark job 2/3: Bronze -> Silver (+ cuarentena) (streaming)
   # ------------------------------------------------------------------
   spark_silver:
@@ -155,7 +179,11 @@ services:
       - lakehouse:/app/data/lakehouse
       - checkpoints:/app/data/checkpoints
     depends_on:
-      - spark_stream_bronze
+      spark_stream_bronze:
+        condition: service_started
+      # El historico entra en Bronze antes de que Silver empiece a leer.
+      spark_batch_bronze:
+        condition: service_completed_successfully
     networks:
       - site
 
