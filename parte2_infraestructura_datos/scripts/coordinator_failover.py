@@ -52,7 +52,14 @@ COORDINATOR_URLS = [
     if url.strip()
 ]
 
-TIMEOUT_SECONDS = float(os.getenv("COORDINATOR_TIMEOUT_SECONDS", "5"))
+# Must be LONGER than the coordinator's own per-site timeout
+# (SITE_API_TIMEOUT_SECONDS, 5 s by default in src/coordinator/clients.py).
+# When a site hangs, every replica waits that long before answering with
+# partial=true; if the caller gave up at the same moment, it would drop a
+# valid partial answer and fail over to a replica that hangs just the
+# same -- one hung site would then make ALL replicas look down (measured
+# by M1, tests/test_m1_availability.py, scenario S4).
+TIMEOUT_SECONDS = float(os.getenv("COORDINATOR_TIMEOUT_SECONDS", "10"))
 
 
 # ============================================================

@@ -280,6 +280,13 @@ consume el coordinador** (por ejemplo, el agente conversacional, #66):
 3. Si devuelve un `4xx`, no reintentar en las demás: todas ejecutan el
    mismo código y fallarían igual.
 4. Si ninguna responde, informar del error.
+5. El timeout del cliente debe ser **mayor** que el que usa el
+   coordinador con cada sede (`SITE_API_TIMEOUT_SECONDS`, 5 s por
+   defecto). Si una sede se queda colgada, el coordinador tarda ese
+   tiempo en devolver la respuesta parcial; un cliente con el mismo
+   timeout la descartaría y saltaría a otra réplica que tarda lo mismo,
+   de modo que una sola sede colgada tumbaría todo el servicio. El
+   cliente de referencia usa 10 s (`COORDINATOR_TIMEOUT_SECONDS`).
 
 La implementación de referencia está en `scripts/coordinator_failover.py`.
 Las URLs se pueden cambiar con `COORDINATOR_URLS` (lista separada por
