@@ -1,6 +1,4 @@
 # =====================================================================
-# Makefile de despliegue de sedes (issue #64)
-#
 # Envuelve docker compose para levantar/parar una sede con su .env.
 # EJECUTAR DESDE parte2_infraestructura_datos/ (usa rutas deploy/ y sites/).
 #
