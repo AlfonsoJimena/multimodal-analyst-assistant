@@ -45,3 +45,6 @@ parte1_reconocimiento_gestos/HAR_mediapipe/data/raw_*/
 # Datos generados por el pipeline de la Parte 2 (no versionados)
 parte2_infraestructura_datos/data/lakehouse/
 parte2_infraestructura_datos/data/checkpoints/
+
+# Tests (parte 2)
+.pytest_cache/
