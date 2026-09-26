@@ -1,0 +1,592 @@
+{
+  "generated_at": "2026-09-26T16:51:22+00:00",
+  "traffic": {
+    "sites": {
+      "central": {
+        "raw_bytes": 58544,
+        "realtime_bytes": 11860,
+        "trip_ids_at_site": 318,
+        "sweep_bytes": 3538,
+        "trips_in_gold": 64,
+        "leak_bytes": 0,
+        "singleton_groups": 9,
+        "calls": [
+          {
+            "path": "/metrics/hourly",
+            "status": 200,
+            "bytes": 175,
+            "rows": 1,
+            "trips": 64,
+            "leak_bytes": 0,
+            "singleton_groups": 0,
+            "forbidden_fields": [],
+            "trip_ids": 0
+          },
+          {
+            "path": "/metrics/daily",
+            "status": 200,
+            "bytes": 166,
+            "rows": 1,
+            "trips": 64,
+            "leak_bytes": 0,
+            "singleton_groups": 0,
+            "forbidden_fields": [],
+            "trip_ids": 0
+          },
+          {
+            "path": "/metrics/zone",
+            "status": 200,
+            "bytes": 2765,
+            "rows": 19,
+            "trips": 64,
+            "leak_bytes": 0,
+            "singleton_groups": 8,
+            "forbidden_fields": [],
+            "trip_ids": 0
+          },
+          {
+            "path": "/metrics/payment",
+            "status": 200,
+            "bytes": 432,
+            "rows": 3,
+            "trips": 64,
+            "leak_bytes": 0,
+            "singleton_groups": 1,
+            "forbidden_fields": [],
+            "trip_ids": 0
+          },
+          {
+            "path": "/quarantine/summary",
+            "status": 200,
+            "bytes": 2,
+            "rows": 0,
+            "trips": 0,
+            "leak_bytes": 0,
+            "singleton_groups": 0,
+            "forbidden_fields": [],
+            "trip_ids": 0
+          },
+          {
+            "path": "/health",
+            "status": 200,
+            "bytes": 35,
+            "rows": 0,
+            "trips": 0,
+            "leak_bytes": 0,
+            "singleton_groups": 0,
+            "forbidden_fields": [],
+            "trip_ids": 0
+          },
+          {
+            "path": "/prometheus",
+            "status": 200,
+            "bytes": 14452,
+            "rows": 0,
+            "trips": 0,
+            "leak_bytes": 0,
+            "singleton_groups": 0,
+            "forbidden_fields": [],
+            "trip_ids": 0
+          }
+        ]
+      },
+      "chamartin": {
+        "raw_bytes": 57244,
+        "realtime_bytes": 11593,
+        "trip_ids_at_site": 308,
+        "sweep_bytes": 3528,
+        "trips_in_gold": 61,
+        "leak_bytes": 0,
+        "singleton_groups": 10,
+        "calls": [
+          {
+            "path": "/metrics/hourly",
+            "status": 200,
+            "bytes": 619,
+            "rows": 4,
+            "trips": 61,
+            "leak_bytes": 0,
+            "singleton_groups": 3,
+            "forbidden_fields": [],
+            "trip_ids": 0
+          },
+          {
+            "path": "/metrics/daily",
+            "status": 200,
+            "bytes": 165,
+            "rows": 1,
+            "trips": 61,
+            "leak_bytes": 0,
+            "singleton_groups": 0,
+            "forbidden_fields": [],
+            "trip_ids": 0
+          },
+          {
+            "path": "/metrics/zone",
+            "status": 200,
+            "bytes": 2301,
+            "rows": 16,
+            "trips": 61,
+            "leak_bytes": 0,
+            "singleton_groups": 6,
+            "forbidden_fields": [],
+            "trip_ids": 0
+          },
+          {
+            "path": "/metrics/payment",
+            "status": 200,
+            "bytes": 443,
+            "rows": 3,
+            "trips": 61,
+            "leak_bytes": 0,
+            "singleton_groups": 1,
+            "forbidden_fields": [],
+            "trip_ids": 0
+          },
+          {
+            "path": "/quarantine/summary",
+            "status": 200,
+            "bytes": 2,
+            "rows": 0,
+            "trips": 0,
+            "leak_bytes": 0,
+            "singleton_groups": 0,
+            "forbidden_fields": [],
+            "trip_ids": 0
+          },
+          {
+            "path": "/health",
+            "status": 200,
+            "bytes": 37,
+            "rows": 0,
+            "trips": 0,
+            "leak_bytes": 0,
+            "singleton_groups": 0,
+            "forbidden_fields": [],
+            "trip_ids": 0
+          },
+          {
+            "path": "/prometheus",
+            "status": 200,
+            "bytes": 14440,
+            "rows": 0,
+            "trips": 0,
+            "leak_bytes": 0,
+            "singleton_groups": 0,
+            "forbidden_fields": [],
+            "trip_ids": 0
+          }
+        ]
+      },
+      "atocha": {
+        "raw_bytes": 68153,
+        "realtime_bytes": 13766,
+        "trip_ids_at_site": 373,
+        "sweep_bytes": 3761,
+        "trips_in_gold": 73,
+        "leak_bytes": 0,
+        "singleton_groups": 4,
+        "calls": [
+          {
+            "path": "/metrics/hourly",
+            "status": 200,
+            "bytes": 174,
+            "rows": 1,
+            "trips": 73,
+            "leak_bytes": 0,
+            "singleton_groups": 0,
+            "forbidden_fields": [],
+            "trip_ids": 0
+          },
+          {
+            "path": "/metrics/daily",
+            "status": 200,
+            "bytes": 165,
+            "rows": 1,
+            "trips": 73,
+            "leak_bytes": 0,
+            "singleton_groups": 0,
+            "forbidden_fields": [],
+            "trip_ids": 0
+          },
+          {
+            "path": "/metrics/zone",
+            "status": 200,
+            "bytes": 2992,
+            "rows": 21,
+            "trips": 73,
+            "leak_bytes": 0,
+            "singleton_groups": 4,
+            "forbidden_fields": [],
+            "trip_ids": 0
+          },
+          {
+            "path": "/metrics/payment",
+            "status": 200,
+            "bytes": 430,
+            "rows": 3,
+            "trips": 73,
+            "leak_bytes": 0,
+            "singleton_groups": 0,
+            "forbidden_fields": [],
+            "trip_ids": 0
+          },
+          {
+            "path": "/quarantine/summary",
+            "status": 200,
+            "bytes": 2,
+            "rows": 0,
+            "trips": 0,
+            "leak_bytes": 0,
+            "singleton_groups": 0,
+            "forbidden_fields": [],
+            "trip_ids": 0
+          },
+          {
+            "path": "/health",
+            "status": 200,
+            "bytes": 34,
+            "rows": 0,
+            "trips": 0,
+            "leak_bytes": 0,
+            "singleton_groups": 0,
+            "forbidden_fields": [],
+            "trip_ids": 0
+          },
+          {
+            "path": "/prometheus",
+            "status": 200,
+            "bytes": 14437,
+            "rows": 0,
+            "trips": 0,
+            "leak_bytes": 0,
+            "singleton_groups": 0,
+            "forbidden_fields": [],
+            "trip_ids": 0
+          }
+        ]
+      }
+    },
+    "coordinator": [
+      {
+        "path": "/metrics/hourly",
+        "status": 200,
+        "bytes": 1210,
+        "rows": 4,
+        "trips": 198,
+        "leak_bytes": 0,
+        "singleton_groups": 3,
+        "forbidden_fields": [],
+        "trip_ids": 0
+      },
+      {
+        "path": "/metrics/daily",
+        "status": 200,
+        "bytes": 431,
+        "rows": 1,
+        "trips": 198,
+        "leak_bytes": 0,
+        "singleton_groups": 0,
+        "forbidden_fields": [],
+        "trip_ids": 0
+      },
+      {
+        "path": "/metrics/zone",
+        "status": 200,
+        "bytes": 15229,
+        "rows": 56,
+        "trips": 198,
+        "leak_bytes": 0,
+        "singleton_groups": 18,
+        "forbidden_fields": [],
+        "trip_ids": 0
+      },
+      {
+        "path": "/metrics/payment",
+        "status": 200,
+        "bytes": 1228,
+        "rows": 4,
+        "trips": 198,
+        "leak_bytes": 0,
+        "singleton_groups": 1,
+        "forbidden_fields": [],
+        "trip_ids": 0
+      }
+    ]
+  },
+  "exposure": {
+    "central": [
+      {
+        "container": "central-spark-sink-postgres",
+        "service": "spark_sink_postgres",
+        "published_ports": [],
+        "published_container_ports": [],
+        "networks": [
+          "central_site"
+        ]
+      },
+      {
+        "container": "central-spark-silver",
+        "service": "spark_silver",
+        "published_ports": [],
+        "published_container_ports": [],
+        "networks": [
+          "central_site"
+        ]
+      },
+      {
+        "container": "central-producer",
+        "service": "producer",
+        "published_ports": [
+          "0.0.0.0:9000->9000/tcp"
+        ],
+        "published_container_ports": [
+          "9000/tcp"
+        ],
+        "networks": [
+          "central_site"
+        ]
+      },
+      {
+        "container": "central-spark-stream-bronze",
+        "service": "spark_stream_bronze",
+        "published_ports": [],
+        "published_container_ports": [],
+        "networks": [
+          "central_site"
+        ]
+      },
+      {
+        "container": "central-kafka",
+        "service": "kafka",
+        "published_ports": [],
+        "published_container_ports": [],
+        "networks": [
+          "central_site"
+        ]
+      },
+      {
+        "container": "central-site-api",
+        "service": "site_api",
+        "published_ports": [
+          "0.0.0.0:8000->8000/tcp"
+        ],
+        "published_container_ports": [
+          "8000/tcp"
+        ],
+        "networks": [
+          "central_site",
+          "pids-interconnect"
+        ]
+      },
+      {
+        "container": "central-postgres",
+        "service": "postgres",
+        "published_ports": [
+          "0.0.0.0:5432->5432/tcp"
+        ],
+        "published_container_ports": [
+          "5432/tcp"
+        ],
+        "networks": [
+          "central_site"
+        ]
+      },
+      {
+        "container": "central-coordinator",
+        "service": "coordinator",
+        "published_ports": [
+          "0.0.0.0:8100->8000/tcp"
+        ],
+        "published_container_ports": [
+          "8000/tcp"
+        ],
+        "networks": [
+          "pids-interconnect"
+        ]
+      }
+    ],
+    "chamartin": [
+      {
+        "container": "chamartin-spark-sink-postgres",
+        "service": "spark_sink_postgres",
+        "published_ports": [],
+        "published_container_ports": [],
+        "networks": [
+          "chamartin_site"
+        ]
+      },
+      {
+        "container": "chamartin-spark-silver",
+        "service": "spark_silver",
+        "published_ports": [],
+        "published_container_ports": [],
+        "networks": [
+          "chamartin_site"
+        ]
+      },
+      {
+        "container": "chamartin-producer",
+        "service": "producer",
+        "published_ports": [
+          "0.0.0.0:9001->9000/tcp"
+        ],
+        "published_container_ports": [
+          "9000/tcp"
+        ],
+        "networks": [
+          "chamartin_site"
+        ]
+      },
+      {
+        "container": "chamartin-spark-stream-bronze",
+        "service": "spark_stream_bronze",
+        "published_ports": [],
+        "published_container_ports": [],
+        "networks": [
+          "chamartin_site"
+        ]
+      },
+      {
+        "container": "chamartin-kafka",
+        "service": "kafka",
+        "published_ports": [],
+        "published_container_ports": [],
+        "networks": [
+          "chamartin_site"
+        ]
+      },
+      {
+        "container": "chamartin-site-api",
+        "service": "site_api",
+        "published_ports": [
+          "0.0.0.0:8001->8000/tcp"
+        ],
+        "published_container_ports": [
+          "8000/tcp"
+        ],
+        "networks": [
+          "chamartin_site",
+          "pids-interconnect"
+        ]
+      },
+      {
+        "container": "chamartin-postgres",
+        "service": "postgres",
+        "published_ports": [
+          "0.0.0.0:5433->5432/tcp"
+        ],
+        "published_container_ports": [
+          "5432/tcp"
+        ],
+        "networks": [
+          "chamartin_site"
+        ]
+      },
+      {
+        "container": "chamartin-coordinator",
+        "service": "coordinator",
+        "published_ports": [
+          "0.0.0.0:8101->8000/tcp"
+        ],
+        "published_container_ports": [
+          "8000/tcp"
+        ],
+        "networks": [
+          "pids-interconnect"
+        ]
+      }
+    ],
+    "atocha": [
+      {
+        "container": "atocha-spark-sink-postgres",
+        "service": "spark_sink_postgres",
+        "published_ports": [],
+        "published_container_ports": [],
+        "networks": [
+          "atocha_site"
+        ]
+      },
+      {
+        "container": "atocha-spark-silver",
+        "service": "spark_silver",
+        "published_ports": [],
+        "published_container_ports": [],
+        "networks": [
+          "atocha_site"
+        ]
+      },
+      {
+        "container": "atocha-spark-stream-bronze",
+        "service": "spark_stream_bronze",
+        "published_ports": [],
+        "published_container_ports": [],
+        "networks": [
+          "atocha_site"
+        ]
+      },
+      {
+        "container": "atocha-producer",
+        "service": "producer",
+        "published_ports": [
+          "0.0.0.0:9002->9000/tcp"
+        ],
+        "published_container_ports": [
+          "9000/tcp"
+        ],
+        "networks": [
+          "atocha_site"
+        ]
+      },
+      {
+        "container": "atocha-kafka",
+        "service": "kafka",
+        "published_ports": [],
+        "published_container_ports": [],
+        "networks": [
+          "atocha_site"
+        ]
+      },
+      {
+        "container": "atocha-site-api",
+        "service": "site_api",
+        "published_ports": [
+          "0.0.0.0:8002->8000/tcp"
+        ],
+        "published_container_ports": [
+          "8000/tcp"
+        ],
+        "networks": [
+          "atocha_site",
+          "pids-interconnect"
+        ]
+      },
+      {
+        "container": "atocha-postgres",
+        "service": "postgres",
+        "published_ports": [
+          "0.0.0.0:5434->5432/tcp"
+        ],
+        "published_container_ports": [
+          "5432/tcp"
+        ],
+        "networks": [
+          "atocha_site"
+        ]
+      },
+      {
+        "container": "atocha-coordinator",
+        "service": "coordinator",
+        "published_ports": [
+          "0.0.0.0:8102->8000/tcp"
+        ],
+        "published_container_ports": [
+          "8000/tcp"
+        ],
+        "networks": [
+          "pids-interconnect"
+        ]
+      }
+    ]
+  }
+}
