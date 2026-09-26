@@ -18,6 +18,7 @@ assumption is ever wrong.
 """
 
 import os
+import time
 from contextlib import asynccontextmanager
 from datetime import date, datetime
 from decimal import Decimal
@@ -26,8 +27,14 @@ from typing import Optional
 import psycopg2
 import psycopg2.extras
 import psycopg2.pool
-from fastapi import Depends, FastAPI, HTTPException, Query
+from fastapi import Depends, FastAPI, HTTPException, Query, Response
 from pydantic import BaseModel
+from prometheus_client import (
+    CONTENT_TYPE_LATEST,
+    Counter,
+    Histogram,
+    generate_latest,
+)
 
 from src.common.schema import VALID_SITE_IDS
 
@@ -111,6 +118,42 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title=f"site-api-{SITE_ID}", lifespan=lifespan)
+
+
+# ============================================================
+# Prometheus instrumentation
+# Ruta dedicada '/prometheus': '/metrics' ya lo usan los
+# endpoints de negocio (metrics/hourly, etc.).
+# ============================================================
+
+HTTP_REQUESTS = Counter(
+    "site_api_requests_total",
+    "Peticiones HTTP atendidas por la site_api.",
+    ["method", "endpoint", "status"],
+)
+HTTP_LATENCY = Histogram(
+    "site_api_request_seconds",
+    "Latencia de las peticiones HTTP de la site_api.",
+    ["method", "endpoint"],
+)
+
+
+@app.middleware("http")
+async def prometheus_middleware(request, call_next):
+    start = time.perf_counter()
+    response = await call_next(request)
+    elapsed = time.perf_counter() - start
+    endpoint = request.url.path
+    HTTP_LATENCY.labels(request.method, endpoint).observe(elapsed)
+    HTTP_REQUESTS.labels(
+        request.method, endpoint, response.status_code
+    ).inc()
+    return response
+
+
+@app.get("/prometheus")
+def prometheus_metrics():
+    return Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)
 
 
 # ============================================================

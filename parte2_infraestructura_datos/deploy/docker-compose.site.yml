@@ -84,6 +84,10 @@ services:
       KAFKA_TOPIC: ${KAFKA_TOPIC:-taxi-trips}
       REALTIME_FILE: data/prepared/${SITE_ID}/realtime.csv
       ACCELERATION_FACTOR: ${ACCELERATION_FACTOR:-60}
+      METRICS_PORT: 9000
+    ports:
+      # Metricas Prometheus del producer (issue #65)
+      - "${PRODUCER_METRICS_PORT:-9000}:9000"
     volumes:
       # Datos de entrada preparados (issue #48). Solo lectura.
       - ../data:/app/data:ro
