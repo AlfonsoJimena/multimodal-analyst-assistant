@@ -43,6 +43,14 @@ KAFKA_TOPIC = os.getenv("KAFKA_TOPIC", "taxi-trips")
 
 BRONZE_PATH = os.getenv("BRONZE_PATH", "data/lakehouse/bronze")
 
+# Historical (batch) and realtime (streaming) trips live in two separate
+# Bronze roots. stream_bronze.py writes with Spark's file sink, which keeps
+# a _spark_metadata log in its output directory; any reader of a directory
+# with that log (silver.py included) only sees the files the log lists, so
+# historical files written next to them by batch_bronze.py would be
+# silently ignored. silver.py reads both roots with two separate queries.
+REALTIME_BRONZE_PATH = f"{BRONZE_PATH}/realtime"
+
 CHECKPOINT_PATH = os.getenv(
     "CHECKPOINT_PATH",
     f"data/checkpoints/stream_bronze/{SITE_ID}",
@@ -167,7 +175,7 @@ def main() -> None:
     print(f"Site:            {SITE_ID}")
     print(f"Kafka:           {KAFKA_BOOTSTRAP_SERVERS}")
     print(f"Topic:           {KAFKA_TOPIC}")
-    print(f"Bronze path:     {BRONZE_PATH}")
+    print(f"Bronze path:     {REALTIME_BRONZE_PATH}")
     print(f"Checkpoint path: {CHECKPOINT_PATH}")
 
     raw = (
@@ -185,7 +193,7 @@ def main() -> None:
     query = (
         events.writeStream
         .format("parquet")
-        .option("path", BRONZE_PATH)
+        .option("path", REALTIME_BRONZE_PATH)
         .option("checkpointLocation", CHECKPOINT_PATH)
         .partitionBy("site_id", "source")
         .outputMode("append")

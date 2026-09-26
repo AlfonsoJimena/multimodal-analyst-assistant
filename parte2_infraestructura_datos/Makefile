@@ -73,8 +73,11 @@ config: _check-env
 build: _check-env
 > $(DC_ALL) build
 
+# --build: las imagenes copian src/ al construirse; sin reconstruir, un cambio
+# de codigo no se aplica y se sigue ejecutando la version anterior. Si no hay
+# cambios, Docker reutiliza la cache y apenas tarda.
 up: _check-env network
-> $(DC) up -d
+> $(DC) up -d --build
 
 down: _check-env
 > $(DC_ALL) down
@@ -94,7 +97,7 @@ clean: _check-env
 # Levanta la sede incluyendo su coordinator. Valido en CUALQUIER sede:
 # central = primario, chamartin/atocha = respaldo (issue #59).
 up-coordinator: _check-env network
-> $(DC_ALL) up -d
+> $(DC_ALL) up -d --build
 
 # Para solo el coordinator de la sede; el resto de la sede sigue en pie.
 stop-coordinator: _check-env
