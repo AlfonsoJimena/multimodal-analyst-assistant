@@ -1,5 +1,4 @@
 # Proveedor de dashboards de Grafana
-# Issue #62 - Parte D
 apiVersion: 1
 
 providers:

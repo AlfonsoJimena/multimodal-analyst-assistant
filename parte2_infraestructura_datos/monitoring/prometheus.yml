@@ -1,5 +1,4 @@
 # Configuracion de Prometheus - nodo central
-# Issue #62 - Parte D
 global:
   scrape_interval: 15s
   evaluation_interval: 15s
