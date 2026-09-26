@@ -16,6 +16,7 @@ from pathlib import Path
 
 import pandas as pd
 from kafka import KafkaProducer
+from prometheus_client import Counter, start_http_server
 
 from src.common.schema import (
     SCHEMA_VERSION,
@@ -51,6 +52,20 @@ ACCELERATION_FACTOR = float(
         "ACCELERATION_FACTOR",
         "60",
     )
+)
+
+
+METRICS_PORT = int(os.getenv("METRICS_PORT", "8002"))
+
+
+# ============================================================
+# Prometheus metrics
+# ============================================================
+
+TRIPS_PROCESSED = Counter(
+    "trips_processed_total",
+    "Total de viajes publicados a Kafka por el producer.",
+    ["site_id"],
 )
 
 
@@ -265,6 +280,8 @@ def publish_trips(
             value=event,
         )
 
+        TRIPS_PROCESSED.labels(SITE_ID).inc()
+
         print(
             f"[{index + 1}/{len(df)}] "
             f"{event['trip_id'][:12]}... "
@@ -284,6 +301,9 @@ def publish_trips(
 def main() -> None:
 
     validate_configuration()
+
+    start_http_server(METRICS_PORT)
+    print(f"Prometheus metrics disponibles en :{METRICS_PORT}/metrics")
 
     print("Loading realtime data...")
 

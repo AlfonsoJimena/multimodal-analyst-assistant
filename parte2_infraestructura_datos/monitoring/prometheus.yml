@@ -1,4 +1,7 @@
-# Configuracion de Prometheus - nodo central
+# Configuracion de Prometheus - nodo central (issue #65)
+# Cada sede corre en su propio proyecto compose (redes aisladas), asi que
+# Prometheus las alcanza por los puertos publicados en el host mediante
+# host.docker.internal.
 global:
   scrape_interval: 15s
   evaluation_interval: 15s
@@ -9,20 +12,30 @@ scrape_configs:
     static_configs:
       - targets: ["localhost:9090"]
 
-  # --- Servicios de la plataforma (activar cuando expongan /metrics) ---
-  # Descomentar y ajustar host:puerto a medida que cada servicio este disponible.
+  # API de cada sede (endpoint /prometheus; /metrics lo usan las metricas de negocio)
+  - job_name: "site_api"
+    metrics_path: /prometheus
+    static_configs:
+      - targets: ["host.docker.internal:8000"]
+        labels: {site: central}
+      - targets: ["host.docker.internal:8001"]
+        labels: {site: chamartin}
+      - targets: ["host.docker.internal:8002"]
+        labels: {site: atocha}
 
-  # - job_name: "site_api"
-  #   metrics_path: /metrics
-  #   static_configs:
-  #     - targets: ["site_api:8000"]
+  # Producer de cada sede (prometheus_client.start_http_server)
+  - job_name: "producer"
+    static_configs:
+      - targets: ["host.docker.internal:9000"]
+        labels: {site: central}
+      - targets: ["host.docker.internal:9001"]
+        labels: {site: chamartin}
+      - targets: ["host.docker.internal:9002"]
+        labels: {site: atocha}
 
+  # coordinator: pendiente de que la parte C exponga /metrics
   # - job_name: "coordinator"
-  #   metrics_path: /metrics
+  #   metrics_path: /prometheus
   #   static_configs:
-  #     - targets: ["coordinator:8001"]
-
-  # - job_name: "producer"
-  #   metrics_path: /metrics
-  #   static_configs:
-  #     - targets: ["producer:8002"]
+  #     - targets: ["host.docker.internal:8010"]
+  #       labels: {site: central}

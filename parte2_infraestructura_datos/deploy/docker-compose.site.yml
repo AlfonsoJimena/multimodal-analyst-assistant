@@ -7,12 +7,23 @@
 #       -f deploy/docker-compose.site.yml up -d
 #
 # Servicios: kafka + postgres + producer + spark (stream/silver/sink) + site_api
-# El coordinator es opcional y solo se levanta con el profile "central".
+# El coordinator es opcional y se activa con el profile "coordinator" en
+# CUALQUIER sede (issue #59): Central es el primario y Chamartin/Atocha
+# los respaldos. Orden de failover: ver README (Coordinador replicado).
+#
+# Red externa compartida (INTERCONNECT_NETWORK, por defecto
+# "pids-interconnect"): une site_api y coordinator de las tres sedes
+# para que cualquier coordinador llegue a las tres APIs. Debe existir
+# antes del 'up' (el Makefile la crea: make network).
 #
 # Variables esperadas del .env:
 #   SITE_ID, SITE_API_PORT, POSTGRES_PORT,
 #   POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD,
-#   KAFKA_TOPIC, ACCELERATION_FACTOR, SPARK_VERSION
+#   KAFKA_TOPIC, ACCELERATION_FACTOR, SPARK_VERSION,
+#   COORDINATOR_PORT
+# Opcionales (despliegue en varias maquinas):
+#   INTERCONNECT_NETWORK, SITE_API_URL_CENTRAL, SITE_API_URL_CHAMARTIN,
+#   SITE_API_URL_ATOCHA
 # =====================================================================
 
 services:
@@ -84,6 +95,10 @@ services:
       KAFKA_TOPIC: ${KAFKA_TOPIC:-taxi-trips}
       REALTIME_FILE: data/prepared/${SITE_ID}/realtime.csv
       ACCELERATION_FACTOR: ${ACCELERATION_FACTOR:-60}
+      METRICS_PORT: 9000
+    ports:
+      # Metricas Prometheus del producer (issue #65)
+      - "${PRODUCER_METRICS_PORT:-9000}:9000"
     volumes:
       # Datos de entrada preparados (issue #48). Solo lectura.
       - ../data:/app/data:ro
@@ -196,23 +211,40 @@ services:
       postgres:
         condition: service_healthy
     networks:
-      - site
+      site:
+      interconnect:
+        # Nombre estable por sede en la red compartida: es la URL por
+        # defecto que usa src/coordinator/clients.py (site-api-<sede>).
+        aliases:
+          - site-api-${SITE_ID}
 
   # ------------------------------------------------------------------
-  # Coordinador central: OPCIONAL, solo con el profile "central".
-  # Pendiente: la parte C (#57/#58) debe aportar src/coordinator/Dockerfile.
+  # Coordinador: OPCIONAL, profile "coordinator", activable en cualquier
+  # sede (issue #59). Es stateless: cada replica consulta las tres
+  # site_api y combina los agregados, sin sincronizar nada con las demas.
+  # Failover (lo decide el cliente): central -> chamartin -> atocha.
   # ------------------------------------------------------------------
   coordinator:
-    profiles: ["central"]
+    profiles: ["coordinator"]
     build:
       context: ..
       dockerfile: src/coordinator/Dockerfile
     container_name: ${SITE_ID:-site}-coordinator
     restart: unless-stopped
     environment:
-      SITE_ID: central
+      SITE_ID: ${SITE_ID}
+      SITE_API_URL_CENTRAL: ${SITE_API_URL_CENTRAL:-http://site-api-central:8000}
+      SITE_API_URL_CHAMARTIN: ${SITE_API_URL_CHAMARTIN:-http://site-api-chamartin:8000}
+      SITE_API_URL_ATOCHA: ${SITE_API_URL_ATOCHA:-http://site-api-atocha:8000}
+    ports:
+      - "${COORDINATOR_PORT:-8100}:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
     networks:
-      - site
+      - interconnect
 
 volumes:
   pgdata:
@@ -222,3 +254,8 @@ volumes:
 networks:
   site:
     driver: bridge
+  # Red compartida entre sedes (site_api + coordinator). Externa porque
+  # la comparten tres proyectos compose distintos: la crea 'make network'.
+  interconnect:
+    name: ${INTERCONNECT_NETWORK:-pids-interconnect}
+    external: true
