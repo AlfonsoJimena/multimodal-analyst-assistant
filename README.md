@@ -105,9 +105,11 @@ flowchart LR
 - [x] Entrenar y comparar **3 modelos diferentes**.
 
 ### Parte 2 — Infraestructura de captura y análisis de datos · 45%
-- [ ] Implementar la **ingesta de datos en bruto**.
-- [ ] Implementar el **procesamiento por lotes** (*batch*).
-- [ ] Proporcionar **acceso a los resultados** del procesamiento.
+- [x] Implementar la **ingesta de datos en bruto**.
+- [x] Implementar el **procesamiento por lotes** (*batch*).
+- [x] Proporcionar **acceso a los resultados** del procesamiento.
+
+> Instrucciones de ejecución, métricas y limitaciones en [`parte2_infraestructura_datos/README.md`](parte2_infraestructura_datos/README.md).
 
 ### Parte 3 — Agente conversacional · 20%
 - [ ] Integrar acceso a **al menos una fuente de datos externa** (infraestructura).
@@ -126,9 +128,9 @@ flowchart LR
 - [x] Generación de un conjunto de datos propio y de calidad.
 
 ### Parte 2
-- [ ] Análisis de las tecnologías existentes para ingesta, almacenamiento y procesamiento por lotes.
-- [ ] Diseño de la arquitectura de datos.
-- [ ] Despliegue de una prueba de concepto funcional.
+- [x] Análisis de las tecnologías existentes para ingesta, almacenamiento y procesamiento por lotes ([`COMPARATIVA.md`](parte2_infraestructura_datos/COMPARATIVA.md)).
+- [x] Diseño de la arquitectura de datos ([`ARQUITECTURA.md`](parte2_infraestructura_datos/ARQUITECTURA.md)).
+- [x] Despliegue de una prueba de concepto funcional.
 
 ### Parte 3
 - [ ] Análisis de tecnologías y modelos conversacionales existentes.
@@ -217,51 +219,26 @@ Propuesta inicial (ajustable a medida que avance el proyecto), alineada con el [
 │   ├── notebooks/                     #Exploración y entrenamiento      
 │   └── src/                           # Código ejecutable del modelo
 │
-├── parte2_infraestructura_datos/
-│   ├── data/
-│   │   └── raw/                       # CSV original, no versionado (.gitignore)
+├── parte2_infraestructura_datos/      # Ver su README: puesta en marcha, métricas y limitaciones
+│   ├── README.md                      # guía de ejecución y operación
+│   ├── ARQUITECTURA.md                # arquitectura detallada, fichero a fichero
+│   ├── COMPARATIVA.md                 # alternativas evaluadas + adaptación a E3/E4/E8
+│   ├── Makefile                       # make up-all-coordinators / make clean SITE=... / make failover-check
+│   ├── data/raw/                      # CSV original, no versionado
 │   ├── scripts/
-│   │   └── prepare_data.py            # reparto por site_id (PULocationID) + separa histórico/realtime
+│   │   ├── prepare_data.py            # reparto por site_id (PULocationID) + separa histórico/realtime
+│   │   └── coordinator_failover.py    # cliente de referencia con failover central→chamartín→atocha
 │   ├── src/
-│   │   ├── common/
-│   │   │   ├── schema.py              # esquema canónico: trip_id, site_id, source, schema_version, ingest_ts
-│   │   │   └── cleaning.py            # reglas de limpieza compartidas por batch y streaming
-│   │   ├── producer/
-│   │   │   ├── producer.py            # reenvía filas con timestamps desplazados (mismo shift pickup/dropoff)
-│   │   │   └── Dockerfile
-│   │   ├── spark_jobs/
-│   │   │   ├── batch_bronze.py
-│   │   │   ├── stream_bronze.py       # Structured Streaming desde Kafka
-│   │   │   ├── silver.py              # limpieza + reglas de cuarentena
-│   │   │   ├── gold.py                # agregados por hora/día/zona/método de pago
-│   │   │   └── sink_postgres.py       # foreachBatch con upsert (INSERT ... ON CONFLICT)
-│   │   ├── site_api/
-│   │   │   ├── main.py                # FastAPI: expone solo agregados (nunca medias)
-│   │   │   └── Dockerfile
-│   │   └── coordinator/
-│   │       ├── main.py                # combina agregados, marca sites_ok/sites_failed/partial
-│   │       ├── clients.py             # llamadas HTTP a las 3 site_api con timeout
-│   │       └── Dockerfile
-│   ├── deploy/
-│   │   ├── docker-compose.site.yml    # pipeline de sede + coordinador con profile opcional
-│   │   ├── docker-compose.central.yml # Prometheus + Grafana (única instancia, en Central)
-│   │   └── sites/
-│   │       ├── central.env
-│   │       ├── chamartin.env
-│   │       └── atocha.env
-│   ├── sql/
-│   │   ├── init.sql                   # tablas gold (idénticas en las 3 sedes)
-│   │   └── quarantine.sql             # tabla silver_rejected
-│   ├── tests/
-│   │   ├── test_m1_availability.py    # % de consultas respondidas con una sede caída
-│   │   ├── test_m2_transfer.py        # bytes crudos que salen de cada sede (debe dar 0)
-│   │   └── test_m3_accuracy.py        # coordinador vs cálculo centralizado de referencia
-│   ├── monitoring/
-│   │   └── grafana/                   # dashboards exportados (JSON)
-│   ├── .env.example
-│   ├── .gitignore
-│   ├── Makefile                       # make up SITE=atocha / make down SITE=atocha / make demo
-│   └── README.md                      # decisiones cerradas: restricción E2, criterio de reparto, esquema
+│   │   ├── common/                    # schema.py (esquema canónico) + cleaning.py (reglas de calidad)
+│   │   ├── producer/                  # simulador de tiempo real → Kafka
+│   │   ├── spark_jobs/                # batch_bronze, stream_bronze, silver, gold, sink_postgres
+│   │   ├── site_api/                  # FastAPI por sede: solo agregados combinables
+│   │   └── coordinator/               # combina las 3 sedes; replicado con failover
+│   ├── deploy/                        # docker-compose.site.yml (plantilla de sede) + .central.yml (monitorización)
+│   ├── sites/                         # central.env, chamartin.env, atocha.env, .env.example
+│   ├── sql/                           # tablas Gold y cuarentena
+│   ├── monitoring/                    # Prometheus + dashboards de Grafana
+│   └── tests/                         # métricas M1 (disponibilidad), M2 (transferencia), M3 (exactitud)
 │
 ├── parte3_agente_conversacional/
 │   ├── despliegue/                    # Ficheros de despliegue (si es local)

@@ -4,8 +4,8 @@ Documento de referencia de `parte2_infraestructura_datos/`: qué problema
 resuelve, cómo está montado, cómo fluyen los datos y qué hace cada
 fichero.
 
-> Estado a fecha de 26/09/2026, rama `feat/replicacion_coordinador`
-> (issue #59, con el coordinador de #57/#58 ya integrado).
+> Estado a fecha de 27/09/2026: `main` con todas las issues de la parte 2
+> integradas (#47–#70), incluidos los arreglos #90, #92 y #94.
 
 ---
 
@@ -44,8 +44,8 @@ las tres, los suma y calcula las medias globales **una única vez**. Es
 stateless y se replica en las tres sedes. El orden de failover es
 Central → Chamartín → Atocha.
 
-El consumidor final es el **agente conversacional de la parte 3**
-(issue #66). Pregunta al coordinador y nunca habla directamente con
+El consumidor final es el **agente conversacional de la parte 3**.
+Pregunta al coordinador y nunca habla directamente con
 las sedes.
 
 ### Tecnologías
@@ -76,7 +76,8 @@ hablar entre sedes: `site_api` y `coordinator`.
  ┌──────────────────── SEDE (x3: central / chamartin / atocha) ───────────────────┐
  │  red interna "site"                                                            │
  │                                                                                │
- │  producer ──► kafka ──► spark_stream_bronze ──► [lakehouse: bronze]            │
+ │  producer ──► kafka ──► spark_stream_bronze ──► [lakehouse: bronze/realtime]   │
+ │  spark_batch_bronze (una vez) ────────────────► [lakehouse: bronze/historical] │
  │                                                        │                       │
  │                                             spark_silver                       │
  │                                                        ▼                       │
@@ -123,12 +124,13 @@ flowchart TD
     HIST["data/prepared/&lt;sede&gt;/historical.csv<br/>80 % más antiguo"]
     RT["data/prepared/&lt;sede&gt;/realtime.csv<br/>20 % más reciente"]
 
-    BB["batch_bronze.py<br/>(batch, a mano)"]
+    BB["batch_bronze.py<br/>(batch, una vez al arrancar)"]
     PROD["producer.py<br/>desplaza timestamps a 'ahora'"]
     KAFKA[("Kafka<br/>topic taxi-trips")]
     SB["stream_bronze.py<br/>(streaming)"]
 
-    BRONZE[("Bronze<br/>Parquet site_id/source")]
+    BRONZEH[("Bronze historical<br/>Parquet site_id/source")]
+    BRONZER[("Bronze realtime<br/>file sink + _spark_metadata")]
     SILVERJOB["silver.py<br/>reglas de cleaning.py"]
     SILVER[("Silver<br/>viajes válidos + is_cancelled")]
     QUAR[("Quarantine<br/>Parquet + rejection_reason")]
@@ -137,14 +139,15 @@ flowchart TD
     PG[("Postgres<br/>hourly/daily/zone/payment_metrics")]
     API["site_api (FastAPI)<br/>solo agregados"]
     COORD["coordinator x3<br/>suma sedes + calcula medias"]
-    AGENT["Agente parte 3 (#66)<br/>failover central→chamartín→atocha"]
+    AGENT["Agente parte 3<br/>failover central→chamartín→atocha"]
 
     RAW --> PREP
     PREP --> HIST
     PREP --> RT
-    HIST --> BB --> BRONZE
-    RT --> PROD --> KAFKA --> SB --> BRONZE
-    BRONZE --> SILVERJOB
+    HIST --> BB --> BRONZEH
+    RT --> PROD --> KAFKA --> SB --> BRONZER
+    BRONZEH -->|1º, availableNow| SILVERJOB
+    BRONZER -->|2º, continuo| SILVERJOB
     SILVERJOB --> SILVER
     SILVERJOB --> QUAR
     SILVER --> SINK --> PG --> API --> COORD --> AGENT
@@ -159,10 +162,10 @@ La vida de un viaje, resumida:
    - Si es `historical`, lo carga `batch_bronze.py` directamente desde el CSV.
    - Si es `realtime`, el `producer` lo publica en Kafka "como si
      ocurriera ahora" y `stream_bronze.py` lo recoge.
-   - En los dos casos se le pone `ingest_ts` y acaba en la misma ruta
-     Bronze.
-3. **Silver.** `silver.py` lee Bronze en streaming, así que procesa igual
-   el histórico y el realtime. Aplica las reglas de calidad: el viaje
+   - En los dos casos se le pone `ingest_ts`. El histórico acaba en
+     `bronze/historical` y el realtime en `bronze/realtime`.
+3. **Silver.** `silver.py` procesa primero todo el histórico y después
+   sigue el realtime, con el mismo código y las mismas reglas. Aplica las reglas de calidad: el viaje
    válido va a Silver y el inválido a cuarentena con los motivos del
    rechazo.
 4. **Gold.** `sink_postgres.py` lee Silver en streaming, calcula los
@@ -219,20 +222,36 @@ pipeline, así que lo añade Bronze.
 ### 4.3 Bronze
 
 Bronze es la **capa cruda**: el dato tal como entra, ya con los tipos
-canónicos y `ingest_ts`, pero sin limpiar. Ruta:
-`data/lakehouse/bronze/site_id=<sede>/source=<historical|realtime>/`.
+canónicos y `ingest_ts`, pero sin limpiar. Tiene dos raíces separadas:
+
+- `data/lakehouse/bronze/historical/site_id=<sede>/source=historical/` (batch)
+- `data/lakehouse/bronze/realtime/site_id=<sede>/source=realtime/` (streaming)
+
+Van separadas a propósito: `stream_bronze.py` escribe con el *file sink* de
+Spark, que deja un `_spark_metadata` en su carpeta, y cualquier lector de
+esa carpeta solo ve los ficheros de ese registro. Si el batch escribiera en
+la misma ruta, sus ficheros serían invisibles para Silver (#94).
 
 | Job | Modo | Detalle |
 |---|---|---|
-| `batch_bronze.py` | batch | Lee el CSV **por nombre de columna**. Con un `.schema()` explícito Spark asignaría las columnas por posición y, como el orden del CSV no coincide con el de `TRIP_SCHEMA`, las desalinearía sin avisar. Después convierte cada columna a su tipo canónico y pone `ingest_ts`. Escribe con `partitionOverwriteMode=dynamic`, de modo que solo sobrescribe `source=historical` y no borra lo que ya haya metido el streaming. |
-| `stream_bronze.py` | streaming | Lee Kafka desde `earliest`, parsea el JSON con `EVENT_SCHEMA` y los timestamps ISO-8601 con una UDF (`datetime.fromisoformat`, que tolera microsegundos). Convierte a los tipos canónicos, pone `ingest_ts` y hace append cada 10 s, con checkpoint. La función `parse_events` no depende de Kafka, así que se puede probar con un DataFrame estático. |
+| `batch_bronze.py` | batch | Lee el CSV **por nombre de columna**. Con un `.schema()` explícito Spark asignaría las columnas por posición y, como el orden del CSV no coincide con el de `TRIP_SCHEMA`, las desalinearía sin avisar. Después convierte cada columna a su tipo canónico y pone `ingest_ts`. Escribe en `bronze/historical`. Se despliega como servicio de una sola ejecución (`spark_batch_bronze`) y es **idempotente**: si el histórico de la sede ya está en Bronze no lo recarga, porque Silver lo volvería a procesar y Gold lo contaría dos veces (`FORCE_RELOAD=1` solo tras `make clean`). |
+| `stream_bronze.py` | streaming | Lee Kafka desde `earliest`, parsea el JSON con `EVENT_SCHEMA` y los timestamps ISO-8601 con una UDF (`datetime.fromisoformat`, que tolera microsegundos). Convierte a los tipos canónicos, pone `ingest_ts` y hace append en `bronze/realtime` cada 10 s, con checkpoint. La función `parse_events` no depende de Kafka, así que se puede probar con un DataFrame estático. |
 
 ### 4.4 Silver — `src/spark_jobs/silver.py` + `src/common/cleaning.py`
 
-Silver lee Bronze **como stream**: un único job procesa el histórico ya
-guardado (como primer batch) y todo lo que siga llegando en tiempo real.
-No hay un "silver batch" aparte, a propósito: así el histórico y el
-realtime pasan por las mismas reglas.
+Silver lee Bronze **como stream**, con dos queries seguidas dentro del mismo
+job y un checkpoint cada una:
+
+1. `bronze/historical` con `trigger(availableNow=True)`: procesa todo el
+   histórico y termina (tras un reinicio no repite nada).
+2. `bronze/realtime` en continuo. Antes de arrancar espera a que
+   `stream_bronze.py` haya confirmado su primer micro-batch.
+
+Las dos usan el mismo `process_batch`, así que el histórico y el realtime
+pasan por las mismas reglas. No se unen en un solo stream ni se ejecutan a
+la vez porque Spark 4.2 falla al unir dos *file streams* cuando solo uno trae
+datos, y un stream arrancado sobre un sink aún vacío no detecta las columnas
+de partición (#94).
 
 Usa `foreachBatch` porque necesita **dos salidas** (válidos y
 cuarentena) y una query de Structured Streaming solo admite un sink.
@@ -438,6 +457,9 @@ Reglas para el cliente (implementadas en `scripts/coordinator_failover.py`):
 3. Si devuelve `4xx`, **no** se reintenta en las demás: todas ejecutan el
    mismo código y fallarían igual.
 4. Si no responde ninguna, se devuelve un error (el script sale con código 1).
+5. El timeout del cliente (10 s) es mayor que el del coordinador con cada
+   sede (5 s): si no, una sola sede colgada haría que el cliente descartara
+   la respuesta parcial de todas las réplicas (lo detectó M1, #90).
 
 Las URLs se pueden cambiar con `COORDINATOR_URLS` (separadas por comas y
 en orden de failover).
@@ -458,7 +480,7 @@ en orden de failover).
 
 | Comando | Qué hace |
 |---|---|
-| `make up SITE=<sede>` | Crea la red compartida si no existe y levanta la sede sin coordinador. |
+| `make up SITE=<sede>` | Crea la red compartida si no existe y levanta la sede sin coordinador. Reconstruye las imágenes si cambió el código (`--build`). |
 | `make up-coordinator SITE=<sede>` | Igual que `up`, pero con el coordinador de esa sede. |
 | `make up-all` / `make up-all-coordinators` | Las tres sedes, sin o con coordinador. |
 | `make stop-coordinator SITE=<sede>` | Para solo el coordinador (útil para la demo de failover). |
@@ -478,17 +500,19 @@ docker compose -p <sede> --env-file sites/<sede>.env -f deploy/docker-compose.si
 | Volumen | Contenido |
 |---|---|
 | `pgdata` | Postgres (Gold + cuarentena + `processed_batches`) |
-| `lakehouse` | `bronze/`, `silver/`, `quarantine/` |
+| `lakehouse` | `bronze/historical/`, `bronze/realtime/`, `silver/`, `quarantine/` |
 | `checkpoints` | Offsets y estado de cada query de streaming |
 
 `data/` del host se monta **en solo lectura** en el producer (para el
-`realtime.csv`).
+`realtime.csv`) y `data/prepared/` en `spark_batch_bronze` (para el
+`historical.csv`).
 
 ### Arranque y dependencias entre servicios
 
 ```
 kafka (healthy) ──► producer
                 └─► spark_stream_bronze ──► spark_silver ──┐
+spark_batch_bronze (terminado OK) ──────────►──┘            │
 postgres (healthy) ────────────────────────────────────────┴─► spark_sink_postgres
 postgres (healthy) ──► site_api
 coordinator (profile) ──► depende solo de la red compartida; tolera sedes caídas
@@ -510,17 +534,24 @@ make failover-check FAILOVER_PATH=/metrics/daily
 
 Va en un compose aparte, `deploy/docker-compose.central.yml`:
 
-- **Prometheus** (`:9090`) lee `monitoring/prometheus.yml`. Ahora mismo
-  solo se monitoriza a sí mismo: los jobs de `site_api`, coordinator y
-  producer están comentados, a la espera de que expongan `/metrics`.
-- **Grafana** (`:3000`, admin/admin por defecto) se autoprovisiona con
-  Prometheus como datasource
-  (`monitoring/grafana/provisioning/datasources/`) y un proveedor de
-  dashboards por fichero (`provisioning/dashboards/`), todavía sin
-  dashboards.
+- **Prometheus** (`:9090`) lee `monitoring/prometheus.yml` y recoge:
+  - `site_api` de cada sede por `/prometheus` (peticiones por endpoint y
+    estado, latencias); se usa `/prometheus` porque `/metrics/*` son los
+    endpoints de negocio;
+  - el producer de cada sede (`trips_processed_total`) en los puertos
+    9000–9002.
 
-La instrumentación y los dashboards (negocio y operacional) están en la
-rama `feat/grafana-dashboards`, que aún no está integrada.
+  Como cada sede es un proyecto compose con su red, Prometheus las alcanza
+  por los puertos publicados en el host (`host.docker.internal`). Con Docker
+  Engine en Linux/WSL hay que añadir
+  `extra_hosts: ["host.docker.internal:host-gateway"]` al servicio.
+- **Grafana** (`:3000`, admin/admin por defecto) se autoprovisiona con
+  Prometheus como datasource y dos dashboards
+  (`monitoring/grafana/provisioning/dashboards/`): **negocio** y
+  **operacional**.
+
+El coordinador todavía no expone métricas (su job está comentado en
+`prometheus.yml`).
 
 ---
 
@@ -530,10 +561,13 @@ rama `feat/grafana-dashboards`, que aún no está integrada.
 
 | Fichero | Descripción |
 |---|---|
-| `README.md` | Documentación funcional: dataset, esquema canónico, `trip_id`, reparto entre sedes, split 80/20, producer, `ingest_ts`, coordinador replicado y failover. |
+| `README.md` | Puesta en marcha, operación, consulta de los datos, tests y métricas, esquema canónico y limitaciones. |
 | `ARQUITECTURA.md` | Este documento. |
+| `COMPARATIVA.md` | Alternativas evaluadas por capa y adaptación a E3, E4 y E8 (#69). |
 | `Makefile` | Envuelve `docker compose` por sede (ver §7). Usa `>` como prefijo de receta en vez del tabulador. |
-| `requirements.txt` | Dependencias compartidas por todas las imágenes: pandas, pyspark 4.2, kafka-python, psycopg2, fastapi, uvicorn, httpx. |
+| `requirements.txt` | Dependencias compartidas por todas las imágenes: pandas, pyspark 4.2, kafka-python, psycopg2, fastapi, uvicorn, httpx, prometheus-client. |
+| `requirements-dev.txt` | `requirements.txt` + pytest. No se instala en las imágenes. |
+| `pytest.ini` | Configuración de pytest (`pythonpath = .`, marcador `integration`). |
 
 ### `data/`
 
@@ -548,7 +582,7 @@ rama `feat/grafana-dashboards`, que aún no está integrada.
 | Fichero | Descripción |
 |---|---|
 | `prepare_data.py` | Preparación única del dataset (§4.1). |
-| `coordinator_failover.py` | Cliente de referencia del coordinador con failover Central → Chamartín → Atocha (§6). Sirve para la demo y como contrato para #66. |
+| `coordinator_failover.py` | Cliente de referencia del coordinador con failover Central → Chamartín → Atocha (§6), con timeout de 10 s. Sirve para la demo, para los tests de M1 y como contrato para el agente de la parte 3. |
 
 ### `src/common/` — código compartido por todos los servicios
 
@@ -568,12 +602,12 @@ rama `feat/grafana-dashboards`, que aún no está integrada.
 
 | Fichero | Descripción |
 |---|---|
-| `batch_bronze.py` | Carga el histórico: CSV → Bronze (§4.3). **No está en el compose.** |
-| `stream_bronze.py` | Kafka → Bronze en streaming (§4.3). Es el único job que necesita el conector Kafka (`PYSPARK_SUBMIT_ARGS --packages`). |
-| `silver.py` | Bronze → Silver + cuarentena en streaming (§4.4). |
+| `batch_bronze.py` | Carga el histórico: CSV → `bronze/historical` (§4.3). Servicio de una sola ejecución `spark_batch_bronze`; idempotente. |
+| `stream_bronze.py` | Kafka → `bronze/realtime` en streaming (§4.3). Es el único job que necesita el conector Kafka (`PYSPARK_SUBMIT_ARGS --packages`). |
+| `silver.py` | Bronze → Silver + cuarentena: primero el histórico y después el realtime en continuo (§4.4). |
 | `gold.py` | Funciones de agregados combinables. Su `main` escribe Parquet provisional y no se despliega (§4.5). |
 | `sink_postgres.py` | Silver → Gold en Postgres con upsert aditivo idempotente (§4.5). |
-| `Dockerfile` | `python:3.12-slim` + OpenJDK 17 (la JVM que necesita Spark). El job concreto se elige con el `command` del compose. |
+| `Dockerfile` | `python:3.12-slim-bookworm` + OpenJDK 17 (la JVM que necesita Spark). La base está fijada a Debian 12 porque Debian 13 ya no incluye OpenJDK 17 (#92). El job concreto se elige con el `command` del compose. |
 
 Todos los jobs de streaming aceptan `RUN_MODE=continuous` (por defecto,
 trigger cada `TRIGGER_INTERVAL_SECONDS`) o `RUN_MODE=once`
@@ -620,13 +654,20 @@ Kafka). Además, todos validan `SITE_ID` y filtran por él.
 
 | Fichero | Descripción |
 |---|---|
-| `prometheus.yml` | Configuración de scrape, con los targets de la plataforma comentados. |
+| `prometheus.yml` | Configuración de scrape: `site_api` y producer de las tres sedes (§8). |
 | `grafana/provisioning/datasources/datasource.yml` | Datasource de Prometheus. |
 | `grafana/provisioning/dashboards/dashboards.yml` | Proveedor de dashboards por fichero. |
+| `grafana/provisioning/dashboards/negocio.json`, `operacional.json` | Dashboards de negocio y operacional. |
 
 ### `tests/`
 
-Vacío por ahora (solo `.gitkeep`).
+| Fichero | Descripción |
+|---|---|
+| `conftest.py` | Configuración común: URLs de las sedes, opción `--integration`, simulación de sedes con `httpx.MockTransport`, control de Docker y escritura de resultados. |
+| `test_m1_availability.py` | M1 · Disponibilidad con sedes caídas (#66): degradación parcial y failover, en unitario y con contenedores reales. |
+| `test_m2_transfer.py` | M2 · Transferencia de datos crudos (#67): contrato de las APIs, tráfico real y superficie de exposición. |
+| `test_m3_accuracy.py` | M3 · Exactitud federada (#68): referencia centralizada independiente frente a cada sede y el coordinador. |
+| `results/` | Cifras medidas de cada métrica (`.md` y `.json`). |
 
 ---
 
@@ -638,7 +679,8 @@ Vacío por ahora (solo `.gitkeep`).
 | **`trip_id` = SHA-256 de los campos originales** | El dataset no trae un ID. Así el ID es estable aunque el producer mueva los timestamps, y permite deduplicar. |
 | **Split 80/20 cronológico por sede** | El tramo realtime es el futuro del histórico, igual que en un sistema real. |
 | **`Decimal(12,2)` para importes** | Evita los errores de redondeo del punto flotante con dinero. |
-| **Mismo código para histórico y realtime** | Silver lee Bronze como stream, así que las reglas no pueden divergir entre los dos caminos. |
+| **Mismo código para histórico y realtime** | Silver procesa las dos raíces de Bronze con el mismo `process_batch`, así que las reglas no pueden divergir entre los dos caminos. |
+| **Bronze separado en `historical/` y `realtime/`** | El *file sink* de streaming oculta los ficheros ajenos a su `_spark_metadata`; separar las raíces es lo que permite que el histórico llegue a Gold (#94). |
 | **Cuarentena en lugar de descartar** | Las filas malas quedan auditables y con sus motivos. |
 | **Cancelaciones marcadas, no rechazadas** | Son eventos de negocio legítimos: se quedan en Silver pero no cuentan en Gold. |
 | **Solo agregados combinables fuera de la sede** | Evita el error de la "media de medias" y además ningún viaje individual sale de su sede. |
@@ -655,11 +697,12 @@ Vacío por ahora (solo `.gitkeep`).
 
 | # | Tema | Detalle |
 |---|---|---|
-| 1 | **El histórico no se carga en el despliegue** | `batch_bronze.py` no es un servicio del compose. Habría que ejecutarlo a mano dentro del contenedor de Spark o añadirlo como servicio one-shot antes de `spark_silver`. |
-| 2 | **La cuarentena no llega a Postgres** | `silver.py` escribe la cuarentena en Parquet y ningún job la vuelca a `silver_rejected`, así que `/quarantine/summary` devuelve `[]`. |
-| 3 | **La deduplicación es solo dentro del micro-batch** | `dropDuplicates(["trip_id"])` no tiene estado entre batches: un duplicado que llegue en otro batch pasaría a Silver y contaría dos veces en Gold. |
-| 4 | **Checkpoints y `processed_batches` van acoplados** | Si se borran los checkpoints de `sink_postgres` pero no Postgres, los `batch_id` vuelven a empezar en 0 y se saltarían como "ya procesados". `make clean` borra las dos cosas a la vez, así que no pasa si se usa ese comando. |
-| 5 | **Monitorización a medias** | Ningún servicio expone `/metrics` y no hay dashboards (están en la rama `feat/grafana-dashboards`). Además, el stack central está en su propia red. |
-| 6 | **Sin tests** | `tests/` está vacío. Los candidatos claros son `cleaning.py`, `parse_events`, `combine_metric_rows` y `build_upsert_sql`. |
+| 1 | **Reejecutar el producer duplica el realtime** | `make up` sobre una sede con datos relanza el producer (que había terminado con `Exited (0)`) y vuelve a publicar todos los viajes. Como la deduplicación solo actúa dentro del micro-batch, Gold los cuenta dos veces. Hasta corregirlo, reiniciar con `make clean`. |
+| 2 | **La deduplicación es solo dentro del micro-batch** | `dropDuplicates(["trip_id"])` no tiene estado entre batches. Solución natural: deduplicación con estado en Spark o un formato transaccional con `MERGE` (Delta/Iceberg). |
+| 3 | **La cuarentena no llega a Postgres** | `silver.py` escribe la cuarentena en Parquet y ningún job la vuelca a `silver_rejected`, así que `/quarantine/summary` devuelve `[]`. |
+| 4 | **Postgres publica su puerto en el host** | 5432–5434 con credenciales de desarrollo; `silver_rejected` puede guardar viajes completos. Es la única vía de salida de datos no agregados (M2 la marca como fallo conocido). |
+| 5 | **Checkpoints y `processed_batches` van acoplados** | Si se borran los checkpoints de `sink_postgres` pero no Postgres, los `batch_id` vuelven a empezar en 0 y se saltarían como "ya procesados". `make clean` borra las dos cosas a la vez, así que no pasa si se usa ese comando. |
+| 6 | **Coordinador sin métricas** | Solo la `site_api` y el producer exponen métricas a Prometheus. |
 | 7 | **Credenciales de desarrollo** | `pids/pids` en los `.env` y `admin/admin` en Grafana. |
 | 8 | **`gold.py` escribe Parquet** | Su `main` es solo para pruebas en local. En el despliegue lo sustituye `sink_postgres.py`. |
+| 9 | **Consumo de memoria** | Cada job de Spark es una JVM de ~0,7 GB; las tres sedes completas ocupan unos 8–9 GB. |
