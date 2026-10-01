@@ -32,6 +32,7 @@ from pydantic import BaseModel
 from prometheus_client import (
     CONTENT_TYPE_LATEST,
     Counter,
+    Gauge,
     Histogram,
     generate_latest,
 )
@@ -136,6 +137,10 @@ HTTP_LATENCY = Histogram(
     "Latencia de las peticiones HTTP de la site_api.",
     ["method", "endpoint"],
 )
+TRIPS_PROCESSED = Gauge(
+    "trips_processed_total",
+    "Viajes procesados (trip_count) acumulados en Gold para esta sede.",
+)
 
 
 @app.middleware("http")
@@ -153,6 +158,22 @@ async def prometheus_middleware(request, call_next):
 
 @app.get("/prometheus")
 def prometheus_metrics():
+    # Metrica de negocio: lee el acumulado de Gold en cada scrape.
+    # Si la BD falla, se sirven el resto de metricas igualmente.
+    try:
+        conn = connection_pool.getconn()
+        try:
+            with conn.cursor() as cur:
+                cur.execute(
+                    "SELECT COALESCE(SUM(trip_count), 0) "
+                    "FROM hourly_metrics WHERE site_id = %s",
+                    (SITE_ID,),
+                )
+                TRIPS_PROCESSED.set(cur.fetchone()[0])
+        finally:
+            connection_pool.putconn(conn)
+    except Exception:
+        pass
     return Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)
 
 

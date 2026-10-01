@@ -62,8 +62,8 @@ METRICS_PORT = int(os.getenv("METRICS_PORT", "8002"))
 # Prometheus metrics
 # ============================================================
 
-TRIPS_PROCESSED = Counter(
-    "trips_processed_total",
+TRIPS_PUBLISHED = Counter(
+    "trips_published_total",
     "Total de viajes publicados a Kafka por el producer.",
     ["site_id"],
 )
@@ -280,7 +280,7 @@ def publish_trips(
             value=event,
         )
 
-        TRIPS_PROCESSED.labels(SITE_ID).inc()
+        TRIPS_PUBLISHED.labels(SITE_ID).inc()
 
         print(
             f"[{index + 1}/{len(df)}] "
