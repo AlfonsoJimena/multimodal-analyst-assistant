@@ -57,7 +57,12 @@ parte 2 (viajes de taxi de NYC repartidos en tres sedes). El agente
   trazabilidad de cada llamada a herramienta.
 - **Herramientas** (`src/tools/base.py`): devuelven `ToolResult {data, meta, block}`
   o `ToolError {error, detail}`, con `ToolMeta {sites_ok, sites_failed, partial,
-  served_by, period, note}`. El registro genera el esquema JSON de tool calling.
+  served_by, period, note, latency_ms}`. El registro genera el esquema JSON de tool calling.
+  Si una herramienta pinta más de un bloque (p. ej. `compare_sites`: barras + tabla),
+  el resto va en `extra_blocks`; `ToolResult.blocks` los devuelve todos en orden.
+- **Uso desde el orquestador** (`src/tools/__init__.py`): `register_all_tools()` al
+  arrancar, `tools_schema()` para el LLM e `invoke_tool(name, arguments)`, que valida
+  los argumentos (dict o JSON) y nunca lanza: devuelve `ToolResult` o `ToolError`.
 
 **Regla de oro:** las cifras de `blocks` y los `warnings` salen SIEMPRE del
 código (de las herramientas), nunca del texto del LLM.
