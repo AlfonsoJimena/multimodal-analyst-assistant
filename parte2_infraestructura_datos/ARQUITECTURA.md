@@ -427,6 +427,22 @@ La respuesta tiene esta forma:
 `GET /health` indica qué réplica responde:
 `{"status":"ok","site_id":"chamartin","failover_priority":2}`.
 
+### Desglose por sede (`breakdown=site`)
+
+Los cuatro endpoints aceptan el parámetro `breakdown`:
+
+- `breakdown=none` (por defecto): el coordinador suma entre sedes, una fila
+  por clave. Respuesta **idéntica** a la histórica (sin `site_id`, gracias a
+  `response_model_exclude_none`).
+- `breakdown=site`: no suma entre sedes. `combine_metric_rows` agrupa por
+  `(site_id, clave)` y devuelve una fila por sede con su `site_id` y sus
+  medias calculadas a partir de sus propias sumas (nunca media de medias).
+
+Lo usa el agente de la parte 3 para «comparar las tres sedes» sin hablar con
+las `site_api` directamente. Es un cambio **retrocompatible**: no afecta a
+M1–M3, al failover ni a los dashboards. Un valor distinto de `none`/`site`
+devuelve `422`.
+
 ### Dos tipos de tolerancia a fallos (no hay que confundirlos)
 
 | Qué cae | Quién lo gestiona | Resultado |
