@@ -1,0 +1,8 @@
+# Parte 3 - agente conversacional. Versiones fijadas.
+openai==1.54.4
+fastapi==0.115.5
+uvicorn[standard]==0.32.1
+httpx==0.27.2
+pydantic==2.10.3
+streamlit==1.40.2
+pandas==2.2.3

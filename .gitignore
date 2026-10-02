@@ -48,3 +48,10 @@ parte2_infraestructura_datos/data/checkpoints/
 
 # Tests (parte 2)
 .pytest_cache/
+
+# --- Parte 3: agente conversacional ---
+# La clave de OpenRouter nunca al repo
+parte3_agente_conversacional/.env
+# Pero SI versionamos los CSV de la parte 3 (zonas TLC, bateria de preguntas),
+# que de otro modo caerian en la regla global *.csv de arriba
+!parte3_agente_conversacional/**/*.csv
