@@ -18,7 +18,7 @@ from src.api.schemas import Block
 from src.data.coordinator_client import CoordinatorClient
 from src.tools import invoke_tool, register_all_tools
 from src.tools import metrics
-from src.tools.base import ToolError, ToolResult, get_tool, tools_schema
+from src.tools.base import ToolError, ToolResult, clear_registry, get_tool, tools_schema
 from src.tools.metrics import (
     CompareSitesArgs,
     KpisArgs,
@@ -44,6 +44,7 @@ def _estado_limpio(monkeypatch):
     monkeypatch.setattr(mc, "SLOW_SITES", set())
     monkeypatch.delenv("MIN_TRIPS_PER_CELL", raising=False)
     mc._FIXTURES_CACHE = None
+    clear_registry()  # sin restos de otros tests (p. ej. la herramienta «juguete»)
     register_all_tools()
     yield
     mc._FIXTURES_CACHE = None

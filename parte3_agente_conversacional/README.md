@@ -74,6 +74,36 @@ curl -L -o src/knowledge/taxi_zone_lookup.csv \
   https://d37ci6vzurychx.cloudfront.net/misc/taxi_zone_lookup.csv
 ```
 
+## Herramientas del agente
+
+`src/tools/` (P3-06 y P3-07) contiene las herramientas cerradas que el LLM
+puede llamar. Todas las cifras salen de aquí, nunca del modelo.
+
+| Herramienta | Para qué | Bloque |
+|---|---|---|
+| `get_kpis` | Viajes, ingresos y medias de un periodo (filtra sedes y fechas) | `kpi` |
+| `compare_sites` | Una fila por sede (demuestra el despliegue distribuido) | `bar` + `table` |
+| `get_timeseries` | Serie por hora o por día de una métrica y su máximo | `line` |
+| `get_payment_breakdown` | Viajes, ingresos y % por método de pago (acumulado) | `bar` + `table` |
+| `get_zones` | Ranking de zonas de recogida con nombre y distrito (acumulado) | `table` |
+| `get_zone` | Métricas de una zona, por ID o por nombre (acumulado) | `kpi` |
+| `get_platform_status` | Réplicas vivas, sedes que responden y fechas con datos | `table` |
+
+Reglas comunes: argumentos validados (los errores vuelven como `ToolError`,
+nunca como excepción), `partial` respecto a las sedes pedidas, medias como
+Σ sumas / Σ conteos y celdas con menos de `MIN_TRIPS_PER_CELL` viajes ocultas.
+
+Llamarlas a mano, sin LLM (útil para depurar):
+
+```bash
+# Desde parte3_agente_conversacional/, con el mock levantado en 8190
+export COORDINATOR_URLS=http://localhost:8190
+python -m src.tools --list
+python -m src.tools get_kpis '{"sites": ["central"], "date_from": "2026-09-25"}'
+python -m src.tools get_zone '{"zone_name": "JFK Airport"}'
+python -m src.tools get_platform_status
+```
+
 ## Tests
 
 ```bash

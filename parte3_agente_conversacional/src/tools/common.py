@@ -113,6 +113,18 @@ SITES_DESCRIPTION = (
 )
 
 
+def site_of_zone(location_id: int) -> str:
+    """Sede que guarda los viajes de una zona: reparto de la parte 2 (PULocationID % 3)."""
+    return SITES[int(location_id) % len(SITES)]
+
+
+# Zonas y pagos no tienen fecha en el coordinador: son acumulados.
+ACCUMULATED_PERIOD = "todo el periodo (acumulado)"
+ACCUMULATED_NOTE = (
+    "Datos acumulados de todo el periodo: zonas y pagos no se pueden filtrar por fechas."
+)
+
+
 def requested_sites(sites: Optional[list[str]]) -> list[str]:
     """Sedes pedidas, sin duplicados y en el orden canónico. Vacío = todas."""
     wanted = set(sites or [])

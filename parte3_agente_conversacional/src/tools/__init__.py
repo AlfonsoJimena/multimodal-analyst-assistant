@@ -15,9 +15,11 @@ from .common import invoke_tool
 
 def register_all_tools() -> None:
     """Registra todas las herramientas del agente (idempotente)."""
-    from . import metrics
+    from . import breakdowns, metrics, status
 
     metrics.register()
+    breakdowns.register()
+    status.register()
 
 
 __all__ = ["invoke_tool", "register_all_tools"]
