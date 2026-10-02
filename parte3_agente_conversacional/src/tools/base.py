@@ -26,6 +26,7 @@ class ToolMeta(BaseModel):
     served_by: Optional[str] = None
     period: Optional[str] = None
     note: Optional[str] = None
+    latency_ms: int = 0
 
 
 class ToolResult(BaseModel):
@@ -34,6 +35,13 @@ class ToolResult(BaseModel):
     data: Any
     meta: ToolMeta
     block: Optional[Block] = None
+    # Bloques adicionales (p. ej. compare_sites devuelve barras + tabla).
+    extra_blocks: list[Block] = Field(default_factory=list)
+
+    @property
+    def blocks(self) -> list[Block]:
+        """Todos los bloques en orden: `block` primero y luego `extra_blocks`."""
+        return ([self.block] if self.block is not None else []) + list(self.extra_blocks)
 
 
 class ToolError(BaseModel):
