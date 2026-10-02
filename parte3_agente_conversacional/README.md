@@ -51,6 +51,29 @@ Regenerar las fixtures (deterministas, salen idénticas):
 python -m mock.generar_fixtures
 ```
 
+## Base de conocimiento y fuentes externas
+
+`src/knowledge/` (P3-05) contiene lo que el agente sabe del dominio:
+
+| Fichero | Contenido | Fuente |
+|---|---|---|
+| `taxi_zone_lookup.csv` | Las 265 zonas de taxi de NYC: ID, distrito, nombre y tipo de zona | [NYC TLC · Taxi Zone Lookup Table](https://d37ci6vzurychx.cloudfront.net/misc/taxi_zone_lookup.csv), enlazada desde la [página de datos de la TLC](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page) |
+| `zones.py` | `zone_name(161)` → Midtown Center (Manhattan); `find_zone("jfk")` busca por nombre sin mayúsculas ni tildes | — |
+| `payment_types.py` | Mapa único de códigos de pago (0–6) | [Diccionario de datos de la TLC](https://www.nyc.gov/assets/tlc/downloads/pdf/data_dictionary_trip_records_yellow.pdf) (versión del 18/03/2025) |
+| `glosario.md` | Sedes, métricas, qué viajes cuentan, fechas disponibles y qué no se puede responder | Parte 2 (`schema.py`, `cleaning.py`, `gold.py`) |
+
+La tabla de zonas es una **fuente de datos externa** añadida a la parte 2:
+los agregados solo traen `pu_location_id`, y con ella el agente puede
+responder con nombres de zona ("Midtown Center, Manhattan") y aceptar
+preguntas como "¿cuántos viajes salen de JFK?".
+
+Para actualizarla:
+
+```bash
+curl -L -o src/knowledge/taxi_zone_lookup.csv \
+  https://d37ci6vzurychx.cloudfront.net/misc/taxi_zone_lookup.csv
+```
+
 ## Tests
 
 ```bash
