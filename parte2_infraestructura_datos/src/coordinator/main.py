@@ -17,6 +17,13 @@ site that errored or timed out lands in sites_failed and its data is
 simply missing from the combined totals, rather than failing the
 whole request.
 
+With breakdown=site the coordinator does NOT sum across sites: it
+groups by (site_id, key) instead, returns one row per site and key
+carrying its own site_id, and computes each row's averages from that
+site's own sums. breakdown=none (the default) keeps the historical
+behaviour byte for byte. This lets the part-3 chatbot answer "compare
+the three sites" without ever talking to the site_api directly.
+
 The coordinator is stateless, so it is replicated as-is on every site
 (profile "coordinator" in deploy/docker-compose.site.yml, #59). No
 instance knows about the others: failover is the caller's job, trying
@@ -27,7 +34,7 @@ import os
 from contextlib import asynccontextmanager
 from datetime import date, datetime
 from decimal import Decimal
-from typing import Generic, Optional, TypeVar
+from typing import Generic, Literal, Optional, TypeVar
 
 from fastapi import FastAPI, Query
 from pydantic import BaseModel
@@ -48,6 +55,9 @@ SITE_ID = os.getenv("SITE_ID", "central")
 # Order in which callers must try the coordinator replicas:
 # 1st central (primary), then chamartin, then atocha (backups).
 FAILOVER_ORDER = ["central", "chamartin", "atocha"]
+
+# Accepted values of the ?breakdown= query parameter.
+Breakdown = Literal["none", "site"]
 
 
 # ============================================================
@@ -77,6 +87,10 @@ T = TypeVar("T")
 
 # ============================================================
 # Response models
+#
+# site_id is only populated with breakdown=site; with breakdown=none it
+# stays None and is dropped from the response (response_model_exclude_none
+# on every endpoint), so the default answer is exactly as before.
 # ============================================================
 
 class CombinedResponse(BaseModel, Generic[T]):
@@ -87,6 +101,7 @@ class CombinedResponse(BaseModel, Generic[T]):
 
 
 class HourlyCombined(BaseModel):
+    site_id: Optional[str] = None
     trip_hour: datetime
     trip_count: int
     sum_fare_amount: Decimal
@@ -100,6 +115,7 @@ class HourlyCombined(BaseModel):
 
 
 class DailyCombined(BaseModel):
+    site_id: Optional[str] = None
     trip_date: date
     trip_count: int
     sum_fare_amount: Decimal
@@ -113,6 +129,7 @@ class DailyCombined(BaseModel):
 
 
 class ZoneCombined(BaseModel):
+    site_id: Optional[str] = None
     pu_location_id: int
     trip_count: int
     sum_fare_amount: Decimal
@@ -126,6 +143,7 @@ class ZoneCombined(BaseModel):
 
 
 class PaymentCombined(BaseModel):
+    site_id: Optional[str] = None
     payment_type: int
     trip_count: int
     sum_fare_amount: Decimal
@@ -155,8 +173,15 @@ def _empty_bucket(group_key: str, key_value) -> dict:
 
 
 def combine_metric_rows(
-    results: list[SiteResult], group_key: str
+    results: list[SiteResult], group_key: str, breakdown: Breakdown = "none"
 ) -> tuple[list[str], list[str], list[dict]]:
+    """Merge the per-site rows into the coordinator's answer.
+
+    breakdown="none": sum across sites, one row per key (historical).
+    breakdown="site": no cross-site sum; one row per (site_id, key),
+    each carrying its own site_id and its own averages.
+    """
+
     sites_ok: list[str] = []
     sites_failed: list[str] = []
     merged: dict = {}
@@ -170,7 +195,17 @@ def combine_metric_rows(
 
         for row in result.data:
             key_value = row[group_key]
-            bucket = merged.setdefault(key_value, _empty_bucket(group_key, key_value))
+            if breakdown == "site":
+                bucket_key = (result.site_id, key_value)
+            else:
+                bucket_key = key_value
+
+            bucket = merged.get(bucket_key)
+            if bucket is None:
+                bucket = _empty_bucket(group_key, key_value)
+                if breakdown == "site":
+                    bucket["site_id"] = result.site_id
+                merged[bucket_key] = bucket
 
             bucket["trip_count"] += row["trip_count"]
             bucket["sum_fare_amount"] += Decimal(row["sum_fare_amount"])
@@ -210,10 +245,15 @@ def health() -> dict:
 # Combined metrics endpoints
 # ============================================================
 
-@app.get("/metrics/hourly", response_model=CombinedResponse[HourlyCombined])
+@app.get(
+    "/metrics/hourly",
+    response_model=CombinedResponse[HourlyCombined],
+    response_model_exclude_none=True,
+)
 async def get_combined_hourly(
     date_from: Optional[datetime] = Query(None),
     date_to: Optional[datetime] = Query(None),
+    breakdown: Breakdown = Query("none"),
 ):
     params = {}
     if date_from is not None:
@@ -222,7 +262,7 @@ async def get_combined_hourly(
         params["date_to"] = date_to.isoformat()
 
     results = await fetch_all_sites("/metrics/hourly", params)
-    sites_ok, sites_failed, data = combine_metric_rows(results, "trip_hour")
+    sites_ok, sites_failed, data = combine_metric_rows(results, "trip_hour", breakdown)
 
     return CombinedResponse(
         sites_ok=sites_ok,
@@ -232,10 +272,15 @@ async def get_combined_hourly(
     )
 
 
-@app.get("/metrics/daily", response_model=CombinedResponse[DailyCombined])
+@app.get(
+    "/metrics/daily",
+    response_model=CombinedResponse[DailyCombined],
+    response_model_exclude_none=True,
+)
 async def get_combined_daily(
     date_from: Optional[date] = Query(None),
     date_to: Optional[date] = Query(None),
+    breakdown: Breakdown = Query("none"),
 ):
     params = {}
     if date_from is not None:
@@ -244,7 +289,7 @@ async def get_combined_daily(
         params["date_to"] = date_to.isoformat()
 
     results = await fetch_all_sites("/metrics/daily", params)
-    sites_ok, sites_failed, data = combine_metric_rows(results, "trip_date")
+    sites_ok, sites_failed, data = combine_metric_rows(results, "trip_date", breakdown)
 
     return CombinedResponse(
         sites_ok=sites_ok,
@@ -254,16 +299,21 @@ async def get_combined_daily(
     )
 
 
-@app.get("/metrics/zone", response_model=CombinedResponse[ZoneCombined])
+@app.get(
+    "/metrics/zone",
+    response_model=CombinedResponse[ZoneCombined],
+    response_model_exclude_none=True,
+)
 async def get_combined_zone(
     pu_location_id: Optional[int] = Query(None),
+    breakdown: Breakdown = Query("none"),
 ):
     params = {}
     if pu_location_id is not None:
         params["pu_location_id"] = pu_location_id
 
     results = await fetch_all_sites("/metrics/zone", params)
-    sites_ok, sites_failed, data = combine_metric_rows(results, "pu_location_id")
+    sites_ok, sites_failed, data = combine_metric_rows(results, "pu_location_id", breakdown)
 
     return CombinedResponse(
         sites_ok=sites_ok,
@@ -273,16 +323,21 @@ async def get_combined_zone(
     )
 
 
-@app.get("/metrics/payment", response_model=CombinedResponse[PaymentCombined])
+@app.get(
+    "/metrics/payment",
+    response_model=CombinedResponse[PaymentCombined],
+    response_model_exclude_none=True,
+)
 async def get_combined_payment(
     payment_type: Optional[int] = Query(None),
+    breakdown: Breakdown = Query("none"),
 ):
     params = {}
     if payment_type is not None:
         params["payment_type"] = payment_type
 
     results = await fetch_all_sites("/metrics/payment", params)
-    sites_ok, sites_failed, data = combine_metric_rows(results, "payment_type")
+    sites_ok, sites_failed, data = combine_metric_rows(results, "payment_type", breakdown)
 
     return CombinedResponse(
         sites_ok=sites_ok,

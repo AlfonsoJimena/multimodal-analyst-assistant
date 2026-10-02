@@ -277,6 +277,34 @@ curl -s "localhost:8100/metrics/daily" | python3 -m json.tool
   **el cliente debe mirar `sites_ok` / `partial`**, no solo el código HTTP.
 - Las medias llegan con muchos decimales: conviene redondearlas al mostrarlas.
 
+#### Desglose por sede (`breakdown=site`)
+
+Por defecto el coordinador combina las tres sedes. Con `breakdown=site` no
+suma entre sedes: devuelve una fila por sede y clave, con `site_id` y las
+medias de cada sede calculadas a partir de sus propias sumas. Está en los
+cuatro endpoints (`/metrics/hourly|daily|zone|payment`) y lo usa el agente
+de la parte 3 para responder «compara las tres sedes».
+
+```bash
+curl -s "localhost:8100/metrics/daily?breakdown=site" | python3 -m json.tool
+```
+
+```json
+{
+  "sites_ok": ["atocha", "central", "chamartin"],
+  "sites_failed": [],
+  "partial": false,
+  "data": [
+    {"site_id": "atocha",  "trip_date": "2020-01-01", "trip_count": 60, "sum_fare_amount": "600.00", "avg_fare_amount": "10", "...": "..."},
+    {"site_id": "central", "trip_date": "2020-01-01", "trip_count": 10, "sum_fare_amount": "100.00", "avg_fare_amount": "10", "...": "..."}
+  ]
+}
+```
+
+- `breakdown=none` (por defecto): respuesta idéntica a la de antes, sin `site_id`.
+- `breakdown` con cualquier otro valor → `422`.
+- Las sedes caídas siguen en `sites_failed` y no aparecen en `data`.
+
 ### Coordinador replicado y failover
 
 El coordinador no guarda estado, así que hay una copia idéntica en cada
