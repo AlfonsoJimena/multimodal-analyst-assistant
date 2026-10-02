@@ -1,0 +1,1130 @@
+{
+  "hourly": [
+    {
+      "trip_hour": "2020-01-01T00:00:00",
+      "trip_count": 2,
+      "sum_fare_amount": "17.67",
+      "sum_trip_distance": 16.12,
+      "sum_tip_amount": "8.53",
+      "sum_total_amount": "31.20"
+    },
+    {
+      "trip_hour": "2020-01-01T01:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "32.66",
+      "sum_trip_distance": 13.31,
+      "sum_tip_amount": "6.35",
+      "sum_total_amount": "41.51"
+    },
+    {
+      "trip_hour": "2020-01-01T03:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "36.65",
+      "sum_trip_distance": 14.09,
+      "sum_tip_amount": "2.40",
+      "sum_total_amount": "41.55"
+    },
+    {
+      "trip_hour": "2020-01-01T05:00:00",
+      "trip_count": 2,
+      "sum_fare_amount": "57.00",
+      "sum_trip_distance": 23.25,
+      "sum_tip_amount": "12.92",
+      "sum_total_amount": "74.92"
+    },
+    {
+      "trip_hour": "2020-01-01T06:00:00",
+      "trip_count": 2,
+      "sum_fare_amount": "56.48",
+      "sum_trip_distance": 20.18,
+      "sum_tip_amount": "10.23",
+      "sum_total_amount": "71.71"
+    },
+    {
+      "trip_hour": "2020-01-01T08:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "31.73",
+      "sum_trip_distance": 8.49,
+      "sum_tip_amount": "9.62",
+      "sum_total_amount": "43.85"
+    },
+    {
+      "trip_hour": "2020-01-01T09:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "36.47",
+      "sum_trip_distance": 4.1,
+      "sum_tip_amount": "4.77",
+      "sum_total_amount": "43.74"
+    },
+    {
+      "trip_hour": "2020-01-01T10:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "19.25",
+      "sum_trip_distance": 17.26,
+      "sum_tip_amount": "9.27",
+      "sum_total_amount": "31.02"
+    },
+    {
+      "trip_hour": "2020-01-01T11:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "35.79",
+      "sum_trip_distance": 17.45,
+      "sum_tip_amount": "9.76",
+      "sum_total_amount": "48.05"
+    },
+    {
+      "trip_hour": "2020-01-01T14:00:00",
+      "trip_count": 2,
+      "sum_fare_amount": "30.01",
+      "sum_trip_distance": 19.73,
+      "sum_tip_amount": "15.31",
+      "sum_total_amount": "50.32"
+    },
+    {
+      "trip_hour": "2020-01-01T16:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "17.08",
+      "sum_trip_distance": 14.27,
+      "sum_tip_amount": "12.32",
+      "sum_total_amount": "31.90"
+    },
+    {
+      "trip_hour": "2020-01-01T17:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "32.27",
+      "sum_trip_distance": 2.32,
+      "sum_tip_amount": "7.17",
+      "sum_total_amount": "41.94"
+    },
+    {
+      "trip_hour": "2020-01-01T18:00:00",
+      "trip_count": 2,
+      "sum_fare_amount": "45.87",
+      "sum_trip_distance": 32.3,
+      "sum_tip_amount": "16.36",
+      "sum_total_amount": "67.23"
+    },
+    {
+      "trip_hour": "2020-01-01T19:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "37.47",
+      "sum_trip_distance": 9.32,
+      "sum_tip_amount": "13.83",
+      "sum_total_amount": "53.80"
+    },
+    {
+      "trip_hour": "2020-01-01T21:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "37.19",
+      "sum_trip_distance": 10.91,
+      "sum_tip_amount": "8.95",
+      "sum_total_amount": "48.64"
+    },
+    {
+      "trip_hour": "2020-01-01T22:00:00",
+      "trip_count": 2,
+      "sum_fare_amount": "62.19",
+      "sum_trip_distance": 30.45,
+      "sum_tip_amount": "7.42",
+      "sum_total_amount": "74.61"
+    },
+    {
+      "trip_hour": "2026-09-25T00:00:00",
+      "trip_count": 2,
+      "sum_fare_amount": "62.02",
+      "sum_trip_distance": 27.96,
+      "sum_tip_amount": "18.09",
+      "sum_total_amount": "85.11"
+    },
+    {
+      "trip_hour": "2026-09-25T02:00:00",
+      "trip_count": 3,
+      "sum_fare_amount": "95.12",
+      "sum_trip_distance": 22.84,
+      "sum_tip_amount": "22.37",
+      "sum_total_amount": "124.99"
+    },
+    {
+      "trip_hour": "2026-09-25T03:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "38.02",
+      "sum_trip_distance": 6.91,
+      "sum_tip_amount": "1.21",
+      "sum_total_amount": "41.73"
+    },
+    {
+      "trip_hour": "2026-09-25T04:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "41.20",
+      "sum_trip_distance": 1.86,
+      "sum_tip_amount": "14.90",
+      "sum_total_amount": "58.60"
+    },
+    {
+      "trip_hour": "2026-09-25T07:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "46.49",
+      "sum_trip_distance": 2.76,
+      "sum_tip_amount": "11.17",
+      "sum_total_amount": "60.16"
+    },
+    {
+      "trip_hour": "2026-09-25T08:00:00",
+      "trip_count": 5,
+      "sum_fare_amount": "147.60",
+      "sum_trip_distance": 34.9,
+      "sum_tip_amount": "13.71",
+      "sum_total_amount": "173.81"
+    },
+    {
+      "trip_hour": "2026-09-25T10:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "46.33",
+      "sum_trip_distance": 2.55,
+      "sum_tip_amount": "6.78",
+      "sum_total_amount": "55.61"
+    },
+    {
+      "trip_hour": "2026-09-25T11:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "16.87",
+      "sum_trip_distance": 2.5,
+      "sum_tip_amount": "1.74",
+      "sum_total_amount": "21.11"
+    },
+    {
+      "trip_hour": "2026-09-25T12:00:00",
+      "trip_count": 2,
+      "sum_fare_amount": "28.04",
+      "sum_trip_distance": 26.0,
+      "sum_tip_amount": "24.09",
+      "sum_total_amount": "57.13"
+    },
+    {
+      "trip_hour": "2026-09-25T14:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "11.51",
+      "sum_trip_distance": 0.78,
+      "sum_tip_amount": "0.88",
+      "sum_total_amount": "14.89"
+    },
+    {
+      "trip_hour": "2026-09-25T15:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "14.06",
+      "sum_trip_distance": 0.71,
+      "sum_tip_amount": "10.21",
+      "sum_total_amount": "26.77"
+    },
+    {
+      "trip_hour": "2026-09-25T16:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "26.47",
+      "sum_trip_distance": 17.35,
+      "sum_tip_amount": "2.69",
+      "sum_total_amount": "31.66"
+    },
+    {
+      "trip_hour": "2026-09-25T17:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "44.89",
+      "sum_trip_distance": 11.61,
+      "sum_tip_amount": "9.75",
+      "sum_total_amount": "57.14"
+    },
+    {
+      "trip_hour": "2026-09-25T18:00:00",
+      "trip_count": 2,
+      "sum_fare_amount": "45.44",
+      "sum_trip_distance": 13.72,
+      "sum_tip_amount": "13.81",
+      "sum_total_amount": "64.25"
+    },
+    {
+      "trip_hour": "2026-09-25T23:00:00",
+      "trip_count": 2,
+      "sum_fare_amount": "41.56",
+      "sum_trip_distance": 16.58,
+      "sum_tip_amount": "13.16",
+      "sum_total_amount": "59.72"
+    },
+    {
+      "trip_hour": "2026-09-26T00:00:00",
+      "trip_count": 2,
+      "sum_fare_amount": "77.80",
+      "sum_trip_distance": 36.13,
+      "sum_tip_amount": "15.31",
+      "sum_total_amount": "98.11"
+    },
+    {
+      "trip_hour": "2026-09-26T03:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "20.02",
+      "sum_trip_distance": 18.73,
+      "sum_tip_amount": "8.38",
+      "sum_total_amount": "30.90"
+    },
+    {
+      "trip_hour": "2026-09-26T05:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "26.09",
+      "sum_trip_distance": 19.0,
+      "sum_tip_amount": "14.19",
+      "sum_total_amount": "42.78"
+    },
+    {
+      "trip_hour": "2026-09-26T08:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "32.16",
+      "sum_trip_distance": 16.25,
+      "sum_tip_amount": "11.75",
+      "sum_total_amount": "46.41"
+    },
+    {
+      "trip_hour": "2026-09-26T10:00:00",
+      "trip_count": 4,
+      "sum_fare_amount": "102.86",
+      "sum_trip_distance": 27.79,
+      "sum_tip_amount": "32.93",
+      "sum_total_amount": "145.79"
+    },
+    {
+      "trip_hour": "2026-09-26T12:00:00",
+      "trip_count": 3,
+      "sum_fare_amount": "94.04",
+      "sum_trip_distance": 48.02,
+      "sum_tip_amount": "28.04",
+      "sum_total_amount": "129.58"
+    },
+    {
+      "trip_hour": "2026-09-26T13:00:00",
+      "trip_count": 2,
+      "sum_fare_amount": "76.06",
+      "sum_trip_distance": 10.66,
+      "sum_tip_amount": "24.24",
+      "sum_total_amount": "105.30"
+    },
+    {
+      "trip_hour": "2026-09-26T17:00:00",
+      "trip_count": 2,
+      "sum_fare_amount": "65.36",
+      "sum_trip_distance": 8.89,
+      "sum_tip_amount": "23.49",
+      "sum_total_amount": "93.85"
+    },
+    {
+      "trip_hour": "2026-09-26T19:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "17.69",
+      "sum_trip_distance": 4.42,
+      "sum_tip_amount": "1.24",
+      "sum_total_amount": "21.43"
+    },
+    {
+      "trip_hour": "2026-09-26T20:00:00",
+      "trip_count": 2,
+      "sum_fare_amount": "54.71",
+      "sum_trip_distance": 23.17,
+      "sum_tip_amount": "20.06",
+      "sum_total_amount": "79.77"
+    },
+    {
+      "trip_hour": "2026-09-26T23:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "21.29",
+      "sum_trip_distance": 19.6,
+      "sum_tip_amount": "1.43",
+      "sum_total_amount": "25.22"
+    },
+    {
+      "trip_hour": "2026-09-27T00:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "40.06",
+      "sum_trip_distance": 12.63,
+      "sum_tip_amount": "4.19",
+      "sum_total_amount": "46.75"
+    },
+    {
+      "trip_hour": "2026-09-27T01:00:00",
+      "trip_count": 2,
+      "sum_fare_amount": "68.92",
+      "sum_trip_distance": 26.45,
+      "sum_tip_amount": "16.79",
+      "sum_total_amount": "90.71"
+    },
+    {
+      "trip_hour": "2026-09-27T02:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "21.49",
+      "sum_trip_distance": 1.38,
+      "sum_tip_amount": "9.44",
+      "sum_total_amount": "33.43"
+    },
+    {
+      "trip_hour": "2026-09-27T06:00:00",
+      "trip_count": 3,
+      "sum_fare_amount": "105.29",
+      "sum_trip_distance": 38.11,
+      "sum_tip_amount": "15.74",
+      "sum_total_amount": "128.53"
+    },
+    {
+      "trip_hour": "2026-09-27T07:00:00",
+      "trip_count": 2,
+      "sum_fare_amount": "30.48",
+      "sum_trip_distance": 22.47,
+      "sum_tip_amount": "16.47",
+      "sum_total_amount": "51.95"
+    },
+    {
+      "trip_hour": "2026-09-27T13:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "19.35",
+      "sum_trip_distance": 15.25,
+      "sum_tip_amount": "12.41",
+      "sum_total_amount": "34.26"
+    },
+    {
+      "trip_hour": "2026-09-27T14:00:00",
+      "trip_count": 3,
+      "sum_fare_amount": "88.74",
+      "sum_trip_distance": 29.23,
+      "sum_tip_amount": "16.22",
+      "sum_total_amount": "112.46"
+    },
+    {
+      "trip_hour": "2026-09-27T15:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "41.82",
+      "sum_trip_distance": 13.58,
+      "sum_tip_amount": "10.00",
+      "sum_total_amount": "54.32"
+    },
+    {
+      "trip_hour": "2026-09-27T17:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "40.95",
+      "sum_trip_distance": 5.42,
+      "sum_tip_amount": "8.92",
+      "sum_total_amount": "52.37"
+    },
+    {
+      "trip_hour": "2026-09-27T18:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "7.47",
+      "sum_trip_distance": 16.78,
+      "sum_tip_amount": "13.35",
+      "sum_total_amount": "23.32"
+    },
+    {
+      "trip_hour": "2026-09-27T19:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "26.24",
+      "sum_trip_distance": 11.94,
+      "sum_tip_amount": "9.53",
+      "sum_total_amount": "38.27"
+    },
+    {
+      "trip_hour": "2026-09-27T22:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "6.12",
+      "sum_trip_distance": 14.39,
+      "sum_tip_amount": "5.92",
+      "sum_total_amount": "14.54"
+    },
+    {
+      "trip_hour": "2026-09-27T23:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "5.76",
+      "sum_trip_distance": 14.16,
+      "sum_tip_amount": "4.73",
+      "sum_total_amount": "12.99"
+    },
+    {
+      "trip_hour": "2026-09-28T00:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "24.47",
+      "sum_trip_distance": 3.25,
+      "sum_tip_amount": "2.05",
+      "sum_total_amount": "29.02"
+    },
+    {
+      "trip_hour": "2026-09-28T01:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "7.01",
+      "sum_trip_distance": 15.71,
+      "sum_tip_amount": "5.39",
+      "sum_total_amount": "14.90"
+    },
+    {
+      "trip_hour": "2026-09-28T02:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "12.99",
+      "sum_trip_distance": 6.27,
+      "sum_tip_amount": "6.92",
+      "sum_total_amount": "22.41"
+    },
+    {
+      "trip_hour": "2026-09-28T03:00:00",
+      "trip_count": 4,
+      "sum_fare_amount": "127.28",
+      "sum_trip_distance": 53.51,
+      "sum_tip_amount": "20.70",
+      "sum_total_amount": "157.98"
+    },
+    {
+      "trip_hour": "2026-09-28T07:00:00",
+      "trip_count": 3,
+      "sum_fare_amount": "89.70",
+      "sum_trip_distance": 42.84,
+      "sum_tip_amount": "27.87",
+      "sum_total_amount": "125.07"
+    },
+    {
+      "trip_hour": "2026-09-28T08:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "5.97",
+      "sum_trip_distance": 5.8,
+      "sum_tip_amount": "13.40",
+      "sum_total_amount": "21.87"
+    },
+    {
+      "trip_hour": "2026-09-28T10:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "23.81",
+      "sum_trip_distance": 4.95,
+      "sum_tip_amount": "6.15",
+      "sum_total_amount": "32.46"
+    },
+    {
+      "trip_hour": "2026-09-28T12:00:00",
+      "trip_count": 3,
+      "sum_fare_amount": "70.59",
+      "sum_trip_distance": 35.09,
+      "sum_tip_amount": "22.38",
+      "sum_total_amount": "100.47"
+    },
+    {
+      "trip_hour": "2026-09-28T14:00:00",
+      "trip_count": 3,
+      "sum_fare_amount": "49.08",
+      "sum_trip_distance": 47.73,
+      "sum_tip_amount": "14.72",
+      "sum_total_amount": "71.30"
+    },
+    {
+      "trip_hour": "2026-09-28T15:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "33.85",
+      "sum_trip_distance": 19.89,
+      "sum_tip_amount": "5.36",
+      "sum_total_amount": "41.71"
+    },
+    {
+      "trip_hour": "2026-09-28T17:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "39.76",
+      "sum_trip_distance": 11.11,
+      "sum_tip_amount": "10.77",
+      "sum_total_amount": "53.03"
+    },
+    {
+      "trip_hour": "2026-09-28T18:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "7.72",
+      "sum_trip_distance": 15.75,
+      "sum_tip_amount": "0.01",
+      "sum_total_amount": "10.23"
+    },
+    {
+      "trip_hour": "2026-09-28T19:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "9.86",
+      "sum_trip_distance": 2.65,
+      "sum_tip_amount": "5.53",
+      "sum_total_amount": "17.89"
+    },
+    {
+      "trip_hour": "2026-09-28T20:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "7.80",
+      "sum_trip_distance": 7.04,
+      "sum_tip_amount": "11.53",
+      "sum_total_amount": "21.83"
+    },
+    {
+      "trip_hour": "2026-09-28T21:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "20.70",
+      "sum_trip_distance": 1.29,
+      "sum_tip_amount": "9.50",
+      "sum_total_amount": "32.70"
+    },
+    {
+      "trip_hour": "2026-09-28T22:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "10.50",
+      "sum_trip_distance": 10.13,
+      "sum_tip_amount": "1.52",
+      "sum_total_amount": "14.52"
+    },
+    {
+      "trip_hour": "2026-09-28T23:00:00",
+      "trip_count": 2,
+      "sum_fare_amount": "54.65",
+      "sum_trip_distance": 24.59,
+      "sum_tip_amount": "16.37",
+      "sum_total_amount": "76.02"
+    },
+    {
+      "trip_hour": "2026-09-29T04:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "25.63",
+      "sum_trip_distance": 18.18,
+      "sum_tip_amount": "7.99",
+      "sum_total_amount": "36.12"
+    },
+    {
+      "trip_hour": "2026-09-29T05:00:00",
+      "trip_count": 3,
+      "sum_fare_amount": "59.01",
+      "sum_trip_distance": 17.76,
+      "sum_tip_amount": "25.84",
+      "sum_total_amount": "92.35"
+    },
+    {
+      "trip_hour": "2026-09-29T06:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "18.09",
+      "sum_trip_distance": 14.76,
+      "sum_tip_amount": "2.01",
+      "sum_total_amount": "22.60"
+    },
+    {
+      "trip_hour": "2026-09-29T07:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "28.81",
+      "sum_trip_distance": 13.89,
+      "sum_tip_amount": "8.69",
+      "sum_total_amount": "40.00"
+    },
+    {
+      "trip_hour": "2026-09-29T10:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "9.53",
+      "sum_trip_distance": 16.04,
+      "sum_tip_amount": "9.32",
+      "sum_total_amount": "21.35"
+    },
+    {
+      "trip_hour": "2026-09-29T11:00:00",
+      "trip_count": 2,
+      "sum_fare_amount": "42.38",
+      "sum_trip_distance": 24.9,
+      "sum_tip_amount": "10.18",
+      "sum_total_amount": "57.56"
+    },
+    {
+      "trip_hour": "2026-09-29T12:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "13.21",
+      "sum_trip_distance": 16.4,
+      "sum_tip_amount": "10.11",
+      "sum_total_amount": "25.82"
+    },
+    {
+      "trip_hour": "2026-09-29T14:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "37.31",
+      "sum_trip_distance": 5.28,
+      "sum_tip_amount": "0.52",
+      "sum_total_amount": "40.33"
+    },
+    {
+      "trip_hour": "2026-09-29T15:00:00",
+      "trip_count": 2,
+      "sum_fare_amount": "77.64",
+      "sum_trip_distance": 25.43,
+      "sum_tip_amount": "27.16",
+      "sum_total_amount": "109.80"
+    },
+    {
+      "trip_hour": "2026-09-29T16:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "22.64",
+      "sum_trip_distance": 15.46,
+      "sum_tip_amount": "14.10",
+      "sum_total_amount": "39.24"
+    },
+    {
+      "trip_hour": "2026-09-29T17:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "14.02",
+      "sum_trip_distance": 17.31,
+      "sum_tip_amount": "7.55",
+      "sum_total_amount": "24.07"
+    },
+    {
+      "trip_hour": "2026-09-29T20:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "19.75",
+      "sum_trip_distance": 12.0,
+      "sum_tip_amount": "0.00",
+      "sum_total_amount": "22.25"
+    },
+    {
+      "trip_hour": "2026-09-29T22:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "21.07",
+      "sum_trip_distance": 5.92,
+      "sum_tip_amount": "3.96",
+      "sum_total_amount": "27.53"
+    },
+    {
+      "trip_hour": "2026-09-29T23:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "36.68",
+      "sum_trip_distance": 0.74,
+      "sum_tip_amount": "13.81",
+      "sum_total_amount": "52.99"
+    },
+    {
+      "trip_hour": "2026-09-30T01:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "33.91",
+      "sum_trip_distance": 10.4,
+      "sum_tip_amount": "6.20",
+      "sum_total_amount": "42.61"
+    },
+    {
+      "trip_hour": "2026-09-30T02:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "45.31",
+      "sum_trip_distance": 10.14,
+      "sum_tip_amount": "0.52",
+      "sum_total_amount": "48.33"
+    },
+    {
+      "trip_hour": "2026-09-30T03:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "27.02",
+      "sum_trip_distance": 7.2,
+      "sum_tip_amount": "1.96",
+      "sum_total_amount": "31.48"
+    },
+    {
+      "trip_hour": "2026-09-30T05:00:00",
+      "trip_count": 2,
+      "sum_fare_amount": "31.85",
+      "sum_trip_distance": 16.96,
+      "sum_tip_amount": "6.90",
+      "sum_total_amount": "43.75"
+    },
+    {
+      "trip_hour": "2026-09-30T06:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "39.77",
+      "sum_trip_distance": 16.85,
+      "sum_tip_amount": "14.84",
+      "sum_total_amount": "57.11"
+    },
+    {
+      "trip_hour": "2026-09-30T09:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "7.56",
+      "sum_trip_distance": 16.97,
+      "sum_tip_amount": "0.90",
+      "sum_total_amount": "10.96"
+    },
+    {
+      "trip_hour": "2026-09-30T10:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "39.15",
+      "sum_trip_distance": 18.17,
+      "sum_tip_amount": "4.14",
+      "sum_total_amount": "45.79"
+    },
+    {
+      "trip_hour": "2026-09-30T11:00:00",
+      "trip_count": 2,
+      "sum_fare_amount": "76.53",
+      "sum_trip_distance": 20.52,
+      "sum_tip_amount": "8.65",
+      "sum_total_amount": "90.18"
+    },
+    {
+      "trip_hour": "2026-09-30T12:00:00",
+      "trip_count": 2,
+      "sum_fare_amount": "58.04",
+      "sum_trip_distance": 16.37,
+      "sum_tip_amount": "3.84",
+      "sum_total_amount": "66.88"
+    },
+    {
+      "trip_hour": "2026-09-30T15:00:00",
+      "trip_count": 2,
+      "sum_fare_amount": "61.21",
+      "sum_trip_distance": 4.98,
+      "sum_tip_amount": "26.05",
+      "sum_total_amount": "92.26"
+    },
+    {
+      "trip_hour": "2026-09-30T17:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "22.26",
+      "sum_trip_distance": 8.06,
+      "sum_tip_amount": "3.17",
+      "sum_total_amount": "27.93"
+    },
+    {
+      "trip_hour": "2026-09-30T18:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "13.07",
+      "sum_trip_distance": 6.66,
+      "sum_tip_amount": "8.69",
+      "sum_total_amount": "24.26"
+    },
+    {
+      "trip_hour": "2026-09-30T22:00:00",
+      "trip_count": 2,
+      "sum_fare_amount": "86.19",
+      "sum_trip_distance": 12.98,
+      "sum_tip_amount": "10.37",
+      "sum_total_amount": "101.56"
+    },
+    {
+      "trip_hour": "2026-09-30T23:00:00",
+      "trip_count": 1,
+      "sum_fare_amount": "32.21",
+      "sum_trip_distance": 10.15,
+      "sum_tip_amount": "4.02",
+      "sum_total_amount": "38.73"
+    }
+  ],
+  "daily": [
+    {
+      "trip_date": "2020-01-01",
+      "trip_count": 22,
+      "sum_fare_amount": "585.78",
+      "sum_trip_distance": 253.55,
+      "sum_tip_amount": "155.21",
+      "sum_total_amount": "795.99"
+    },
+    {
+      "trip_date": "2026-09-25",
+      "trip_count": 25,
+      "sum_fare_amount": "705.62",
+      "sum_trip_distance": 189.03,
+      "sum_tip_amount": "164.56",
+      "sum_total_amount": "932.68"
+    },
+    {
+      "trip_date": "2026-09-26",
+      "trip_count": 20,
+      "sum_fare_amount": "588.08",
+      "sum_trip_distance": 232.66,
+      "sum_tip_amount": "181.06",
+      "sum_total_amount": "819.14"
+    },
+    {
+      "trip_date": "2026-09-27",
+      "trip_count": 19,
+      "sum_fare_amount": "502.69",
+      "sum_trip_distance": 221.79,
+      "sum_tip_amount": "143.71",
+      "sum_total_amount": "693.90"
+    },
+    {
+      "trip_date": "2026-09-28",
+      "trip_count": 27,
+      "sum_fare_amount": "595.74",
+      "sum_trip_distance": 307.6,
+      "sum_tip_amount": "180.17",
+      "sum_total_amount": "843.41"
+    },
+    {
+      "trip_date": "2026-09-29",
+      "trip_count": 18,
+      "sum_fare_amount": "425.77",
+      "sum_trip_distance": 204.07,
+      "sum_tip_amount": "141.24",
+      "sum_total_amount": "612.01"
+    },
+    {
+      "trip_date": "2026-09-30",
+      "trip_count": 19,
+      "sum_fare_amount": "574.08",
+      "sum_trip_distance": 176.41,
+      "sum_tip_amount": "100.25",
+      "sum_total_amount": "721.83"
+    }
+  ],
+  "zone": [
+    {
+      "pu_location_id": 24,
+      "trip_count": 6,
+      "sum_fare_amount": "148.14",
+      "sum_trip_distance": 80.38,
+      "sum_tip_amount": "32.88",
+      "sum_total_amount": "196.02"
+    },
+    {
+      "pu_location_id": 41,
+      "trip_count": 5,
+      "sum_fare_amount": "128.23",
+      "sum_trip_distance": 50.15,
+      "sum_tip_amount": "38.52",
+      "sum_total_amount": "179.25"
+    },
+    {
+      "pu_location_id": 42,
+      "trip_count": 4,
+      "sum_fare_amount": "140.52",
+      "sum_trip_distance": 57.07,
+      "sum_tip_amount": "29.49",
+      "sum_total_amount": "180.01"
+    },
+    {
+      "pu_location_id": 43,
+      "trip_count": 7,
+      "sum_fare_amount": "167.80",
+      "sum_trip_distance": 74.01,
+      "sum_tip_amount": "39.03",
+      "sum_total_amount": "224.33"
+    },
+    {
+      "pu_location_id": 45,
+      "trip_count": 3,
+      "sum_fare_amount": "89.65",
+      "sum_trip_distance": 33.5,
+      "sum_tip_amount": "14.82",
+      "sum_total_amount": "111.97"
+    },
+    {
+      "pu_location_id": 48,
+      "trip_count": 3,
+      "sum_fare_amount": "112.84",
+      "sum_trip_distance": 53.39,
+      "sum_tip_amount": "17.67",
+      "sum_total_amount": "138.01"
+    },
+    {
+      "pu_location_id": 50,
+      "trip_count": 1,
+      "sum_fare_amount": "5.11",
+      "sum_trip_distance": 14.38,
+      "sum_tip_amount": "2.75",
+      "sum_total_amount": "10.36"
+    },
+    {
+      "pu_location_id": 68,
+      "trip_count": 5,
+      "sum_fare_amount": "138.72",
+      "sum_trip_distance": 42.05,
+      "sum_tip_amount": "40.23",
+      "sum_total_amount": "191.45"
+    },
+    {
+      "pu_location_id": 74,
+      "trip_count": 5,
+      "sum_fare_amount": "104.96",
+      "sum_trip_distance": 40.32,
+      "sum_tip_amount": "31.66",
+      "sum_total_amount": "149.12"
+    },
+    {
+      "pu_location_id": 79,
+      "trip_count": 3,
+      "sum_fare_amount": "68.97",
+      "sum_trip_distance": 37.54,
+      "sum_tip_amount": "27.32",
+      "sum_total_amount": "103.79"
+    },
+    {
+      "pu_location_id": 87,
+      "trip_count": 4,
+      "sum_fare_amount": "141.76",
+      "sum_trip_distance": 33.05,
+      "sum_tip_amount": "37.30",
+      "sum_total_amount": "189.06"
+    },
+    {
+      "pu_location_id": 88,
+      "trip_count": 2,
+      "sum_fare_amount": "37.22",
+      "sum_trip_distance": 22.81,
+      "sum_tip_amount": "11.29",
+      "sum_total_amount": "53.51"
+    },
+    {
+      "pu_location_id": 90,
+      "trip_count": 5,
+      "sum_fare_amount": "124.54",
+      "sum_trip_distance": 57.79,
+      "sum_tip_amount": "40.86",
+      "sum_total_amount": "177.90"
+    },
+    {
+      "pu_location_id": 100,
+      "trip_count": 8,
+      "sum_fare_amount": "235.39",
+      "sum_trip_distance": 78.32,
+      "sum_tip_amount": "70.10",
+      "sum_total_amount": "325.49"
+    },
+    {
+      "pu_location_id": 107,
+      "trip_count": 3,
+      "sum_fare_amount": "29.43",
+      "sum_trip_distance": 55.39,
+      "sum_tip_amount": "17.22",
+      "sum_total_amount": "54.15"
+    },
+    {
+      "pu_location_id": 113,
+      "trip_count": 6,
+      "sum_fare_amount": "177.45",
+      "sum_trip_distance": 30.72,
+      "sum_tip_amount": "38.24",
+      "sum_total_amount": "230.69"
+    },
+    {
+      "pu_location_id": 125,
+      "trip_count": 3,
+      "sum_fare_amount": "56.15",
+      "sum_trip_distance": 22.28,
+      "sum_tip_amount": "20.25",
+      "sum_total_amount": "83.90"
+    },
+    {
+      "pu_location_id": 132,
+      "trip_count": 7,
+      "sum_fare_amount": "119.15",
+      "sum_trip_distance": 90.46,
+      "sum_tip_amount": "44.55",
+      "sum_total_amount": "181.20"
+    },
+    {
+      "pu_location_id": 137,
+      "trip_count": 5,
+      "sum_fare_amount": "149.48",
+      "sum_trip_distance": 55.34,
+      "sum_tip_amount": "34.90",
+      "sum_total_amount": "196.88"
+    },
+    {
+      "pu_location_id": 138,
+      "trip_count": 6,
+      "sum_fare_amount": "140.78",
+      "sum_trip_distance": 75.63,
+      "sum_tip_amount": "54.10",
+      "sum_total_amount": "209.88"
+    },
+    {
+      "pu_location_id": 142,
+      "trip_count": 4,
+      "sum_fare_amount": "82.27",
+      "sum_trip_distance": 43.79,
+      "sum_tip_amount": "21.32",
+      "sum_total_amount": "113.59"
+    },
+    {
+      "pu_location_id": 161,
+      "trip_count": 7,
+      "sum_fare_amount": "196.89",
+      "sum_trip_distance": 85.31,
+      "sum_tip_amount": "53.13",
+      "sum_total_amount": "267.52"
+    },
+    {
+      "pu_location_id": 162,
+      "trip_count": 4,
+      "sum_fare_amount": "91.44",
+      "sum_trip_distance": 43.78,
+      "sum_tip_amount": "39.68",
+      "sum_total_amount": "141.12"
+    },
+    {
+      "pu_location_id": 163,
+      "trip_count": 7,
+      "sum_fare_amount": "216.55",
+      "sum_trip_distance": 63.62,
+      "sum_tip_amount": "62.57",
+      "sum_total_amount": "296.62"
+    },
+    {
+      "pu_location_id": 170,
+      "trip_count": 9,
+      "sum_fare_amount": "245.02",
+      "sum_trip_distance": 68.46,
+      "sum_tip_amount": "62.09",
+      "sum_total_amount": "329.61"
+    },
+    {
+      "pu_location_id": 186,
+      "trip_count": 7,
+      "sum_fare_amount": "206.08",
+      "sum_trip_distance": 54.87,
+      "sum_tip_amount": "30.31",
+      "sum_total_amount": "253.89"
+    },
+    {
+      "pu_location_id": 230,
+      "trip_count": 8,
+      "sum_fare_amount": "194.46",
+      "sum_trip_distance": 78.76,
+      "sum_tip_amount": "57.52",
+      "sum_total_amount": "271.98"
+    },
+    {
+      "pu_location_id": 236,
+      "trip_count": 7,
+      "sum_fare_amount": "233.34",
+      "sum_trip_distance": 67.48,
+      "sum_tip_amount": "59.29",
+      "sum_total_amount": "310.13"
+    },
+    {
+      "pu_location_id": 237,
+      "trip_count": 6,
+      "sum_fare_amount": "195.42",
+      "sum_trip_distance": 74.46,
+      "sum_tip_amount": "37.11",
+      "sum_total_amount": "247.53"
+    }
+  ],
+  "payment": [
+    {
+      "payment_type": 1,
+      "trip_count": 101,
+      "sum_fare_amount": "2655.75",
+      "sum_trip_distance": 1056.5,
+      "sum_tip_amount": "708.75",
+      "sum_total_amount": "3617.00"
+    },
+    {
+      "payment_type": 2,
+      "trip_count": 42,
+      "sum_fare_amount": "1108.75",
+      "sum_trip_distance": 444.37,
+      "sum_tip_amount": "310.61",
+      "sum_total_amount": "1524.36"
+    },
+    {
+      "payment_type": 3,
+      "trip_count": 4,
+      "sum_fare_amount": "135.89",
+      "sum_trip_distance": 58.45,
+      "sum_tip_amount": "25.14",
+      "sum_total_amount": "171.03"
+    },
+    {
+      "payment_type": 4,
+      "trip_count": 3,
+      "sum_fare_amount": "77.37",
+      "sum_trip_distance": 25.79,
+      "sum_tip_amount": "21.70",
+      "sum_total_amount": "106.57"
+    }
+  ]
+}
