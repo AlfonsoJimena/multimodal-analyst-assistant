@@ -1,0 +1,134 @@
+=== PLATFORM STATUS WITH CENTRAL COORDINATOR DOWN ===
+{
+    "data": {
+        "coordinator": "disponible",
+        "served_by": "http://chamartin-coordinator:8000",
+        "replicas": [
+            {
+                "url": "http://central-coordinator:8000",
+                "status": "ca\u00edda",
+                "site_id": null,
+                "detail": "ConnectError"
+            },
+            {
+                "url": "http://chamartin-coordinator:8000",
+                "status": "activa",
+                "site_id": "chamartin",
+                "detail": null
+            },
+            {
+                "url": "http://atocha-coordinator:8000",
+                "status": "activa",
+                "site_id": "atocha",
+                "detail": null
+            }
+        ],
+        "replicas_up": 2,
+        "replicas_total": 3,
+        "sites": [
+            {
+                "site": "central",
+                "status": "responde",
+                "first_date": "2020-01-01",
+                "last_date": "2026-10-03"
+            },
+            {
+                "site": "chamartin",
+                "status": "responde",
+                "first_date": "2019-12-18",
+                "last_date": "2026-10-03"
+            },
+            {
+                "site": "atocha",
+                "status": "responde",
+                "first_date": "2019-12-31",
+                "last_date": "2026-10-01"
+            }
+        ],
+        "first_date": "2019-12-18",
+        "last_date": "2026-10-03",
+        "dates_with_data": [
+            "2019-12-18",
+            "2019-12-31",
+            "2020-01-01",
+            "2026-10-01",
+            "2026-10-03"
+        ]
+    },
+    "meta": {
+        "sites_ok": [
+            "central",
+            "chamartin",
+            "atocha"
+        ],
+        "sites_failed": [],
+        "partial": false,
+        "served_by": "http://chamartin-coordinator:8000",
+        "period": "2019-12-18 a 2026-10-03",
+        "note": "1 de 3 r\u00e9plicas del coordinador ca\u00eddas; el failover sigue sirviendo las consultas.",
+        "latency_ms": 170
+    },
+    "block": {
+        "type": "table",
+        "title": "Estado de la plataforma",
+        "data": {
+            "columns": [
+                "Componente",
+                "Estado",
+                "Detalle"
+            ],
+            "rows": [
+                [
+                    "Coordinador http://central-coordinator:8000",
+                    "ca\u00edda",
+                    "ConnectError"
+                ],
+                [
+                    "Coordinador http://chamartin-coordinator:8000",
+                    "activa",
+                    "chamartin"
+                ],
+                [
+                    "Coordinador http://atocha-coordinator:8000",
+                    "activa",
+                    "atocha"
+                ],
+                [
+                    "Sede central",
+                    "responde",
+                    "datos del 2020-01-01 al 2026-10-03"
+                ],
+                [
+                    "Sede chamartin",
+                    "responde",
+                    "datos del 2019-12-18 al 2026-10-03"
+                ],
+                [
+                    "Sede atocha",
+                    "responde",
+                    "datos del 2019-12-31 al 2026-10-01"
+                ]
+            ]
+        },
+        "unit": null
+    },
+    "extra_blocks": []
+}
+
+=== COORDINATOR FAILOVER INTEGRATION TEST ===
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-8.3.4, pluggy-1.6.0 -- /home/antonio/Documentos/PIDS/Proyecto1/multimodal-analyst-assistant/parte3_agente_conversacional/venv/bin/python3
+cachedir: .pytest_cache
+rootdir: /home/antonio/Documentos/PIDS/Proyecto1/multimodal-analyst-assistant/parte3_agente_conversacional
+configfile: pytest.ini
+plugins: anyio-4.15.1
+collecting ... collected 3 items
+
+tests/test_integration_parte2.py::test_parte2_real_tres_sedes_disponibles SKIPPED [ 33%]
+tests/test_integration_parte2.py::test_parte2_real_respuesta_parcial_con_sede_caida SKIPPED [ 66%]
+tests/test_integration_parte2.py::test_parte2_real_failover_coordinador_central PASSED [100%]
+
+=========================== short test summary info ============================
+SKIPPED [1] tests/test_integration_parte2.py:25: Este test requiere la infraestructura completa disponible.
+SKIPPED [1] tests/test_integration_parte2.py:45: Requiere ejecutar con INTEGRATION_FAILURE_SCENARIO=site_down.
+========================= 1 passed, 2 skipped in 0.33s =========================
