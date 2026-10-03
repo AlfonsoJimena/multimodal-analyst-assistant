@@ -121,6 +121,29 @@ streamlit run src/ui/app.py        # http://localhost:8501
   muestra un mensaje claro en lugar de un error de Python.
 - `.streamlit/config.toml` oculta el menú de desarrollo de Streamlit.
 
+De cada respuesta pinta todo lo que devuelve `/chat` (P3-13, `src/ui/render.py`):
+
+| Elemento | Cómo se ve |
+|---|---|
+| Bloque `kpi` | `st.metric` en filas de 3, con unidades ($, millas, viajes) |
+| Bloque `table` | `st.dataframe`, unidades en las cabeceras y dos decimales |
+| Bloque `line` | `st.line_chart` (los huecos son horas o días ocultos por privacidad) |
+| Bloque `bar` | `st.bar_chart` horizontal (sedes, métodos de pago) |
+| `warnings` | `st.warning` encima del texto (p. ej. una sede caída) |
+| `sources` | Desplegable «Cómo se ha obtenido esta respuesta»: herramienta, argumentos, réplica que respondió, sedes que han respondido y caídas, latencia |
+
+La barra lateral muestra el estado de las sedes, de las réplicas del
+coordinador y las fechas con datos (`GET /status`). Se refresca con su
+botón y, además, sola cuando una respuesta trae avisos. El saludo incluye
+qué puede y qué no puede responder el asistente y cuatro preguntas de
+ejemplo que se lanzan con un clic.
+
+Para ver el aviso de sede caída en la demo:
+
+```bash
+DOWN_SITES=atocha uvicorn mock.mock_coordinator:app --port 8190
+```
+
 ## Tests
 
 ```bash
