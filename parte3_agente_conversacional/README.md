@@ -104,6 +104,23 @@ python -m src.tools get_zone '{"zone_name": "JFK Airport"}'
 python -m src.tools get_platform_status
 ```
 
+## Interfaz de chat
+
+`src/ui/app.py` (P3-12) es un chat en Streamlit que solo llama a `POST /chat`
+de la API del agente (P3-11): no habla con el coordinador ni con el LLM.
+
+```bash
+# Desde parte3_agente_conversacional/, con la API en marcha en AGENT_API_URL
+streamlit run src/ui/app.py        # http://localhost:8501
+```
+
+- Lee `AGENT_API_URL` y manda `AGENT_API_TOKEN` en la cabecera `X-API-Key`.
+- Cada pestaña es una conversación con su `session_id`; «Nueva conversación»
+  lo regenera y limpia la pantalla.
+- Si la API está parada, el token no es válido o el LLM no responde (503),
+  muestra un mensaje claro en lugar de un error de Python.
+- `.streamlit/config.toml` oculta el menú de desarrollo de Streamlit.
+
 ## Tests
 
 ```bash
