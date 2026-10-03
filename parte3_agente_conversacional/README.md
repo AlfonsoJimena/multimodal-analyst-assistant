@@ -104,6 +104,25 @@ python -m src.tools get_zone '{"zone_name": "JFK Airport"}'
 python -m src.tools get_platform_status
 ```
 
+## API del agente
+
+`src/api/main.py` (P3-11) es la única puerta de entrada al agente:
+
+```bash
+# Desde parte3_agente_conversacional/, con el .env cargado y el coordinador
+# (o el mock) en COORDINATOR_URLS
+uvicorn src.api.main:app --port 8300
+```
+
+| Endpoint | Token (`X-API-Key`) | Qué hace |
+|---|---|---|
+| `POST /chat` | sí | Pregunta → `ChatResponse` (texto, bloques, fuentes y avisos). 503 si el LLM no responde |
+| `GET /status` | sí | Estado de la plataforma (`get_platform_status`), para la barra lateral |
+| `GET /health` | no | Comprobación de vida (Docker) |
+
+Con `AGENT_API_TOKEN` vacío no se pide token (modo desarrollo). Cada sesión
+recuerda sus últimos `MAX_HISTORY_TURNS` turnos durante una hora.
+
 ## Interfaz de chat
 
 `src/ui/app.py` (P3-12) es un chat en Streamlit que solo llama a `POST /chat`
