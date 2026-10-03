@@ -124,12 +124,49 @@ class FakeAgent:
         return ChatResponse(request_id="r", reply=f"Respuesta a: {message}")
 
 
+class FakeStatus:
+    """Sustituye a `get_status`: devuelve un estado fijo y cuenta las llamadas."""
+
+    def __init__(self, status=None) -> None:
+        self.calls = 0
+        self._status = status if status is not None else status_data()
+
+    def __call__(self, api_url, token, transport=None):
+        self.calls += 1
+        return self._status
+
+
+def status_data(down: tuple[str, ...] = ()) -> dict:
+    """Lo que devuelve get_status con las sedes `down` caidas."""
+    sites = ["central", "chamartin", "atocha"]
+    return {
+        "coordinator": "disponible",
+        "replicas": [
+            {"url": f"http://localhost:810{i}", "status": "activa", "site_id": s, "detail": None}
+            for i, s in enumerate(sites)
+        ],
+        "replicas_up": 3,
+        "replicas_total": 3,
+        "sites": [
+            {"site": s, "status": "no responde" if s in down else "responde",
+             "first_date": None if s in down else "2020-01-01",
+             "last_date": None if s in down else "2026-09-30"}
+            for s in sites
+        ],
+        "first_date": "2020-01-01",
+        "last_date": "2026-09-30",
+        "dates_with_data": ["2020-01-01"] + [f"2026-09-{d}" for d in range(25, 31)],
+        "note": ("No responde(n): " + ", ".join(down) + ".") if down else None,
+    }
+
+
 @pytest.fixture
 def agent(monkeypatch) -> FakeAgent:
     monkeypatch.setenv("AGENT_API_URL", API_URL)
     monkeypatch.setenv("AGENT_API_TOKEN", "secreto")
     fake = FakeAgent()
     monkeypatch.setattr(agent_client, "ask_agent", fake)
+    monkeypatch.setattr(agent_client, "get_status", FakeStatus())
     return fake
 
 
