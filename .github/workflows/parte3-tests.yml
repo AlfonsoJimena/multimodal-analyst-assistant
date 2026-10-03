@@ -1,0 +1,46 @@
+# Tests de la parte 3 (agente conversacional) en cada PR que la toque (P3-14).
+#
+# No necesita red, Docker ni claves: los tests usan un LLM falso y
+# httpx.MockTransport. Los de integracion (--integration) no se ejecutan.
+
+name: parte3-tests
+
+on:
+  pull_request:
+    paths:
+      - "parte3_agente_conversacional/**"
+      - ".github/workflows/parte3-tests.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: parte3-tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: parte3_agente_conversacional
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # La misma version de Python que la imagen (despliegue/Dockerfile).
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: |
+            parte3_agente_conversacional/requirements.txt
+            parte3_agente_conversacional/requirements-dev.txt
+
+      - name: Instalar dependencias
+        run: pip install -r requirements-dev.txt
+
+      - name: Tests
+        run: python -m pytest

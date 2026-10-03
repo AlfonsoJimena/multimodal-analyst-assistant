@@ -1,0 +1,87 @@
+# =====================================================================
+# Chatbot completo SIN la parte 2 (P3-14): coordinador mock + API + interfaz.
+#
+# Para desarrollar, para la demo y para el relevo: no necesita los 8-9 GB
+# de la parte 2. El mock responde con el mismo contrato que el coordinador
+# real, a partir de las fixtures de mock/fixtures/.
+#
+# Uso (desde parte3_agente_conversacional/):
+#   make chatbot-mock                      # todo en marcha
+#   make chatbot-mock DOWN_SITES=atocha    # con una sede caida (resultado parcial)
+# o bien:
+#   DOWN_SITES=atocha docker compose -p chatbot -f despliegue/docker-compose.mock.yml up -d --build
+#
+# Puertos en el host: mock 8190, API 8300, interfaz 8501.
+# =====================================================================
+
+# Misma imagen para todos los servicios (cambia el comando). Cada servicio
+# lleva su build para que Compose nunca intente descargarla de Docker Hub;
+# tras la primera, las demas construcciones salen de la cache.
+x-chatbot-image: &chatbot-image
+  build:
+    context: ..
+    dockerfile: despliegue/Dockerfile
+  image: pids-chatbot:latest
+
+services:
+  # ------------------------------------------------------------------
+  # Coordinador mock: mismo contrato que el de la parte 2.
+  # ------------------------------------------------------------------
+  chatbot-mock:
+    <<: *chatbot-image
+    container_name: chatbot-mock
+    restart: unless-stopped
+    command: ["uvicorn", "mock.mock_coordinator:app", "--host", "0.0.0.0", "--port", "8190"]
+    environment:
+      # Sedes caidas o lentas simuladas, separadas por comas (vacio = ninguna).
+      DOWN_SITES: ${DOWN_SITES:-}
+      SLOW_SITES: ${SLOW_SITES:-}
+      SLOW_SECONDS: ${SLOW_SECONDS:-5}
+    ports:
+      - "8190:8190"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8190/health', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+  # ------------------------------------------------------------------
+  # API del agente, apuntando al mock.
+  # ------------------------------------------------------------------
+  chatbot-api:
+    <<: *chatbot-image
+    container_name: chatbot-api
+    restart: unless-stopped
+    command: ["uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "8300"]
+    env_file: ../.env
+    environment:
+      COORDINATOR_URLS: http://chatbot-mock:8190
+    ports:
+      - "8300:8300"
+    depends_on:
+      chatbot-mock:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8300/health', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # ------------------------------------------------------------------
+  # Interfaz (Streamlit).
+  # ------------------------------------------------------------------
+  chatbot-ui:
+    <<: *chatbot-image
+    container_name: chatbot-ui
+    restart: unless-stopped
+    command: ["streamlit", "run", "src/ui/app.py", "--server.port", "8501", "--server.address", "0.0.0.0", "--server.headless", "true"]
+    env_file: ../.env
+    environment:
+      AGENT_API_URL: http://chatbot-api:8300
+    ports:
+      - "8501:8501"
+    depends_on:
+      chatbot-api:
+        condition: service_healthy
