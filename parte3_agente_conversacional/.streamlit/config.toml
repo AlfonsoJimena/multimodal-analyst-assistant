@@ -1,0 +1,9 @@
+# Configuracion de la interfaz (P3-12). Streamlit la lee del directorio
+# desde el que se lanza: `streamlit run src/ui/app.py` en parte3_agente_conversacional/.
+
+[client]
+# Sin el boton «Deploy» ni el menu de desarrollo (sale en el video).
+toolbarMode = "viewer"
+
+[browser]
+gatherUsageStats = false
