@@ -14,7 +14,48 @@ src/knowledge/  zonas de NYC, glosario y tipos de pago
 src/ui/         interfaz Streamlit
 mock/           coordinador falso para desarrollar sin la parte 2
 tests/          tests unitarios (sin red) y de integracion (--integration)
+despliegue/     Dockerfile y compose (con la parte 2 o con el mock)
+Makefile        chatbot-mock, chatbot-up, chatbot-down, chatbot-logs, test
 ```
+
+## Despliegue con Docker (un solo comando)
+
+Requisitos: Docker con Compose v2 y `make`. Todo desde
+`parte3_agente_conversacional/`:
+
+```bash
+cp .env.example .env        # y rellena OPENROUTER_API_KEY
+make chatbot-mock           # mock + API + interfaz, sin la parte 2
+```
+
+La interfaz queda en <http://localhost:8501> (API en 8300, mock en 8190).
+
+| Comando | Qué hace |
+|---|---|
+| `make chatbot-mock` | Coordinador mock + API + interfaz (`despliegue/docker-compose.mock.yml`) |
+| `make chatbot-mock DOWN_SITES=atocha` | Igual, con Atocha caída: se ve el aviso de resultado parcial |
+| `make chatbot-up` | API + interfaz contra los coordinadores reales de la parte 2 (`despliegue/docker-compose.chatbot.yml`) |
+| `make chatbot-logs` / `make chatbot-ps` | Logs y estado de los contenedores |
+| `make chatbot-down` | Para y elimina los contenedores (vale para las dos variantes) |
+| `make test` | Tests unitarios, sin red ni Docker |
+
+**Con la parte 2:** primero `make up-all-coordinators` en
+`parte2_infraestructura_datos/`, que crea la red `pids-interconnect`. El
+chatbot se une a esa red y llama a los coordinadores por su nombre de
+contenedor, en orden de failover (`central-coordinator`,
+`chamartin-coordinator`, `atocha-coordinator`, puerto 8000). Comprobación:
+
+```bash
+curl -s localhost:8300/status -H "X-API-Key: $AGENT_API_TOKEN"
+```
+
+- Una sola imagen (`despliegue/Dockerfile`, `python:3.12-slim`) para la API,
+  la interfaz y el mock; cada compose fija el comando.
+- El `.env` llega a los contenedores en tiempo de ejecución (`env_file`):
+  ni entra en la imagen (`.dockerignore`) ni en el repositorio (`.gitignore`).
+- Puertos 8300, 8501 y 8190: no chocan con los de la parte 2.
+- Sin `OPENROUTER_API_KEY` válida la interfaz arranca y muestra el estado,
+  pero las preguntas responden «el modelo de lenguaje no responde».
 
 ## Puesta en marcha (desarrollo)
 
@@ -170,6 +211,9 @@ DOWN_SITES=atocha uvicorn mock.mock_coordinator:app --port 8190
 pytest                 # unitarios, sin red ni Docker
 pytest --integration   # ademas, contra el coordinador real o el LLM
 ```
+
+El workflow `.github/workflows/parte3-tests.yml` ejecuta `pytest` en cada PR
+que toque `parte3_agente_conversacional/` (Python 3.12, sin red ni claves).
 
 ## Estado
 

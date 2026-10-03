@@ -1,0 +1,75 @@
+# =====================================================================
+# Chatbot contra la parte 2 REAL (P3-14): API del agente + interfaz.
+#
+# Requisitos: la parte 2 levantada con sus coordinadores
+# (en parte2_infraestructura_datos/: make up-all-coordinators), que crea
+# la red compartida pids-interconnect.
+#
+# Uso (desde parte3_agente_conversacional/):
+#   make chatbot-up
+# o bien:
+#   docker compose -p chatbot -f despliegue/docker-compose.chatbot.yml up -d --build
+#
+# Puertos en el host: API 8300, interfaz 8501 (no chocan con la parte 2).
+# =====================================================================
+
+# Misma imagen para todos los servicios (cambia el comando). Cada servicio
+# lleva su build para que Compose nunca intente descargarla de Docker Hub;
+# tras la primera, las demas construcciones salen de la cache.
+x-chatbot-image: &chatbot-image
+  build:
+    context: ..
+    dockerfile: despliegue/Dockerfile
+  image: pids-chatbot:latest
+
+services:
+  # ------------------------------------------------------------------
+  # API del agente (FastAPI): unica puerta de entrada al agente.
+  # ------------------------------------------------------------------
+  chatbot-api:
+    <<: *chatbot-image
+    container_name: chatbot-api
+    restart: unless-stopped
+    command: ["uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "8300"]
+    env_file: ../.env
+    environment:
+      # Nombres de CONTENEDOR de cada replica, en orden de failover. No se
+      # usa el alias "coordinator": lo comparten las tres replicas y Docker
+      # lo resolveria a cualquiera de ellas, rompiendo el orden.
+      COORDINATOR_URLS: http://central-coordinator:8000,http://chamartin-coordinator:8000,http://atocha-coordinator:8000
+    ports:
+      - "8300:8300"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8300/health', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - interconnect
+
+  # ------------------------------------------------------------------
+  # Interfaz (Streamlit): solo habla con la API del agente.
+  # ------------------------------------------------------------------
+  chatbot-ui:
+    <<: *chatbot-image
+    container_name: chatbot-ui
+    restart: unless-stopped
+    command: ["streamlit", "run", "src/ui/app.py", "--server.port", "8501", "--server.address", "0.0.0.0", "--server.headless", "true"]
+    env_file: ../.env
+    environment:
+      AGENT_API_URL: http://chatbot-api:8300
+    ports:
+      - "8501:8501"
+    depends_on:
+      chatbot-api:
+        condition: service_healthy
+    networks:
+      - interconnect
+
+networks:
+  # Red de la parte 2, donde viven los coordinadores. Externa: la crea
+  # `make network` (o `make up-all-coordinators`) de la parte 2.
+  interconnect:
+    name: ${INTERCONNECT_NETWORK:-pids-interconnect}
+    external: true

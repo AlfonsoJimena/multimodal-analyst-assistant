@@ -1,0 +1,25 @@
+# Lo que NO entra en la imagen del chatbot (despliegue/Dockerfile).
+
+# Secretos: la clave del LLM llega en tiempo de ejecucion (env_file).
+.env
+.env.*
+!.env.example
+
+# Tests y resultados de evaluacion: no hacen falta para ejecutar.
+tests/
+tests/eval/results/
+.pytest_cache/
+pytest.ini
+requirements-dev.txt
+
+# Entornos y cachés locales.
+.venv/
+venv/
+**/__pycache__/
+**/*.pyc
+
+# Ficheros de despliegue y documentacion.
+despliegue/
+casos_uso/
+Makefile
+*.md
