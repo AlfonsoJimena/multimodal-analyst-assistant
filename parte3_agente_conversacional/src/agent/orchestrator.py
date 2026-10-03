@@ -29,24 +29,16 @@ import json
 import time
 import uuid
 from dataclasses import dataclass, field
+from datetime import date
 from decimal import Decimal
-from typing import Any, Optional
+from typing import Any, Callable, Optional
 
 from ..api.schemas import Block, ChatResponse, Source
 from ..tools import invoke_tool, register_all_tools
 from ..tools.base import ToolError, ToolOutput, ToolResult, tools_schema
 from .config import Config, get_config
 from .llm import ChatLLM, LLMUsage, get_llm
-
-# Prompt minimo provisional: lo sustituye el definitivo de P3-10.
-SYSTEM_PROMPT_PROVISIONAL = (
-    "Eres un asistente que ayuda a analistas de datos a consultar métricas "
-    "de viajes en taxi de tres sedes (central, chamartin y atocha). "
-    "Responde siempre en español. Usa las herramientas para obtener "
-    "cualquier cifra y no inventes datos. Si una herramienta devuelve un "
-    "resultado parcial o un error, dilo con claridad. Si la pregunta es "
-    "ambigua, pide que la concreten."
-)
+from .prompts import build_system_prompt
 
 LIMIT_REPLY = (
     "No he conseguido completar la consulta en el número de pasos "
@@ -247,12 +239,14 @@ class Orchestrator:
         llm: Optional[ChatLLM] = None,
         config: Optional[Config] = None,
         client: Any = None,
-        system_prompt: str = SYSTEM_PROMPT_PROVISIONAL,
+        system_prompt: Optional[str] = None,
+        clock: Callable[[], date] = date.today,
     ) -> None:
         self._config = config or get_config()
         self._llm = llm or get_llm()
         self._client = client  # cliente del coordinador, se pasa tal cual a las tools
-        self._system_prompt = system_prompt
+        self._system_prompt = system_prompt  # fijo (tests); None = prompts.py con la fecha de hoy
+        self._clock = clock
 
     def run(
         self,
@@ -264,7 +258,10 @@ class Orchestrator:
         max_rounds = self._config.max_tool_rounds
 
         messages: list[dict[str, Any]] = [
-            {"role": "system", "content": self._system_prompt},
+            {
+                "role": "system",
+                "content": self._system_prompt or build_system_prompt(self._clock()),
+            },
             *_history_messages(history, self._config.max_history_turns),
             {"role": "user", "content": message},
         ]
