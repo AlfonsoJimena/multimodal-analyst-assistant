@@ -1,0 +1,341 @@
+{
+  "model": "qwen/qwen3.8-27b:free",
+  "scenario": "coordinator-down",
+  "metrics": {
+    "q1_tool_accuracy_pct": 66.67,
+    "q2_numeric_accuracy_pct": 100.0,
+    "privacy_pct": null,
+    "partial_warning_pct": null,
+    "latency_median_ms": 22045,
+    "latency_p95_ms": 33577,
+    "questions_evaluated": 3,
+    "coordinator_failover_pct": 100.0
+  },
+  "results": [
+    {
+      "id": "Q01",
+      "pregunta": "¿Cuántos viajes hubo en total el 3 de octubre de 2026?",
+      "tipo": "normal",
+      "reply": "El 3 de octubre de 2026 hubo **317 viajes** en total (las tres sedes: central, chamartin y atocha).\n\nComo dato adicional de ese día: ingresos de $6.970,65, tarifa media de $15,93 y distancia media de 3,66 millas.",
+      "latency_ms": 9984,
+      "warnings": [],
+      "sources": [
+        {
+          "tool": "get_platform_status",
+          "args": {},
+          "served_by": "http://chamartin-coordinator:8000",
+          "sites_ok": [
+            "central",
+            "chamartin",
+            "atocha"
+          ],
+          "sites_failed": [],
+          "partial": false,
+          "latency_ms": 115
+        },
+        {
+          "tool": "get_kpis",
+          "args": {
+            "date_from": "2026-10-03",
+            "date_to": "2026-10-03"
+          },
+          "served_by": "http://chamartin-coordinator:8000",
+          "sites_ok": [
+            "central",
+            "chamartin",
+            "atocha"
+          ],
+          "sites_failed": [],
+          "partial": false,
+          "latency_ms": 141
+        }
+      ],
+      "scenario": "coordinator-down",
+      "tool_ok": true,
+      "params_ok": true,
+      "q1_ok": true,
+      "expected_tool": "get_kpis",
+      "expected_params": {
+        "date_from": "2026-10-03",
+        "date_to": "2026-10-03"
+      },
+      "actual_tools": [
+        {
+          "tool": "get_platform_status",
+          "args": {}
+        },
+        {
+          "tool": "get_kpis",
+          "args": {
+            "date_from": "2026-10-03",
+            "date_to": "2026-10-03"
+          }
+        }
+      ],
+      "q2_ok": true,
+      "claimed_numbers": [
+        317.0,
+        6970.65,
+        15.93,
+        3.66
+      ],
+      "supported_numbers": [
+        0.0,
+        2.0,
+        2.36,
+        3.0,
+        3.66,
+        5.0,
+        15.93,
+        21.99,
+        317.0,
+        6970.65
+      ],
+      "unsupported_numbers": [],
+      "partial_ok": true,
+      "partial_detected": false,
+      "failed_sites": [],
+      "privacy_ok": true,
+      "rejected": false,
+      "aggregate_alternative": false,
+      "failover_ok": true,
+      "failover_detected": true
+    },
+    {
+      "id": "Q03",
+      "pregunta": "Compara las tres sedes el 1 de octubre de 2026.",
+      "tipo": "normal",
+      "reply": "Comparación del 1 de octubre de 2026:\n\n| Sede | Viajes | Ingresos | Tarifa media | Distancia media | Propina media | Importe medio |\n|---|---|---|---|---|---|---|\n| central | 64 | $1427.81 | $16.13 | 3.87 mi | $2.44 | $22.31 |\n| atocha | 73 | $1226.66 | $11.29 | 2.46 mi | $1.91 | $16.80 |\n| chamartin | 0 | — | — | — | — | — |\n\n- **atocha** tuvo más viajes (73), pero **central** generó más ingresos ($1427.81) y mejores medias por viaje.\n- **chamartin** no registró viajes ese día.",
+      "latency_ms": 22045,
+      "warnings": [],
+      "sources": [
+        {
+          "tool": "get_platform_status",
+          "args": {},
+          "served_by": "http://chamartin-coordinator:8000",
+          "sites_ok": [
+            "central",
+            "chamartin",
+            "atocha"
+          ],
+          "sites_failed": [],
+          "partial": false,
+          "latency_ms": 66
+        },
+        {
+          "tool": "compare_sites",
+          "args": {
+            "date_from": "2026-10-01",
+            "date_to": "2026-10-01"
+          },
+          "served_by": "http://chamartin-coordinator:8000",
+          "sites_ok": [
+            "central",
+            "chamartin",
+            "atocha"
+          ],
+          "sites_failed": [],
+          "partial": false,
+          "latency_ms": 120
+        }
+      ],
+      "scenario": "coordinator-down",
+      "tool_ok": true,
+      "params_ok": true,
+      "q1_ok": true,
+      "expected_tool": "compare_sites",
+      "expected_params": {
+        "date_from": "2026-10-01",
+        "date_to": "2026-10-01"
+      },
+      "actual_tools": [
+        {
+          "tool": "get_platform_status",
+          "args": {}
+        },
+        {
+          "tool": "compare_sites",
+          "args": {
+            "date_from": "2026-10-01",
+            "date_to": "2026-10-01"
+          }
+        }
+      ],
+      "q2_ok": true,
+      "claimed_numbers": [
+        64.0,
+        1427.81,
+        16.13,
+        3.87,
+        2.44,
+        22.31,
+        73.0,
+        1226.66,
+        11.29,
+        2.46,
+        1.91,
+        16.8,
+        0.0,
+        73.0,
+        1427.81
+      ],
+      "supported_numbers": [
+        0.0,
+        1.91,
+        2.0,
+        2.44,
+        2.46,
+        3.0,
+        3.87,
+        5.0,
+        11.29,
+        16.13,
+        16.8,
+        22.31,
+        64.0,
+        73.0,
+        1226.66,
+        1427.81
+      ],
+      "unsupported_numbers": [],
+      "partial_ok": true,
+      "partial_detected": false,
+      "failed_sites": [],
+      "privacy_ok": true,
+      "rejected": false,
+      "aggregate_alternative": false,
+      "failover_ok": true,
+      "failover_detected": true
+    },
+    {
+      "id": "Q04",
+      "pregunta": "Muéstrame la evolución diaria del número de viajes entre el 1 y el 3 de octubre de 2026.",
+      "tipo": "normal",
+      "reply": "Evolución diaria de viajes (1–3 de octubre de 2026, las tres sedes):\n\n| Fecha | Viajes |\n|---|---|\n| 2026-10-01 | 137 |\n| 2026-10-02 | sin datos |\n| 2026-10-03 | 317 |\n\nEl 2 de octubre no tiene datos registrados en el histórico, por lo que no se puede incluir en la evolución. El pico del periodo es el 3 de octubre con 317 viajes.",
+      "latency_ms": 33577,
+      "warnings": [],
+      "sources": [
+        {
+          "tool": "get_platform_status",
+          "args": {},
+          "served_by": "http://chamartin-coordinator:8000",
+          "sites_ok": [
+            "central",
+            "chamartin",
+            "atocha"
+          ],
+          "sites_failed": [],
+          "partial": false,
+          "latency_ms": 73
+        },
+        {
+          "tool": "get_timeseries",
+          "args": {
+            "metric": "trips",
+            "granularity": "day",
+            "sites": [
+              "central",
+              "chamartin",
+              "atocha"
+            ]
+          },
+          "served_by": "http://chamartin-coordinator:8000",
+          "sites_ok": [
+            "central",
+            "chamartin",
+            "atocha"
+          ],
+          "sites_failed": [],
+          "partial": false,
+          "latency_ms": 57
+        },
+        {
+          "tool": "get_timeseries",
+          "args": {
+            "metric": "trips",
+            "granularity": "day",
+            "sites": [
+              "central",
+              "chamartin",
+              "atocha"
+            ]
+          },
+          "served_by": "http://chamartin-coordinator:8000",
+          "sites_ok": [
+            "central",
+            "chamartin",
+            "atocha"
+          ],
+          "sites_failed": [],
+          "partial": false,
+          "latency_ms": 60
+        }
+      ],
+      "scenario": "coordinator-down",
+      "tool_ok": true,
+      "params_ok": false,
+      "q1_ok": false,
+      "expected_tool": "get_timeseries",
+      "expected_params": {
+        "date_from": "2026-10-01",
+        "date_to": "2026-10-03",
+        "metric": "trips",
+        "granularity": "day"
+      },
+      "actual_tools": [
+        {
+          "tool": "get_platform_status",
+          "args": {}
+        },
+        {
+          "tool": "get_timeseries",
+          "args": {
+            "metric": "trips",
+            "granularity": "day",
+            "sites": [
+              "central",
+              "chamartin",
+              "atocha"
+            ]
+          }
+        },
+        {
+          "tool": "get_timeseries",
+          "args": {
+            "metric": "trips",
+            "granularity": "day",
+            "sites": [
+              "central",
+              "chamartin",
+              "atocha"
+            ]
+          }
+        }
+      ],
+      "q2_ok": true,
+      "claimed_numbers": [
+        137.0,
+        317.0,
+        317.0
+      ],
+      "supported_numbers": [
+        0.0,
+        2.0,
+        3.0,
+        5.0,
+        137.0,
+        317.0,
+        793.0
+      ],
+      "unsupported_numbers": [],
+      "partial_ok": true,
+      "partial_detected": false,
+      "failed_sites": [],
+      "privacy_ok": true,
+      "rejected": false,
+      "aggregate_alternative": false,
+      "failover_ok": true,
+      "failover_detected": true
+    }
+  ]
+}

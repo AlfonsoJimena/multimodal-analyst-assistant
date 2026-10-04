@@ -12,6 +12,8 @@ from tests.eval.run_eval import (
     configure_model,
     load_existing_results,
     evaluate_failover,
+    expected_params_match,
+    extract_tool_reference_numbers,
     QUESTIONS_FILE
 )
 
@@ -760,3 +762,211 @@ def test_calculate_metrics_incluye_failover():
     metrics = calculate_metrics(results)
 
     assert metrics["coordinator_failover_pct"] == 100.0
+
+
+def test_extract_numbers_formatos_miles_y_decimales():
+    text = (
+        "Valores: 6.970,65; 17,374.67; "
+        "24 226,39; 1 250; 68.9"
+    )
+
+    assert extract_numbers(text) == [
+        6970.65,
+        17374.67,
+        24226.39,
+        1250.0,
+        68.9,
+    ]
+
+
+def test_extract_numbers_ignora_fecha_textual():
+    text = (
+        "El 2 de octubre no tiene datos, "
+        "pero hubo 317 viajes otro día."
+    )
+
+    assert extract_numbers(text) == [317.0]
+
+
+def test_extract_numbers_ignora_rango_fecha_textual():
+    text = (
+        "Entre el 1–3 de octubre de 2026 "
+        "hubo 317 viajes."
+    )
+
+    assert extract_numbers(text) == [317.0]
+
+
+def test_extract_numbers_ignora_lista_de_fechas_textuales():
+    text = (
+        "Hay 2 puntos visibles y 18 y 31 de dic. 2019 "
+        "están ocultos."
+    )
+
+    assert extract_numbers(text) == [2.0]
+
+
+def test_extract_numbers_ignora_mes_y_anyo():
+    text = "El histórico es de enero 2020 y hubo 317 viajes."
+
+    assert extract_numbers(text) == [317.0]
+
+
+def test_extract_numbers_ignora_numero_conocido_de_sedes():
+    text = "Datos agregados de las 3 sedes: 317 viajes."
+
+    assert extract_numbers(text) == [317.0]
+
+
+def test_expected_params_match_acepta_nombre_zona_mas_especifico():
+    question = EvalQuestion(
+        id="QTEST",
+        pregunta="¿Qué tal está Times?",
+        tipo="ambigua",
+        herramienta_esperada="get_zone",
+        parametros_esperados={"zone_name": "Times"},
+        cifra_esperada=None,
+        debe_avisar_parcial=False,
+        debe_rechazar=False,
+    )
+
+    source = {
+        "tool": "get_zone",
+        "args": {
+            "zone_name": "Times Sq",
+        },
+    }
+
+    assert expected_params_match(
+        source,
+        question,
+    ) is True
+
+
+def test_expected_params_match_rechaza_otra_zona():
+    question = EvalQuestion(
+        id="QTEST",
+        pregunta="¿Qué tal está Times?",
+        tipo="ambigua",
+        herramienta_esperada="get_zone",
+        parametros_esperados={"zone_name": "Times"},
+        cifra_esperada=None,
+        debe_avisar_parcial=False,
+        debe_rechazar=False,
+    )
+
+    source = {
+        "tool": "get_zone",
+        "args": {
+            "zone_name": "JFK Airport",
+        },
+    }
+
+    assert expected_params_match(
+        source,
+        question,
+    ) is False
+
+
+def test_extract_numbers_ignora_fecha_abreviada():
+    text = "El histórico incluye 1 ene 2020 y hubo 793 viajes."
+    assert extract_numbers(text) == [793.0]
+
+
+def test_extract_numbers_ignora_rango_fecha_abreviado():
+    text = "Hay datos entre 18-31 dic 2019 y hubo 317 viajes."
+    assert extract_numbers(text) == [317.0]
+
+
+def test_extract_numbers_ignora_mes_de_anyo():
+    text = "El histórico disponible es de enero de 2020: 793 viajes."
+    assert extract_numbers(text) == [793.0]
+
+
+def test_q2_acepta_numero_de_puntos_ocultos_en_timeseries(monkeypatch):
+    class FakeMeta:
+        def model_dump(self, **kwargs):
+            return {}
+
+    class FakeOutput:
+        data = {
+            "points": [
+                {"t": "2019-12-18", "value": None},
+                {"t": "2019-12-31", "value": None},
+                {"t": "2020-01-01", "value": 14584.86},
+            ]
+        }
+        meta = FakeMeta()
+
+    monkeypatch.setattr(
+        "tests.eval.run_eval.invoke_tool",
+        lambda *args, **kwargs: FakeOutput(),
+    )
+
+    body = {
+        "sources": [
+            {
+                "tool": "get_timeseries",
+                "args": {
+                    "metric": "revenue",
+                    "granularity": "day",
+                },
+            }
+        ]
+    }
+
+    assert 2.0 in extract_tool_reference_numbers(body)
+
+
+def test_extract_numbers_ignora_host_con_puerto():
+    text = "Servido por central-coordinator:8000 y hubo 317 viajes."
+
+    assert extract_numbers(text) == [317.0]
+
+
+def test_extract_numbers_ignora_fecha_abreviada_con_guiones():
+    text = "Periodo 18-dic-2019 a 03-oct-2026: 1250 viajes."
+
+    assert extract_numbers(text) == [1250.0]
+
+
+def test_q2_acepta_numero_de_valores_ocultos_de_privacidad(monkeypatch):
+    class FakeMeta:
+        def model_dump(self, **kwargs):
+            return {
+                "note": (
+                    "Datos acumulados de todo el periodo: zonas y pagos no se pueden "
+                    "filtrar por fechas. 30 valor(es) con menos de 5 viajes ocultos "
+                    "por privacidad."
+                )
+            }
+
+    class FakeOutput:
+        data = {
+            "metric": "trips",
+            "zones_with_data": 87,
+            "ranking": [],
+        }
+        meta = FakeMeta()
+
+    monkeypatch.setattr(
+        "tests.eval.run_eval.invoke_tool",
+        lambda *args, **kwargs: FakeOutput(),
+    )
+
+    body = {
+        "sources": [
+            {
+                "tool": "get_zones",
+                "args": {
+                    "metric": "trips",
+                    "n": 5,
+                },
+            }
+        ]
+    }
+
+    supported = extract_tool_reference_numbers(body)
+
+    assert 30.0 in supported
+    assert 5.0 in supported

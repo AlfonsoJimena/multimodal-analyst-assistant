@@ -1,0 +1,240 @@
+{
+  "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+  "scenario": "coordinator-down",
+  "metrics": {
+    "q1_tool_accuracy_pct": 100.0,
+    "q2_numeric_accuracy_pct": 100.0,
+    "privacy_pct": null,
+    "partial_warning_pct": null,
+    "latency_median_ms": 18581,
+    "latency_p95_ms": 19048,
+    "questions_evaluated": 3,
+    "coordinator_failover_pct": 100.0
+  },
+  "results": [
+    {
+      "id": "Q01",
+      "pregunta": "¿Cuántos viajes hubo en total el 3 de octubre de 2026?",
+      "tipo": "normal",
+      "reply": "El 3 de octubre de 2026 hubo **317 viajes** en total (suma de las tres sedes: central, chamartin y atocha).",
+      "latency_ms": 9577,
+      "warnings": [],
+      "sources": [
+        {
+          "tool": "get_kpis",
+          "args": {
+            "date_from": "2026-10-03",
+            "date_to": "2026-10-03"
+          },
+          "served_by": "http://chamartin-coordinator:8000",
+          "sites_ok": [
+            "central",
+            "chamartin",
+            "atocha"
+          ],
+          "sites_failed": [],
+          "partial": false,
+          "latency_ms": 137
+        }
+      ],
+      "scenario": "coordinator-down",
+      "tool_ok": true,
+      "params_ok": true,
+      "q1_ok": true,
+      "expected_tool": "get_kpis",
+      "expected_params": {
+        "date_from": "2026-10-03",
+        "date_to": "2026-10-03"
+      },
+      "actual_tools": [
+        {
+          "tool": "get_kpis",
+          "args": {
+            "date_from": "2026-10-03",
+            "date_to": "2026-10-03"
+          }
+        }
+      ],
+      "q2_ok": true,
+      "claimed_numbers": [
+        317.0
+      ],
+      "supported_numbers": [
+        0.0,
+        2.36,
+        3.66,
+        5.0,
+        15.93,
+        21.99,
+        317.0,
+        6970.65
+      ],
+      "unsupported_numbers": [],
+      "partial_ok": true,
+      "partial_detected": false,
+      "failed_sites": [],
+      "privacy_ok": true,
+      "rejected": false,
+      "aggregate_alternative": false,
+      "failover_ok": true,
+      "failover_detected": true
+    },
+    {
+      "id": "Q03",
+      "pregunta": "Compara las tres sedes el 1 de octubre de 2026.",
+      "tipo": "normal",
+      "reply": "**Comparativa de sedes – 1 oct 2026**\n\n| Sede | Viajes | Ingresos ($) | Tarifa media ($) | Dist. media (mi) | Propina media ($) | Importe medio ($) |\n|------|--------|--------------|------------------|------------------|-------------------|-------------------|\n| central | 64 | 1 427.81 | 16.13 | 3.87 | 2.44 | 22.31 |\n| atocha | 73 | 1 226.66 | 11.29 | 2.46 | 1.91 | 16.80 |\n| chamartin | 0 | 0.00 | – | – | – | – |\n\n*Nota:* **chamartin no registró viajes ese día** (la plataforma respondió, pero el conteo es cero).",
+      "latency_ms": 19048,
+      "warnings": [],
+      "sources": [
+        {
+          "tool": "compare_sites",
+          "args": {
+            "date_from": "2026-10-01",
+            "date_to": "2026-10-01"
+          },
+          "served_by": "http://chamartin-coordinator:8000",
+          "sites_ok": [
+            "central",
+            "chamartin",
+            "atocha"
+          ],
+          "sites_failed": [],
+          "partial": false,
+          "latency_ms": 132
+        }
+      ],
+      "scenario": "coordinator-down",
+      "tool_ok": true,
+      "params_ok": true,
+      "q1_ok": true,
+      "expected_tool": "compare_sites",
+      "expected_params": {
+        "date_from": "2026-10-01",
+        "date_to": "2026-10-01"
+      },
+      "actual_tools": [
+        {
+          "tool": "compare_sites",
+          "args": {
+            "date_from": "2026-10-01",
+            "date_to": "2026-10-01"
+          }
+        }
+      ],
+      "q2_ok": true,
+      "claimed_numbers": [
+        64.0,
+        1427.81,
+        16.13,
+        3.87,
+        2.44,
+        22.31,
+        73.0,
+        1226.66,
+        11.29,
+        2.46,
+        1.91,
+        16.8,
+        0.0,
+        0.0
+      ],
+      "supported_numbers": [
+        0.0,
+        1.91,
+        2.44,
+        2.46,
+        3.87,
+        5.0,
+        11.29,
+        16.13,
+        16.8,
+        22.31,
+        64.0,
+        73.0,
+        1226.66,
+        1427.81
+      ],
+      "unsupported_numbers": [],
+      "partial_ok": true,
+      "partial_detected": false,
+      "failed_sites": [],
+      "privacy_ok": true,
+      "rejected": false,
+      "aggregate_alternative": false,
+      "failover_ok": true,
+      "failover_detected": true
+    },
+    {
+      "id": "Q04",
+      "pregunta": "Muéstrame la evolución diaria del número de viajes entre el 1 y el 3 de octubre de 2026.",
+      "tipo": "normal",
+      "reply": "Evolución diaria de viajes (1–3 oct 2026, tres sedes):\n\n- 2026-10-01: 137 viajes  \n- 2026-10-03: 317 viajes  \n\nPico: 317 viajes el 2026-10-03.  \n*Nota: no hay punto para el 2 de octubre en los datos devueltos.*",
+      "latency_ms": 18581,
+      "warnings": [],
+      "sources": [
+        {
+          "tool": "get_timeseries",
+          "args": {
+            "date_to": "2026-10-03",
+            "metric": "trips",
+            "granularity": "day",
+            "date_from": "2026-10-01"
+          },
+          "served_by": "http://chamartin-coordinator:8000",
+          "sites_ok": [
+            "central",
+            "chamartin",
+            "atocha"
+          ],
+          "sites_failed": [],
+          "partial": false,
+          "latency_ms": 199
+        }
+      ],
+      "scenario": "coordinator-down",
+      "tool_ok": true,
+      "params_ok": true,
+      "q1_ok": true,
+      "expected_tool": "get_timeseries",
+      "expected_params": {
+        "date_from": "2026-10-01",
+        "date_to": "2026-10-03",
+        "metric": "trips",
+        "granularity": "day"
+      },
+      "actual_tools": [
+        {
+          "tool": "get_timeseries",
+          "args": {
+            "date_to": "2026-10-03",
+            "metric": "trips",
+            "granularity": "day",
+            "date_from": "2026-10-01"
+          }
+        }
+      ],
+      "q2_ok": true,
+      "claimed_numbers": [
+        137.0,
+        317.0,
+        317.0
+      ],
+      "supported_numbers": [
+        0.0,
+        5.0,
+        137.0,
+        317.0
+      ],
+      "unsupported_numbers": [],
+      "partial_ok": true,
+      "partial_detected": false,
+      "failed_sites": [],
+      "privacy_ok": true,
+      "rejected": false,
+      "aggregate_alternative": false,
+      "failover_ok": true,
+      "failover_detected": true
+    }
+  ]
+}

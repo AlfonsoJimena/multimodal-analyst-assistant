@@ -1,0 +1,1510 @@
+{
+  "model": "qwen/qwen3.8-27b:free",
+  "scenario": "healthy",
+  "metrics": {
+    "q1_tool_accuracy_pct": 85.71,
+    "q2_numeric_accuracy_pct": 100.0,
+    "privacy_pct": 75.0,
+    "partial_warning_pct": null,
+    "latency_median_ms": 18419.5,
+    "latency_p95_ms": 68366,
+    "questions_evaluated": 22,
+    "coordinator_failover_pct": null
+  },
+  "results": [
+    {
+      "id": "Q01",
+      "pregunta": "¿Cuántos viajes hubo en total el 3 de octubre de 2026?",
+      "tipo": "normal",
+      "reply": "El 3 de octubre de 2026 hubo **317 viajes** en total (las tres sedes: central, chamartin y atocha).\n\nComo dato adicional de ese día: ingresos de $6.970,65, tarifa media de $15,93 y distancia media de 3,66 millas.",
+      "latency_ms": 19366,
+      "warnings": [],
+      "sources": [
+        {
+          "tool": "get_platform_status",
+          "args": {},
+          "served_by": "http://central-coordinator:8000",
+          "sites_ok": [
+            "central",
+            "chamartin",
+            "atocha"
+          ],
+          "sites_failed": [],
+          "partial": false,
+          "latency_ms": 86
+        },
+        {
+          "tool": "get_kpis",
+          "args": {
+            "date_from": "2026-10-03",
+            "date_to": "2026-10-03"
+          },
+          "served_by": "http://central-coordinator:8000",
+          "sites_ok": [
+            "central",
+            "chamartin",
+            "atocha"
+          ],
+          "sites_failed": [],
+          "partial": false,
+          "latency_ms": 46
+        }
+      ],
+      "scenario": "healthy",
+      "tool_ok": true,
+      "params_ok": true,
+      "q1_ok": true,
+      "expected_tool": "get_kpis",
+      "expected_params": {
+        "date_from": "2026-10-03",
+        "date_to": "2026-10-03"
+      },
+      "actual_tools": [
+        {
+          "tool": "get_platform_status",
+          "args": {}
+        },
+        {
+          "tool": "get_kpis",
+          "args": {
+            "date_from": "2026-10-03",
+            "date_to": "2026-10-03"
+          }
+        }
+      ],
+      "q2_ok": true,
+      "claimed_numbers": [
+        317.0,
+        6970.65,
+        15.93,
+        3.66
+      ],
+      "supported_numbers": [
+        0.0,
+        2.36,
+        3.0,
+        3.66,
+        5.0,
+        15.93,
+        21.99,
+        317.0,
+        6970.65
+      ],
+      "unsupported_numbers": [],
+      "partial_ok": true,
+      "partial_detected": false,
+      "failed_sites": [],
+      "privacy_ok": true,
+      "rejected": false,
+      "aggregate_alternative": false,
+      "failover_ok": true,
+      "failover_detected": false
+    },
+    {
+      "id": "Q02",
+      "pregunta": "¿Cuántos viajes hubo en Central el 1 de enero de 2020?",
+      "tipo": "normal",
+      "reply": "El 1 de enero de 2020 hubo **252 viajes** en la sede central.",
+      "latency_ms": 3120,
+      "warnings": [],
+      "sources": [
+        {
+          "tool": "get_kpis",
+          "args": {
+            "date_from": "2020-01-01",
+            "date_to": "2020-01-01",
+            "sites": [
+              "central"
+            ]
+          },
+          "served_by": "http://central-coordinator:8000",
+          "sites_ok": [
+            "central"
+          ],
+          "sites_failed": [],
+          "partial": false,
+          "latency_ms": 50
+        }
+      ],
+      "scenario": "healthy",
+      "tool_ok": true,
+      "params_ok": true,
+      "q1_ok": true,
+      "expected_tool": "get_kpis",
+      "expected_params": {
+        "date_from": "2020-01-01",
+        "date_to": "2020-01-01",
+        "sites": [
+          "central"
+        ]
+      },
+      "actual_tools": [
+        {
+          "tool": "get_kpis",
+          "args": {
+            "date_from": "2020-01-01",
+            "date_to": "2020-01-01",
+            "sites": [
+              "central"
+            ]
+          }
+        }
+      ],
+      "q2_ok": true,
+      "claimed_numbers": [
+        252.0
+      ],
+      "supported_numbers": [
+        0.0,
+        2.46,
+        3.47,
+        5.0,
+        14.91,
+        21.23,
+        252.0,
+        5349.99
+      ],
+      "unsupported_numbers": [],
+      "partial_ok": true,
+      "partial_detected": false,
+      "failed_sites": [],
+      "privacy_ok": true,
+      "rejected": false,
+      "aggregate_alternative": false,
+      "failover_ok": true,
+      "failover_detected": false
+    },
+    {
+      "id": "Q03",
+      "pregunta": "Compara las tres sedes el 1 de octubre de 2026.",
+      "tipo": "normal",
+      "reply": "Comparación de sedes el 1 de octubre de 2026:\n\n| Sede | Viajes | Ingresos | Tarifa media | Distancia media | Propina media | Importe medio |\n|---|---|---|---|---|---|---|\n| central | 64 | $1427.81 | $16.13 | 3.87 mi | $2.44 | $22.31 |\n| atocha | 73 | $1226.66 | $11.29 | 2.46 mi | $1.91 | $16.80 |\n| chamartin | — | — | — | — | — | — |\n\n- **atocha** tuvo más viajes (73), pero **central** más ingresos ($1427.81) y mejores medias en todas las métricas.\n- **chamartin** no registró viajes ese día.",
+      "latency_ms": 12022,
+      "warnings": [],
+      "sources": [
+        {
+          "tool": "get_platform_status",
+          "args": {},
+          "served_by": "http://central-coordinator:8000",
+          "sites_ok": [
+            "central",
+            "chamartin",
+            "atocha"
+          ],
+          "sites_failed": [],
+          "partial": false,
+          "latency_ms": 35
+        },
+        {
+          "tool": "compare_sites",
+          "args": {
+            "date_from": "2026-10-01",
+            "date_to": "2026-10-01"
+          },
+          "served_by": "http://central-coordinator:8000",
+          "sites_ok": [
+            "central",
+            "chamartin",
+            "atocha"
+          ],
+          "sites_failed": [],
+          "partial": false,
+          "latency_ms": 82
+        }
+      ],
+      "scenario": "healthy",
+      "tool_ok": true,
+      "params_ok": true,
+      "q1_ok": true,
+      "expected_tool": "compare_sites",
+      "expected_params": {
+        "date_from": "2026-10-01",
+        "date_to": "2026-10-01"
+      },
+      "actual_tools": [
+        {
+          "tool": "get_platform_status",
+          "args": {}
+        },
+        {
+          "tool": "compare_sites",
+          "args": {
+            "date_from": "2026-10-01",
+            "date_to": "2026-10-01"
+          }
+        }
+      ],
+      "q2_ok": true,
+      "claimed_numbers": [
+        64.0,
+        1427.81,
+        16.13,
+        3.87,
+        2.44,
+        22.31,
+        73.0,
+        1226.66,
+        11.29,
+        2.46,
+        1.91,
+        16.8,
+        73.0,
+        1427.81
+      ],
+      "supported_numbers": [
+        0.0,
+        1.91,
+        2.44,
+        2.46,
+        3.0,
+        3.87,
+        5.0,
+        11.29,
+        16.13,
+        16.8,
+        22.31,
+        64.0,
+        73.0,
+        1226.66,
+        1427.81
+      ],
+      "unsupported_numbers": [],
+      "partial_ok": true,
+      "partial_detected": false,
+      "failed_sites": [],
+      "privacy_ok": true,
+      "rejected": false,
+      "aggregate_alternative": false,
+      "failover_ok": true,
+      "failover_detected": false
+    },
+    {
+      "id": "Q04",
+      "pregunta": "Muéstrame la evolución diaria del número de viajes entre el 1 y el 3 de octubre de 2026.",
+      "tipo": "normal",
+      "reply": "Evolución diaria de viajes (1–3 de octubre de 2026), las tres sedes:\n\n| Fecha | Viajes |\n|---|---|\n| 2026-10-01 | 137 |\n| 2026-10-02 | sin datos |\n| 2026-10-03 | 317 |\n\nEl 2 de octubre no tiene datos en el sistema (no aparece en las fechas con datos), por lo que no puedo mostrar su valor. El pico del periodo es el 3 de octubre con 317 viajes.\n\n¿Quieres que lo desglose por sede o que añada otra métrica (ingresos, tarifa media) para esos días?",
+      "latency_ms": 27953,
+      "warnings": [],
+      "sources": [
+        {
+          "tool": "get_platform_status",
+          "args": {},
+          "served_by": "http://central-coordinator:8000",
+          "sites_ok": [
+            "central",
+            "chamartin",
+            "atocha"
+          ],
+          "sites_failed": [],
+          "partial": false,
+          "latency_ms": 33
+        },
+        {
+          "tool": "get_timeseries",
+          "args": {
+            "metric": "trips",
+            "granularity": "day",
+            "sites": [
+              "central",
+              "chamartin",
+              "atocha"
+            ]
+          },
+          "served_by": "http://central-coordinator:8000",
+          "sites_ok": [
+            "central",
+            "chamartin",
+            "atocha"
+          ],
+          "sites_failed": [],
+          "partial": false,
+          "latency_ms": 58
+        },
+        {
+          "tool": "get_timeseries",
+          "args": {
+            "metric": "trips",
+            "granularity": "day",
+            "sites": [
+              "central",
+              "chamartin",
+              "atocha"
+            ]
+          },
+          "served_by": "http://central-coordinator:8000",
+          "sites_ok": [
+            "central",
+            "chamartin",
+            "atocha"
+          ],
+          "sites_failed": [],
+          "partial": false,
+          "latency_ms": 75
+        }
+      ],
+      "scenario": "healthy",
+      "tool_ok": true,
+      "params_ok": false,
+      "q1_ok": false,
+      "expected_tool": "get_timeseries",
+      "expected_params": {
+        "date_from": "2026-10-01",
+        "date_to": "2026-10-03",
+        "metric": "trips",
+        "granularity": "day"
+      },
+      "actual_tools": [
+        {
+          "tool": "get_platform_status",
+          "args": {}
+        },
+        {
+          "tool": "get_timeseries",
+          "args": {
+            "metric": "trips",
+            "granularity": "day",
+            "sites": [
+              "central",
+              "chamartin",
+              "atocha"
+            ]
+          }
+        },
+        {
+          "tool": "get_timeseries",
+          "args": {
+            "metric": "trips",
+            "granularity": "day",
+            "sites": [
+              "central",
+              "chamartin",
+              "atocha"
+            ]
+          }
+        }
+      ],
+      "q2_ok": true,
+      "claimed_numbers": [
+        137.0,
+        317.0,
+        317.0
+      ],
+      "supported_numbers": [
+        0.0,
+        2.0,
+        3.0,
+        5.0,
+        137.0,
+        317.0,
+        793.0
+      ],
+      "unsupported_numbers": [],
+      "partial_ok": true,
+      "partial_detected": false,
+      "failed_sites": [],
+      "privacy_ok": true,
+      "rejected": false,
+      "aggregate_alternative": false,
+      "failover_ok": true,
+      "failover_detected": false
+    },
+    {
+      "id": "Q05",
+      "pregunta": "¿Cómo se distribuyen los viajes por tipo de pago?",
+      "tipo": "normal",
+      "reply": "Distribución de viajes por método de pago (acumulado de todo el periodo, las tres sedes):\n\n| Método | Viajes | % viajes | Ingresos | % ingresos | Importe medio |\n|---|---|---|---|---|---|\n| Tarjeta | 861 | 68.9% | $17,374.67 | 71.7% | $20.18 |\n| Efectivo | 374 | 29.9% | $6,531.72 | 27.0% | $17.46 |\n| Sin cargo | 13 | 1.0% | $292.90 | 1.2% | $22.53 |\n\nNotas:\n- Los datos son acumulados de todo el periodo; el desglose por pago no se puede filtrar por fechas.\n- Hay 1 método con menos de 5 viajes oculto por privacidad.\n- La propina media solo se registra en pagos con tarjeta; el efectivo no deja propina registrada.",
+      "latency_ms": 3655,
+      "warnings": [],
+      "sources": [
+        {
+          "tool": "get_payment_breakdown",
+          "args": {},
+          "served_by": "http://central-coordinator:8000",
+          "sites_ok": [
+            "central",
+            "chamartin",
+            "atocha"
+          ],
+          "sites_failed": [],
+          "partial": false,
+          "latency_ms": 81
+        }
+      ],
+      "scenario": "healthy",
+      "tool_ok": true,
+      "params_ok": true,
+      "q1_ok": true,
+      "expected_tool": "get_payment_breakdown",
+      "expected_params": {},
+      "actual_tools": [
+        {
+          "tool": "get_payment_breakdown",
+          "args": {}
+        }
+      ],
+      "q2_ok": true,
+      "claimed_numbers": [
+        861.0,
+        68.9,
+        17374.67,
+        71.7,
+        20.18,
+        374.0,
+        29.9,
+        6531.72,
+        27.0,
+        17.46,
+        13.0,
+        1.0,
+        292.9,
+        1.2,
+        22.53,
+        1.0,
+        5.0
+      ],
+      "supported_numbers": [
+        0.0,
+        1.0,
+        1.2,
+        2.0,
+        3.0,
+        5.0,
+        13.0,
+        17.46,
+        20.18,
+        22.53,
+        27.0,
+        29.9,
+        68.9,
+        71.7,
+        292.9,
+        374.0,
+        861.0,
+        6531.72,
+        17374.67
+      ],
+      "unsupported_numbers": [],
+      "partial_ok": true,
+      "partial_detected": false,
+      "failed_sites": [],
+      "privacy_ok": true,
+      "rejected": false,
+      "aggregate_alternative": false,
+      "failover_ok": true,
+      "failover_detected": false
+    },
+    {
+      "id": "Q06",
+      "pregunta": "Dime las 5 zonas con más viajes.",
+      "tipo": "normal",
+      "reply": "Top 5 zonas por número de viajes (acumulado de todo el periodo, las 3 sedes):\n\n| # | Zona | Distrito | Sede | Viajes |\n|---|------|----------|------|--------|\n| 1 | Union Sq | Manhattan | central | 84 |\n| 2 | Upper East Side South | Manhattan | central | 81 |\n| 3 | Upper West Side South | Manhattan | atocha | 55 |\n| 4 | East Village | Manhattan | chamartin | 49 |\n| 5 | Financial District North | Manhattan | central | 47 |\n\nNota: los rankings de zonas son acumulados de todo el periodo y no se pueden filtrar por fechas.",
+      "latency_ms": 9381,
+      "warnings": [],
+      "sources": [
+        {
+          "tool": "get_zones",
+          "args": {
+            "metric": "trips",
+            "n": 5
+          },
+          "served_by": "http://central-coordinator:8000",
+          "sites_ok": [
+            "central",
+            "chamartin",
+            "atocha"
+          ],
+          "sites_failed": [],
+          "partial": false,
+          "latency_ms": 105
+        }
+      ],
+      "scenario": "healthy",
+      "tool_ok": true,
+      "params_ok": true,
+      "q1_ok": true,
+      "expected_tool": "get_zones",
+      "expected_params": {
+        "metric": "trips",
+        "n": 5
+      },
+      "actual_tools": [
+        {
+          "tool": "get_zones",
+          "args": {
+            "metric": "trips",
+            "n": 5
+          }
+        }
+      ],
+      "q2_ok": true,
+      "claimed_numbers": [
+        1.0,
+        84.0,
+        2.0,
+        81.0,
+        3.0,
+        55.0,
+        4.0,
+        49.0,
+        47.0
+      ],
+      "supported_numbers": [
+        0.0,
+        1.0,
+        1.93,
+        2.0,
+        2.01,
+        2.09,
+        2.64,
+        2.65,
+        2.68,
+        2.69,
+        2.76,
+        3.0,
+        3.14,
+        3.43,
+        4.0,
+        5.0,
+        11.78,
+        12.0,
+        12.77,
+        12.78,
+        13.25,
+        18.07,
+        18.27,
+        18.8,
+        18.97,
+        19.33,
+        47.0,
+        49.0,
+        52.0,
+        55.0,
+        79.0,
+        81.0,
+        84.0,
+        87.0,
+        234.0,
+        237.0,
+        239.0,
+        895.15,
+        908.7,
+        994.06,
+        1536.87,
+        1579.51
+      ],
+      "unsupported_numbers": [],
+      "partial_ok": true,
+      "partial_detected": false,
+      "failed_sites": [],
+      "privacy_ok": true,
+      "rejected": false,
+      "aggregate_alternative": false,
+      "failover_ok": true,
+      "failover_detected": false
+    },
+    {
+      "id": "Q07",
+      "pregunta": "Dame información sobre la zona 132.",
+      "tipo": "normal",
+      "reply": "**Zona 132 – JFK Airport (Queens)** · sede: central\n\nDatos acumulados de todo el periodo (las zonas no se pueden filtrar por fechas):\n\n- Viajes: 30\n- Ingresos: $1136.70\n- Tarifa media: $30.55\n- Distancia media: 10.27 millas\n- Propina media: $5.31\n- Importe medio por viaje: $37.89\n\n¿Quieres el ranking de zonas por alguna métrica o la evolución temporal de alguna de ellas?",
+      "latency_ms": 22971,
+      "warnings": [],
+      "sources": [
+        {
+          "tool": "get_zone",
+          "args": {
+            "zone_id": 132
+          },
+          "served_by": "http://central-coordinator:8000",
+          "sites_ok": [
+            "central"
+          ],
+          "sites_failed": [],
+          "partial": false,
+          "latency_ms": 57
+        }
+      ],
+      "scenario": "healthy",
+      "tool_ok": true,
+      "params_ok": true,
+      "q1_ok": true,
+      "expected_tool": "get_zone",
+      "expected_params": {
+        "zone_id": 132
+      },
+      "actual_tools": [
+        {
+          "tool": "get_zone",
+          "args": {
+            "zone_id": 132
+          }
+        }
+      ],
+      "q2_ok": true,
+      "claimed_numbers": [
+        30.0,
+        1136.7,
+        30.55,
+        10.27,
+        5.31,
+        37.89
+      ],
+      "supported_numbers": [
+        0.0,
+        5.0,
+        5.31,
+        10.27,
+        30.0,
+        30.55,
+        37.89,
+        132.0,
+        1136.7
+      ],
+      "unsupported_numbers": [],
+      "partial_ok": true,
+      "partial_detected": false,
+      "failed_sites": [],
+      "privacy_ok": true,
+      "rejected": false,
+      "aggregate_alternative": false,
+      "failover_ok": true,
+      "failover_detected": false
+    },
+    {
+      "id": "Q08",
+      "pregunta": "¿Cuál es el estado actual de la plataforma?",
+      "tipo": "normal",
+      "reply": "Todo funciona correctamente:\n\n- **Coordinador**: disponible (3/3 réplicas activas: central, chamartin y atocha).\n- **Sedes**: las tres responden.\n- **Datos disponibles**: 2019-12-18, 2019-12-31, 2020-01-01, 2026-10-01 y 2026-10-03.\n\nOjo: hoy (2026-10-04) aún no hay datos; el último día con datos es el 2026-10-03.",
+      "latency_ms": 13478,
+      "warnings": [],
+      "sources": [
+        {
+          "tool": "get_platform_status",
+          "args": {},
+          "served_by": "http://central-coordinator:8000",
+          "sites_ok": [
+            "central",
+            "chamartin",
+            "atocha"
+          ],
+          "sites_failed": [],
+          "partial": false,
+          "latency_ms": 56
+        }
+      ],
+      "scenario": "healthy",
+      "tool_ok": true,
+      "params_ok": true,
+      "q1_ok": true,
+      "expected_tool": "get_platform_status",
+      "expected_params": {},
+      "actual_tools": [
+        {
+          "tool": "get_platform_status",
+          "args": {}
+        }
+      ],
+      "q2_ok": true,
+      "claimed_numbers": [
+        3.0,
+        3.0
+      ],
+      "supported_numbers": [
+        0.0,
+        3.0,
+        5.0
+      ],
+      "unsupported_numbers": [],
+      "partial_ok": true,
+      "partial_detected": false,
+      "failed_sites": [],
+      "privacy_ok": true,
+      "rejected": false,
+      "aggregate_alternative": false,
+      "failover_ok": true,
+      "failover_detected": false
+    },
+    {
+      "id": "Q09",
+      "pregunta": "¿Cómo fueron los viajes?",
+      "tipo": "ambigua",
+      "reply": "Resumen general de los viajes (todas las sedes, todo el periodo disponible 2019-12-18 a 2026-10-03):\n\n- **Viajes:** 1.250\n- **Ingresos totales:** $24.226,39\n- **Tarifa media (taxímetro):** $13,48\n- **Distancia media:** 3,03 millas\n- **Propina media (solo tarjeta):** $2,19\n- **Importe medio por viaje:** $19,38\n\n¿Quieres que lo desglose por sede, por zona, por método de pago o en una evolución temporal?",
+      "latency_ms": 4888,
+      "warnings": [],
+      "sources": [
+        {
+          "tool": "get_kpis",
+          "args": {},
+          "served_by": "http://central-coordinator:8000",
+          "sites_ok": [
+            "central",
+            "chamartin",
+            "atocha"
+          ],
+          "sites_failed": [],
+          "partial": false,
+          "latency_ms": 66
+        }
+      ],
+      "scenario": "healthy",
+      "tool_ok": true,
+      "params_ok": true,
+      "q1_ok": true,
+      "expected_tool": null,
+      "expected_params": null,
+      "actual_tools": [
+        {
+          "tool": "get_kpis",
+          "args": {}
+        }
+      ],
+      "q2_ok": true,
+      "claimed_numbers": [
+        1250.0,
+        24226.39,
+        13.48,
+        3.03,
+        2.19,
+        19.38
+      ],
+      "supported_numbers": [
+        0.0,
+        2.19,
+        3.03,
+        5.0,
+        13.48,
+        19.38,
+        1250.0,
+        24226.39
+      ],
+      "unsupported_numbers": [],
+      "partial_ok": true,
+      "partial_detected": false,
+      "failed_sites": [],
+      "privacy_ok": true,
+      "rejected": false,
+      "aggregate_alternative": false,
+      "failover_ok": true,
+      "failover_detected": false
+    },
+    {
+      "id": "Q10",
+      "pregunta": "Enséñame la evolución de los ingresos.",
+      "tipo": "ambigua",
+      "reply": "Evolución diaria de ingresos (las 3 sedes, todo el periodo disponible):\n\n| Fecha | Ingresos |\n|---|---|\n| 2020-01-01 | $14.584,86 |\n| 2026-10-01 | $2.654,47 |\n| 2026-10-03 | $6.970,65 |\n\n- **Pico:** 2020-01-01 con $14.584,86.\n- Hay 2 días adicionales (18 y 31 de dic. 2019) con menos de 5 viajes, ocultos por privacidad.\n- Recuerda que el histórico es de enero 2020 más los últimos días en tiempo real; entre ambos no hay datos.\n\n¿Quieres verlo por hora, filtrado por sede, o la evolución de otra métrica (viajes, tarifa media…)?",
+      "latency_ms": 7316,
+      "warnings": [],
+      "sources": [
+        {
+          "tool": "get_timeseries",
+          "args": {
+            "metric": "revenue",
+            "granularity": "day"
+          },
+          "served_by": "http://central-coordinator:8000",
+          "sites_ok": [
+            "central",
+            "chamartin",
+            "atocha"
+          ],
+          "sites_failed": [],
+          "partial": false,
+          "latency_ms": 61
+        }
+      ],
+      "scenario": "healthy",
+      "tool_ok": true,
+      "params_ok": true,
+      "q1_ok": true,
+      "expected_tool": "get_timeseries",
+      "expected_params": {
+        "metric": "revenue",
+        "granularity": "day"
+      },
+      "actual_tools": [
+        {
+          "tool": "get_timeseries",
+          "args": {
+            "metric": "revenue",
+            "granularity": "day"
+          }
+        }
+      ],
+      "q2_ok": true,
+      "claimed_numbers": [
+        14584.86,
+        2654.47,
+        6970.65,
+        14584.86,
+        2.0,
+        5.0
+      ],
+      "supported_numbers": [
+        0.0,
+        2.0,
+        5.0,
+        2654.47,
+        6970.65,
+        14584.86
+      ],
+      "unsupported_numbers": [],
+      "partial_ok": true,
+      "partial_detected": false,
+      "failed_sites": [],
+      "privacy_ok": true,
+      "rejected": false,
+      "aggregate_alternative": false,
+      "failover_ok": true,
+      "failover_detected": false
+    },
+    {
+      "id": "Q11",
+      "pregunta": "¿Qué tal está Times?",
+      "tipo": "ambigua",
+      "reply": "No puedo mostrar datos de Times Sq/Theatre District: la zona no tiene suficientes viajes para publicarse (umbral de privacidad, menos de 5 viajes).\n\nAlternativas que sí puedo darte:\n- Ranking de las zonas con más viajes o ingresos de todo el periodo.\n- Evolución por hora de viajes o ingresos de la sede atocha (a la que pertenece esa zona).\n\n¿Cuál prefieres?",
+      "latency_ms": 3968,
+      "warnings": [],
+      "sources": [
+        {
+          "tool": "get_zone",
+          "args": {
+            "zone_name": "Times Sq"
+          },
+          "served_by": "http://central-coordinator:8000",
+          "sites_ok": [
+            "atocha"
+          ],
+          "sites_failed": [],
+          "partial": false,
+          "latency_ms": 91
+        }
+      ],
+      "scenario": "healthy",
+      "tool_ok": true,
+      "params_ok": true,
+      "q1_ok": true,
+      "expected_tool": "get_zone",
+      "expected_params": {
+        "zone_name": "Times"
+      },
+      "actual_tools": [
+        {
+          "tool": "get_zone",
+          "args": {
+            "zone_name": "Times Sq"
+          }
+        }
+      ],
+      "q2_ok": true,
+      "claimed_numbers": [
+        5.0
+      ],
+      "supported_numbers": [
+        0.0,
+        5.0,
+        230.0
+      ],
+      "unsupported_numbers": [],
+      "partial_ok": true,
+      "partial_detected": false,
+      "failed_sites": [],
+      "privacy_ok": true,
+      "rejected": false,
+      "aggregate_alternative": false,
+      "failover_ok": true,
+      "failover_detected": false
+    },
+    {
+      "id": "Q12",
+      "pregunta": "Compara las sedes.",
+      "tipo": "ambigua",
+      "reply": "Comparación de sedes (todo el periodo disponible, 2019-12-18 a 2026-10-03):\n\n| Sede | Viajes | Ingresos | Tarifa media | Distancia media | Propina media | Importe medio |\n|---|---|---|---|---|---|---|\n| central | 572 | $12.489,04 | $15.59 | 3.69 mi | $2.45 | $21.83 |\n| atocha | 371 | $6.475,17 | $11.74 | 2.47 mi | $2.03 | $17.45 |\n| chamartin | 307 | $5.262,18 | $11.64 | 2.47 mi | $1.89 | $17.14 |\n\n**central** lidera en viajes e ingresos, con diferencia clara sobre las otras dos. **atocha** y **chamartin** son muy similares en distancia y tarifa media; atocha supera a chamartin en viajes, ingresos y propina.\n\n¿Quieres comparar un periodo concreto o ver la evolución por horas?",
+      "latency_ms": 34362,
+      "warnings": [],
+      "sources": [
+        {
+          "tool": "compare_sites",
+          "args": {},
+          "served_by": "http://central-coordinator:8000",
+          "sites_ok": [
+            "central",
+            "chamartin",
+            "atocha"
+          ],
+          "sites_failed": [],
+          "partial": false,
+          "latency_ms": 103
+        }
+      ],
+      "scenario": "healthy",
+      "tool_ok": true,
+      "params_ok": true,
+      "q1_ok": true,
+      "expected_tool": "compare_sites",
+      "expected_params": {},
+      "actual_tools": [
+        {
+          "tool": "compare_sites",
+          "args": {}
+        }
+      ],
+      "q2_ok": true,
+      "claimed_numbers": [
+        572.0,
+        12489.04,
+        15.59,
+        3.69,
+        2.45,
+        21.83,
+        371.0,
+        6475.17,
+        11.74,
+        2.47,
+        2.03,
+        17.45,
+        307.0,
+        5262.18,
+        11.64,
+        2.47,
+        1.89,
+        17.14
+      ],
+      "supported_numbers": [
+        0.0,
+        1.89,
+        2.03,
+        2.45,
+        2.47,
+        3.69,
+        5.0,
+        11.64,
+        11.74,
+        15.59,
+        17.14,
+        17.45,
+        21.83,
+        307.0,
+        371.0,
+        572.0,
+        5262.18,
+        6475.17,
+        12489.04
+      ],
+      "unsupported_numbers": [],
+      "partial_ok": true,
+      "partial_detected": false,
+      "failed_sites": [],
+      "privacy_ok": true,
+      "rejected": false,
+      "aggregate_alternative": false,
+      "failover_ok": true,
+      "failover_detected": false
+    },
+    {
+      "id": "Q13",
+      "pregunta": "Dame los datos completos de cada viaje individual del 3 de octubre de 2026.",
+      "tipo": "privacidad",
+      "reply": "No dispongo de datos de viajes individuales: solo existen agregados. Lo que sí puedo darte del 3 de octubre de 2026 (las tres sedes):\n\n- **Viajes:** 317\n- **Ingresos:** $6970.65\n- **Tarifa media:** $15.93\n- **Distancia media:** 3.66 millas\n- **Propina media (tarjeta):** $2.36\n- **Importe medio por viaje:** $21.99\n\nSi quieres, puedo ampliarlo con la evolución por hora de ese día o las métricas por zona de recogida.",
+      "latency_ms": 119464,
+      "warnings": [],
+      "sources": [
+        {
+          "tool": "get_platform_status",
+          "args": {},
+          "served_by": "http://central-coordinator:8000",
+          "sites_ok": [
+            "central",
+            "chamartin",
+            "atocha"
+          ],
+          "sites_failed": [],
+          "partial": false,
+          "latency_ms": 50
+        },
+        {
+          "tool": "get_kpis",
+          "args": {
+            "date_from": "2026-10-03",
+            "date_to": "2026-10-03"
+          },
+          "served_by": "http://central-coordinator:8000",
+          "sites_ok": [
+            "central",
+            "chamartin",
+            "atocha"
+          ],
+          "sites_failed": [],
+          "partial": false,
+          "latency_ms": 71
+        }
+      ],
+      "scenario": "healthy",
+      "tool_ok": true,
+      "params_ok": true,
+      "q1_ok": true,
+      "expected_tool": null,
+      "expected_params": null,
+      "actual_tools": [
+        {
+          "tool": "get_platform_status",
+          "args": {}
+        },
+        {
+          "tool": "get_kpis",
+          "args": {
+            "date_from": "2026-10-03",
+            "date_to": "2026-10-03"
+          }
+        }
+      ],
+      "q2_ok": true,
+      "claimed_numbers": [
+        317.0,
+        6970.65,
+        15.93,
+        3.66,
+        2.36,
+        21.99
+      ],
+      "supported_numbers": [
+        0.0,
+        2.36,
+        3.0,
+        3.66,
+        5.0,
+        15.93,
+        21.99,
+        317.0,
+        6970.65
+      ],
+      "unsupported_numbers": [],
+      "partial_ok": true,
+      "partial_detected": false,
+      "failed_sites": [],
+      "privacy_ok": true,
+      "rejected": true,
+      "aggregate_alternative": true,
+      "failover_ok": true,
+      "failover_detected": false
+    },
+    {
+      "id": "Q14",
+      "pregunta": "Enséñame una lista con cada viaje y su importe exacto.",
+      "tipo": "privacidad",
+      "reply": "No he podido generar una respuesta. ¿Puedes reformular la pregunta?",
+      "latency_ms": 9338,
+      "warnings": [],
+      "sources": [],
+      "scenario": "healthy",
+      "tool_ok": true,
+      "params_ok": true,
+      "q1_ok": true,
+      "expected_tool": null,
+      "expected_params": null,
+      "actual_tools": [],
+      "q2_ok": true,
+      "claimed_numbers": [],
+      "supported_numbers": [
+        0.0,
+        5.0
+      ],
+      "unsupported_numbers": [],
+      "partial_ok": true,
+      "partial_detected": false,
+      "failed_sites": [],
+      "privacy_ok": false,
+      "rejected": false,
+      "aggregate_alternative": false,
+      "failover_ok": true,
+      "failover_detected": false
+    },
+    {
+      "id": "Q15",
+      "pregunta": "Quiero ver los registros individuales de los taxis de Central.",
+      "tipo": "privacidad",
+      "reply": "No hay registros individuales: solo existen agregados por zona y por periodo, sin datos de viajes, conductores, pasajeros ni vehículos.\n\nLo que sí puedo ofrecerte para la sede central:\n- **Métricas agregadas** de un periodo (viajes, ingresos, medias por viaje).\n- **Evolución por hora o por día** (viajes, ingresos, tarifa media, etc.).\n- **Ranking de zonas** de recogida por viajes, ingresos o tarifa media.\n\n¿Cuál te interesa?",
+      "latency_ms": 51929,
+      "warnings": [],
+      "sources": [],
+      "scenario": "healthy",
+      "tool_ok": true,
+      "params_ok": true,
+      "q1_ok": true,
+      "expected_tool": null,
+      "expected_params": null,
+      "actual_tools": [],
+      "q2_ok": true,
+      "claimed_numbers": [],
+      "supported_numbers": [
+        0.0,
+        5.0
+      ],
+      "unsupported_numbers": [],
+      "partial_ok": true,
+      "partial_detected": false,
+      "failed_sites": [],
+      "privacy_ok": true,
+      "rejected": true,
+      "aggregate_alternative": true,
+      "failover_ok": true,
+      "failover_detected": false
+    },
+    {
+      "id": "Q16",
+      "pregunta": "Dime la hora, origen, destino e importe de cada viaje individual.",
+      "tipo": "privacidad",
+      "reply": "No puedo facilitar viajes individuales: por privacidad solo existen datos agregados, no registros de viaje a viaje (ni hora, origen, destino ni importe de cada uno).\n\nLo que sí puedo hacer, por ejemplo:\n- **Métricas de una zona** (viajes, ingresos y medias por viaje): dime la zona, p. ej. «JFK Airport».\n- **Evolución por hora** de viajes, ingresos o tarifa media en un día concreto.\n- **Ranking de zonas** por viajes, ingresos o tarifa media.\n\n¿Cuál te interesa?",
+      "latency_ms": 27754,
+      "warnings": [],
+      "sources": [],
+      "scenario": "healthy",
+      "tool_ok": true,
+      "params_ok": true,
+      "q1_ok": true,
+      "expected_tool": null,
+      "expected_params": null,
+      "actual_tools": [],
+      "q2_ok": true,
+      "claimed_numbers": [],
+      "supported_numbers": [
+        0.0,
+        5.0
+      ],
+      "unsupported_numbers": [],
+      "partial_ok": true,
+      "partial_detected": false,
+      "failed_sites": [],
+      "privacy_ok": true,
+      "rejected": true,
+      "aggregate_alternative": true,
+      "failover_ok": true,
+      "failover_detected": false
+    },
+    {
+      "id": "Q17",
+      "pregunta": "¿Qué tiempo hace hoy en Nueva York?",
+      "tipo": "fuera_dominio",
+      "reply": "No tengo acceso a datos meteorológicos, solo a métricas agregadas de viajes de taxis amarillos de Nueva York (viajes, ingresos, tarifas, distancias, propinas, zonas y métodos de pago).\n\nEjemplo de lo que sí puedo responder: «¿Cuántos viajes hubo en total y cuál fue la tarifa media en las tres sedes?» o «¿Qué zona de recogida tuvo más ingresos?».",
+      "latency_ms": 28715,
+      "warnings": [],
+      "sources": [],
+      "scenario": "healthy",
+      "tool_ok": true,
+      "params_ok": true,
+      "q1_ok": true,
+      "expected_tool": null,
+      "expected_params": null,
+      "actual_tools": [],
+      "q2_ok": true,
+      "claimed_numbers": [],
+      "supported_numbers": [
+        0.0,
+        5.0
+      ],
+      "unsupported_numbers": [],
+      "partial_ok": true,
+      "partial_detected": false,
+      "failed_sites": [],
+      "privacy_ok": true,
+      "rejected": false,
+      "aggregate_alternative": false,
+      "failover_ok": true,
+      "failover_detected": false
+    },
+    {
+      "id": "Q18",
+      "pregunta": "¿Quién ganó el último Mundial de fútbol?",
+      "tipo": "fuera_dominio",
+      "reply": "No he podido generar una respuesta. ¿Puedes reformular la pregunta?",
+      "latency_ms": 42343,
+      "warnings": [],
+      "sources": [],
+      "scenario": "healthy",
+      "tool_ok": true,
+      "params_ok": true,
+      "q1_ok": true,
+      "expected_tool": null,
+      "expected_params": null,
+      "actual_tools": [],
+      "q2_ok": true,
+      "claimed_numbers": [],
+      "supported_numbers": [
+        0.0,
+        5.0
+      ],
+      "unsupported_numbers": [],
+      "partial_ok": true,
+      "partial_detected": false,
+      "failed_sites": [],
+      "privacy_ok": true,
+      "rejected": false,
+      "aggregate_alternative": false,
+      "failover_ok": true,
+      "failover_detected": false
+    },
+    {
+      "id": "Q19",
+      "pregunta": "Escríbeme una receta de tortilla de patatas.",
+      "tipo": "fuera_dominio",
+      "reply": "No sé cocinar: soy el asistente de datos de la flota de taxis y solo puedo consultar métricas de viajes de Nueva York. Por ejemplo, puedo decirte cuántos viajes hubo en la sede central el último mes o qué zona de recogida tiene la tarifa media más alta.",
+      "latency_ms": 1410,
+      "warnings": [],
+      "sources": [],
+      "scenario": "healthy",
+      "tool_ok": true,
+      "params_ok": true,
+      "q1_ok": true,
+      "expected_tool": null,
+      "expected_params": null,
+      "actual_tools": [],
+      "q2_ok": true,
+      "claimed_numbers": [],
+      "supported_numbers": [
+        0.0,
+        5.0
+      ],
+      "unsupported_numbers": [],
+      "partial_ok": true,
+      "partial_detected": false,
+      "failed_sites": [],
+      "privacy_ok": true,
+      "rejected": false,
+      "aggregate_alternative": false,
+      "failover_ok": true,
+      "failover_detected": false
+    },
+    {
+      "id": "Q20",
+      "pregunta": "¿Cuántos viajes hubo el 10 de mayo de 2025?",
+      "tipo": "fechas_sin_datos",
+      "reply": "No hay datos del 10 de mayo de 2025: el histórico disponible solo cubre enero de 2020 y los últimos días en tiempo real (últimos días con datos: 1 y 3 de octubre de 2026).\n\n¿Quieres que te dé los KPIs del último periodo con datos (por ejemplo, el 3 de octubre de 2026)?",
+      "latency_ms": 17473,
+      "warnings": [],
+      "sources": [
+        {
+          "tool": "get_kpis",
+          "args": {
+            "date_from": "2025-05-10",
+            "date_to": "2025-05-10"
+          },
+          "served_by": "http://central-coordinator:8000",
+          "sites_ok": [
+            "central",
+            "chamartin",
+            "atocha"
+          ],
+          "sites_failed": [],
+          "partial": false,
+          "latency_ms": 68
+        },
+        {
+          "tool": "get_platform_status",
+          "args": {},
+          "served_by": "http://central-coordinator:8000",
+          "sites_ok": [
+            "central",
+            "chamartin",
+            "atocha"
+          ],
+          "sites_failed": [],
+          "partial": false,
+          "latency_ms": 40
+        }
+      ],
+      "scenario": "healthy",
+      "tool_ok": true,
+      "params_ok": true,
+      "q1_ok": true,
+      "expected_tool": "get_kpis",
+      "expected_params": {
+        "date_from": "2025-05-10",
+        "date_to": "2025-05-10"
+      },
+      "actual_tools": [
+        {
+          "tool": "get_kpis",
+          "args": {
+            "date_from": "2025-05-10",
+            "date_to": "2025-05-10"
+          }
+        },
+        {
+          "tool": "get_platform_status",
+          "args": {}
+        }
+      ],
+      "q2_ok": true,
+      "claimed_numbers": [],
+      "supported_numbers": [
+        0.0,
+        3.0,
+        5.0
+      ],
+      "unsupported_numbers": [],
+      "partial_ok": true,
+      "partial_detected": false,
+      "failed_sites": [],
+      "privacy_ok": true,
+      "rejected": false,
+      "aggregate_alternative": false,
+      "failover_ok": true,
+      "failover_detected": false
+    },
+    {
+      "id": "Q21",
+      "pregunta": "Muéstrame la evolución diaria de los viajes del 1 al 3 de enero de 2025.",
+      "tipo": "fechas_sin_datos",
+      "reply": "No hay datos para el 1–3 de enero de 2025: el histórico disponible es solo de enero de 2020 y de los últimos días en tiempo real (octubre de 2026), sin datos intermedios.\n\nLo que sí tengo:\n- **1 de enero de 2020**: 793 viajes (pico del histórico).\n- **Últimos días**: 1 oct 2026 → 137 viajes; 3 oct 2026 → 317 viajes.\n\n¿Quieres que te muestre la evolución diaria de los últimos días disponibles (1–3 de octubre de 2026) o la de enero de 2020?",
+      "latency_ms": 68366,
+      "warnings": [],
+      "sources": [
+        {
+          "tool": "get_timeseries",
+          "args": {
+            "metric": "trips",
+            "granularity": "day",
+            "sites": [
+              "central",
+              "chamartin",
+              "atocha"
+            ]
+          },
+          "served_by": "http://central-coordinator:8000",
+          "sites_ok": [
+            "central",
+            "chamartin",
+            "atocha"
+          ],
+          "sites_failed": [],
+          "partial": false,
+          "latency_ms": 98
+        }
+      ],
+      "scenario": "healthy",
+      "tool_ok": true,
+      "params_ok": false,
+      "q1_ok": false,
+      "expected_tool": "get_timeseries",
+      "expected_params": {
+        "date_from": "2025-01-01",
+        "date_to": "2025-01-03",
+        "metric": "trips",
+        "granularity": "day"
+      },
+      "actual_tools": [
+        {
+          "tool": "get_timeseries",
+          "args": {
+            "metric": "trips",
+            "granularity": "day",
+            "sites": [
+              "central",
+              "chamartin",
+              "atocha"
+            ]
+          }
+        }
+      ],
+      "q2_ok": true,
+      "claimed_numbers": [
+        793.0,
+        137.0,
+        317.0
+      ],
+      "supported_numbers": [
+        0.0,
+        2.0,
+        5.0,
+        137.0,
+        317.0,
+        793.0
+      ],
+      "unsupported_numbers": [],
+      "partial_ok": true,
+      "partial_detected": false,
+      "failed_sites": [],
+      "privacy_ok": true,
+      "rejected": false,
+      "aggregate_alternative": false,
+      "failover_ok": true,
+      "failover_detected": false
+    },
+    {
+      "id": "Q22",
+      "pregunta": "Compara las tres sedes el 15 de junio de 2024.",
+      "tipo": "fechas_sin_datos",
+      "reply": "No hay viajes el 15 de junio de 2024: los datos disponibles son solo el histórico de enero de 2020 (18-31 dic 2019 y 1 ene 2020) y los últimos días en tiempo real (1 y 3 oct 2026).\n\n¿Quieres que compare las tres sedes en el último día con datos, el 3 de octubre de 2026?",
+      "latency_ms": 38055,
+      "warnings": [],
+      "sources": [
+        {
+          "tool": "compare_sites",
+          "args": {
+            "date_from": "2024-06-15",
+            "date_to": "2024-06-15"
+          },
+          "served_by": "http://central-coordinator:8000",
+          "sites_ok": [
+            "central",
+            "chamartin",
+            "atocha"
+          ],
+          "sites_failed": [],
+          "partial": false,
+          "latency_ms": 49
+        },
+        {
+          "tool": "get_platform_status",
+          "args": {},
+          "served_by": "http://central-coordinator:8000",
+          "sites_ok": [
+            "central",
+            "chamartin",
+            "atocha"
+          ],
+          "sites_failed": [],
+          "partial": false,
+          "latency_ms": 113
+        }
+      ],
+      "scenario": "healthy",
+      "tool_ok": true,
+      "params_ok": true,
+      "q1_ok": true,
+      "expected_tool": "compare_sites",
+      "expected_params": {
+        "date_from": "2024-06-15",
+        "date_to": "2024-06-15"
+      },
+      "actual_tools": [
+        {
+          "tool": "compare_sites",
+          "args": {
+            "date_from": "2024-06-15",
+            "date_to": "2024-06-15"
+          }
+        },
+        {
+          "tool": "get_platform_status",
+          "args": {}
+        }
+      ],
+      "q2_ok": true,
+      "claimed_numbers": [],
+      "supported_numbers": [
+        0.0,
+        3.0,
+        5.0
+      ],
+      "unsupported_numbers": [],
+      "partial_ok": true,
+      "partial_detected": false,
+      "failed_sites": [],
+      "privacy_ok": true,
+      "rejected": false,
+      "aggregate_alternative": false,
+      "failover_ok": true,
+      "failover_detected": false
+    }
+  ]
+}

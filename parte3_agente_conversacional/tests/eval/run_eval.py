@@ -77,7 +77,7 @@ def load_questions(path: Path = QUESTIONS_FILE) -> list[EvalQuestion]:
 
 
 _NUMBER_RE = re.compile(
-    r"(?<![\w-])-?\d{1,3}(?:[ \u00a0\u202f]\d{3})+(?:[.,]\d+)?"
+    r"(?<![\w-])-?\d{1,3}(?:[ .,\u00a0\u202f]\d{3})+(?:[.,]\d+)?"
     r"|(?<![\w-])-?\d+(?:[.,]\d+)?"
 )
 
@@ -86,6 +86,43 @@ _TIME_RE = re.compile(r"\b\d{1,2}:\d{2}\b")
 _DATE_RE = re.compile(
     r"\b\d{4}[\-\u2010-\u2015\u2212]\d{1,2}"
     r"[\-\u2010-\u2015\u2212]\d{1,2}\b"
+)
+
+_MONTH = (
+    r"(?:"
+    r"ene(?:ro)?|feb(?:rero)?|mar(?:zo)?|abr(?:il)?|mayo|"
+    r"jun(?:io)?|jul(?:io)?|ago(?:sto)?|sep(?:tiembre)?|"
+    r"oct(?:ubre)?|nov(?:iembre)?|dic(?:iembre)?"
+    r")"
+)
+
+_TEXT_DATE_RE = re.compile(
+    rf"\b"
+    rf"\d{{1,2}}"
+    rf"(?:\s*[–—-]\s*\d{{1,2}}|\s+y\s+\d{{1,2}})?"
+    rf"(?:\s+de)?\s+{_MONTH}\.?"
+    rf"(?:\s+(?:de\s+)?\d{{4}})?"
+    rf"\b",
+    re.IGNORECASE,
+)
+
+_MONTH_YEAR_RE = re.compile(
+    rf"\b{_MONTH}\.?\s+(?:de\s+)?\d{{4}}\b",
+    re.IGNORECASE,
+)
+
+_DASH_TEXT_DATE_RE = re.compile(
+    rf"\b\d{{1,2}}-{_MONTH}\.?\-\d{{4}}\b",
+    re.IGNORECASE,
+)
+
+_HOST_PORT_RE = re.compile(
+    r"\b[a-zA-Z0-9.-]+:\d{2,5}\b"
+)
+
+_KNOWN_SITE_COUNT_RE = re.compile(
+    r"\b(?:las\s+)?3\s+sedes\b",
+    re.IGNORECASE,
 )
 
 _URL_RE = re.compile(r"https?://\S+")
@@ -97,7 +134,12 @@ SYSTEM_SUPPORTED_NUMBERS = {
 
 def extract_numbers(text: str) -> list[float]:
     text = _URL_RE.sub(" ", text)
+    text = _HOST_PORT_RE.sub(" ", text)
     text = _DATE_RE.sub(" ", text)
+    text = _DASH_TEXT_DATE_RE.sub(" ", text)
+    text = _TEXT_DATE_RE.sub(" ", text)
+    text = _MONTH_YEAR_RE.sub(" ", text)
+    text = _KNOWN_SITE_COUNT_RE.sub(" ", text)
     text = _TIME_RE.sub(" ", text)
 
     values = []
@@ -109,13 +151,43 @@ def extract_numbers(text: str) -> list[float]:
             .replace("\u202f", "")
         )
 
-        if "," in normalized and "." not in normalized:
-            normalized = normalized.replace(",", ".")
-        elif "," in normalized and "." in normalized:
+        if "," in normalized and "." in normalized:
+            # El último separador es el decimal.
+            # El otro se interpreta como separador de miles.
             if normalized.rfind(",") > normalized.rfind("."):
-                normalized = normalized.replace(".", "").replace(",", ".")
+                normalized = (
+                    normalized
+                    .replace(".", "")
+                    .replace(",", ".")
+                )
             else:
                 normalized = normalized.replace(",", "")
+
+        elif "," in normalized:
+            # 1,250 -> 1250
+            # 13,48 -> 13.48
+            if (
+                normalized.count(",") > 1
+                or re.fullmatch(
+                    r"-?\d{1,3}(?:,\d{3})+",
+                    normalized,
+                )
+            ):
+                normalized = normalized.replace(",", "")
+            else:
+                normalized = normalized.replace(",", ".")
+
+        elif "." in normalized:
+            # 1.250 -> 1250
+            # 13.48 -> 13.48
+            if (
+                normalized.count(".") > 1
+                or re.fullmatch(
+                    r"-?\d{1,3}(?:\.\d{3})+",
+                    normalized,
+                )
+            ):
+                normalized = normalized.replace(".", "")
 
         try:
             values.append(float(normalized))
@@ -172,11 +244,44 @@ def extract_tool_reference_numbers(
             extract_block_numbers(output.data)
         )
 
+        # Derivaciones estructurales válidas de series temporales:
+        # número de puntos ocultos por privacidad (value=None).
+        if source["tool"] == "get_timeseries" and isinstance(output.data, dict):
+            points = output.data.get("points", [])
+
+            if isinstance(points, list):
+                hidden_points = sum(
+                    1
+                    for point in points
+                    if isinstance(point, dict)
+                    and point.get("value") is None
+                )
+
+                if hidden_points > 0:
+                    numbers.append(float(hidden_points))
+
+
         # El LLM también recibe los metadatos de la herramienta.
         meta = output.meta.model_dump(
             exclude={"latency_ms"},
             exclude_none=True,
         )
+
+        # La herramienta puede comunicar el número de valores ocultos
+        # únicamente dentro de la nota de privacidad.
+        note = meta.get("note")
+
+        if isinstance(note, str):
+            match = re.search(
+                r"(\d+) valor\(es\) con menos de (\d+) viajes "
+                r"ocultos por privacidad\.",
+                note,
+            )
+
+            if match:
+                numbers.append(float(match.group(1)))
+                numbers.append(float(match.group(2)))
+
         numbers.extend(
             extract_block_numbers(meta)
         )
@@ -363,7 +468,28 @@ def expected_params_match(
     expected = question.parametros_esperados or {}
     actual = source.get("args", {})
 
-    return all(actual.get(key) == value for key, value in expected.items())
+    for key, expected_value in expected.items():
+        if key not in actual:
+            return False
+
+        actual_value = actual[key]
+
+        if key == "zone_name":
+            expected_name = str(expected_value).strip().casefold()
+            actual_name = str(actual_value).strip().casefold()
+
+            if (
+                expected_name not in actual_name
+                and actual_name not in expected_name
+            ):
+                return False
+
+            continue
+
+        if actual_value != expected_value:
+            return False
+
+    return True
 
 
 def evaluate_tool_call(
@@ -743,6 +869,7 @@ def configure_model(model: str) -> None:
         str(EVAL_COMPOSE),
         "up",
         "-d",
+        "--build",
         "--force-recreate",
         "chatbot-api",
     ]
@@ -913,7 +1040,7 @@ def main() -> None:
     else:
         results: list[dict[str, Any]] = []
 
-    with httpx.Client(timeout=60.0) as client:
+    with httpx.Client(timeout=120.0) as client:
         total_target = len(results) + len(selected)
 
         for index, question in enumerate(

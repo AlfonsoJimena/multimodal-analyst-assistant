@@ -1,0 +1,451 @@
+{
+  "model": "qwen/qwen3.8-27b:free",
+  "scenario": "site-down",
+  "metrics": {
+    "q1_tool_accuracy_pct": 66.67,
+    "q2_numeric_accuracy_pct": 100.0,
+    "privacy_pct": null,
+    "partial_warning_pct": 66.67,
+    "latency_median_ms": 31357,
+    "latency_p95_ms": 41728,
+    "questions_evaluated": 3,
+    "coordinator_failover_pct": null
+  },
+  "results": [
+    {
+      "id": "Q23",
+      "pregunta": "Compara las tres sedes el 1 de octubre de 2026.",
+      "tipo": "sede_caida",
+      "reply": "Comparación del 1 de octubre de 2026 (resultado parcial: **atocha no responde** y **chamartin no registró viajes** ese día):\n\n| Sede | Viajes | Ingresos | Tarifa media | Distancia media | Propina media | Importe medio |\n|---|---|---|---|---|---|---|\n| central | 64 | $1427.81 | $16.13 | 3.87 millas | $2.44 | $22.31 |\n| chamartin | 0 | — | — | — | — | — |\n| atocha | sin datos (sede no responde) | — | — | — | — | — |\n\nSolo central tiene actividad ese día. Si quieres, puedo comparar otro día (por ejemplo, el 3 de octubre, el último con datos) o revisar el estado de la plataforma.",
+      "latency_ms": 25868,
+      "warnings": [
+        "Resultado parcial de get_platform_status: no han respondido atocha; las cifras no incluyen esas sedes.",
+        "Resultado parcial de compare_sites: no han respondido atocha; las cifras no incluyen esas sedes."
+      ],
+      "sources": [
+        {
+          "tool": "get_platform_status",
+          "args": {},
+          "served_by": "http://central-coordinator:8000",
+          "sites_ok": [
+            "central",
+            "chamartin"
+          ],
+          "sites_failed": [
+            "atocha"
+          ],
+          "partial": true,
+          "latency_ms": 98
+        },
+        {
+          "tool": "compare_sites",
+          "args": {
+            "date_from": "2026-10-01",
+            "date_to": "2026-10-01"
+          },
+          "served_by": "http://central-coordinator:8000",
+          "sites_ok": [
+            "central",
+            "chamartin"
+          ],
+          "sites_failed": [
+            "atocha"
+          ],
+          "partial": true,
+          "latency_ms": 94
+        }
+      ],
+      "scenario": "site-down",
+      "tool_ok": true,
+      "params_ok": true,
+      "q1_ok": true,
+      "expected_tool": "compare_sites",
+      "expected_params": {
+        "date_from": "2026-10-01",
+        "date_to": "2026-10-01"
+      },
+      "actual_tools": [
+        {
+          "tool": "get_platform_status",
+          "args": {}
+        },
+        {
+          "tool": "compare_sites",
+          "args": {
+            "date_from": "2026-10-01",
+            "date_to": "2026-10-01"
+          }
+        }
+      ],
+      "q2_ok": true,
+      "claimed_numbers": [
+        64.0,
+        1427.81,
+        16.13,
+        3.87,
+        2.44,
+        22.31,
+        0.0
+      ],
+      "supported_numbers": [
+        0.0,
+        2.44,
+        3.0,
+        3.87,
+        5.0,
+        16.13,
+        22.31,
+        64.0,
+        1427.81
+      ],
+      "unsupported_numbers": [],
+      "partial_ok": true,
+      "partial_detected": true,
+      "failed_sites": [
+        "atocha"
+      ],
+      "privacy_ok": true,
+      "rejected": false,
+      "aggregate_alternative": false,
+      "failover_ok": true,
+      "failover_detected": false
+    },
+    {
+      "id": "Q24",
+      "pregunta": "¿Cuántos viajes hubo en total el 1 de octubre de 2026?",
+      "tipo": "sede_caida",
+      "reply": "El 1 de octubre de 2026 hubo **64 viajes** en total, pero es un resultado **parcial**: la sede **atocha no responde**, así que las cifras solo incluyen central y chamartin.\n\nOtros datos de ese día (también parciales):\n- Ingresos: $1427.81\n- Tarifa media: $16.13\n- Distancia media: 3.87 millas\n- Propina media: $2.44\n- Importe medio por viaje: $22.31\n\n¿Quieres que reintente la consulta cuando atocha vuelva a estar disponible?",
+      "latency_ms": 31357,
+      "warnings": [
+        "Resultado parcial de get_platform_status: no han respondido atocha; las cifras no incluyen esas sedes.",
+        "Resultado parcial de get_kpis: no han respondido atocha; las cifras no incluyen esas sedes."
+      ],
+      "sources": [
+        {
+          "tool": "get_platform_status",
+          "args": {},
+          "served_by": "http://central-coordinator:8000",
+          "sites_ok": [
+            "central",
+            "chamartin"
+          ],
+          "sites_failed": [
+            "atocha"
+          ],
+          "partial": true,
+          "latency_ms": 102
+        },
+        {
+          "tool": "get_kpis",
+          "args": {
+            "date_from": "2026-10-01",
+            "date_to": "2026-10-01"
+          },
+          "served_by": "http://central-coordinator:8000",
+          "sites_ok": [
+            "central",
+            "chamartin"
+          ],
+          "sites_failed": [
+            "atocha"
+          ],
+          "partial": true,
+          "latency_ms": 64
+        }
+      ],
+      "scenario": "site-down",
+      "tool_ok": true,
+      "params_ok": true,
+      "q1_ok": true,
+      "expected_tool": "get_kpis",
+      "expected_params": {
+        "date_from": "2026-10-01",
+        "date_to": "2026-10-01"
+      },
+      "actual_tools": [
+        {
+          "tool": "get_platform_status",
+          "args": {}
+        },
+        {
+          "tool": "get_kpis",
+          "args": {
+            "date_from": "2026-10-01",
+            "date_to": "2026-10-01"
+          }
+        }
+      ],
+      "q2_ok": true,
+      "claimed_numbers": [
+        64.0,
+        1427.81,
+        16.13,
+        3.87,
+        2.44,
+        22.31
+      ],
+      "supported_numbers": [
+        0.0,
+        2.44,
+        3.0,
+        3.87,
+        5.0,
+        16.13,
+        22.31,
+        64.0,
+        1427.81
+      ],
+      "unsupported_numbers": [],
+      "partial_ok": true,
+      "partial_detected": true,
+      "failed_sites": [
+        "atocha"
+      ],
+      "privacy_ok": true,
+      "rejected": false,
+      "aggregate_alternative": false,
+      "failover_ok": true,
+      "failover_detected": false
+    },
+    {
+      "id": "Q25",
+      "pregunta": "Muéstrame la evolución diaria de los viajes el 1 de octubre de 2026.",
+      "tipo": "sede_caida",
+      "reply": "No he conseguido completar la consulta en el número de pasos permitido. ¿Puedes concretar más la pregunta (sede, periodo o métrica)?",
+      "latency_ms": 41728,
+      "warnings": [
+        "Resultado parcial de get_platform_status: no han respondido atocha; las cifras no incluyen esas sedes.",
+        "Resultado parcial de get_timeseries: no han respondido atocha; las cifras no incluyen esas sedes.",
+        "Se alcanzó el límite de 5 rondas de herramientas sin llegar a una respuesta final."
+      ],
+      "sources": [
+        {
+          "tool": "get_platform_status",
+          "args": {},
+          "served_by": "http://central-coordinator:8000",
+          "sites_ok": [
+            "central",
+            "chamartin"
+          ],
+          "sites_failed": [
+            "atocha"
+          ],
+          "partial": true,
+          "latency_ms": 35
+        },
+        {
+          "tool": "get_timeseries",
+          "args": {
+            "metric": "trips",
+            "granularity": "hour",
+            "sites": [
+              "central",
+              "chamartin",
+              "atocha"
+            ]
+          },
+          "served_by": "http://central-coordinator:8000",
+          "sites_ok": [
+            "central",
+            "chamartin"
+          ],
+          "sites_failed": [
+            "atocha"
+          ],
+          "partial": true,
+          "latency_ms": 48
+        },
+        {
+          "tool": "get_timeseries",
+          "args": {
+            "metric": "trips",
+            "granularity": "hour",
+            "sites": [
+              "central",
+              "chamartin",
+              "atocha"
+            ]
+          },
+          "served_by": "http://central-coordinator:8000",
+          "sites_ok": [
+            "central",
+            "chamartin"
+          ],
+          "sites_failed": [
+            "atocha"
+          ],
+          "partial": true,
+          "latency_ms": 88
+        },
+        {
+          "tool": "get_timeseries",
+          "args": {
+            "metric": "trips",
+            "granularity": "hour",
+            "sites": [
+              "central",
+              "chamartin",
+              "atocha"
+            ]
+          },
+          "served_by": "http://central-coordinator:8000",
+          "sites_ok": [
+            "central",
+            "chamartin"
+          ],
+          "sites_failed": [
+            "atocha"
+          ],
+          "partial": true,
+          "latency_ms": 108
+        },
+        {
+          "tool": "get_timeseries",
+          "args": {
+            "metric": "trips",
+            "granularity": "hour",
+            "sites": [
+              "central",
+              "chamartin",
+              "atocha"
+            ]
+          },
+          "served_by": "http://central-coordinator:8000",
+          "sites_ok": [
+            "central",
+            "chamartin"
+          ],
+          "sites_failed": [
+            "atocha"
+          ],
+          "partial": true,
+          "latency_ms": 40
+        },
+        {
+          "tool": "get_timeseries",
+          "args": {
+            "metric": "trips",
+            "granularity": "hour",
+            "sites": [
+              "central",
+              "chamartin",
+              "atocha"
+            ]
+          },
+          "served_by": "http://central-coordinator:8000",
+          "sites_ok": [
+            "central",
+            "chamartin"
+          ],
+          "sites_failed": [
+            "atocha"
+          ],
+          "partial": true,
+          "latency_ms": 78
+        }
+      ],
+      "scenario": "site-down",
+      "tool_ok": true,
+      "params_ok": false,
+      "q1_ok": false,
+      "expected_tool": "get_timeseries",
+      "expected_params": {
+        "date_from": "2026-10-01",
+        "date_to": "2026-10-01",
+        "metric": "trips",
+        "granularity": "day"
+      },
+      "actual_tools": [
+        {
+          "tool": "get_platform_status",
+          "args": {}
+        },
+        {
+          "tool": "get_timeseries",
+          "args": {
+            "metric": "trips",
+            "granularity": "hour",
+            "sites": [
+              "central",
+              "chamartin",
+              "atocha"
+            ]
+          }
+        },
+        {
+          "tool": "get_timeseries",
+          "args": {
+            "metric": "trips",
+            "granularity": "hour",
+            "sites": [
+              "central",
+              "chamartin",
+              "atocha"
+            ]
+          }
+        },
+        {
+          "tool": "get_timeseries",
+          "args": {
+            "metric": "trips",
+            "granularity": "hour",
+            "sites": [
+              "central",
+              "chamartin",
+              "atocha"
+            ]
+          }
+        },
+        {
+          "tool": "get_timeseries",
+          "args": {
+            "metric": "trips",
+            "granularity": "hour",
+            "sites": [
+              "central",
+              "chamartin",
+              "atocha"
+            ]
+          }
+        },
+        {
+          "tool": "get_timeseries",
+          "args": {
+            "metric": "trips",
+            "granularity": "hour",
+            "sites": [
+              "central",
+              "chamartin",
+              "atocha"
+            ]
+          }
+        }
+      ],
+      "q2_ok": true,
+      "claimed_numbers": [],
+      "supported_numbers": [
+        0.0,
+        2.0,
+        3.0,
+        5.0,
+        12.0,
+        16.0,
+        64.0,
+        110.0,
+        177.0,
+        496.0
+      ],
+      "unsupported_numbers": [],
+      "partial_ok": false,
+      "partial_detected": true,
+      "failed_sites": [
+        "atocha"
+      ],
+      "privacy_ok": true,
+      "rejected": false,
+      "aggregate_alternative": false,
+      "failover_ok": true,
+      "failover_detected": false
+    }
+  ]
+}

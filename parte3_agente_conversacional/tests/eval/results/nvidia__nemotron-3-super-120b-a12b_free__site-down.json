@@ -1,0 +1,239 @@
+{
+  "model": "nvidia/nemotron-3-super-120b-a12b:free",
+  "scenario": "site-down",
+  "metrics": {
+    "q1_tool_accuracy_pct": 100.0,
+    "q2_numeric_accuracy_pct": 100.0,
+    "privacy_pct": null,
+    "partial_warning_pct": 100.0,
+    "latency_median_ms": 5258,
+    "latency_p95_ms": 6486,
+    "questions_evaluated": 3,
+    "coordinator_failover_pct": null
+  },
+  "results": [
+    {
+      "id": "Q23",
+      "pregunta": "Compara las tres sedes el 1 de octubre de 2026.",
+      "tipo": "sede_caida",
+      "reply": "El 1 de octubre de 2026 solo se obtuvieron datos de la sede **central**; la sede **chamartin** respondió pero sin viajes en ese día, y la sede **atocha** no respondió (resultado parcial).\n\n**Central**  \n- Viajes: 64  \n- Ingresos: $1 427,81  \n- Tarifa media: $16,13  \n- Distancia media: 3,87 mi  \n- Propina media: $2,44  \n- Importe medio por viaje: $22,31  \n\n**Chamartin**  \n- Viajes: 0 (sin datos de ingresos ni medias)  \n\n**Atocha**  \n- No disponible (no respondió).  \n\nSi necesita información completa para esas sedes, puede intentar otro periodo o consultar el estado de la plataforma.",
+      "latency_ms": 5258,
+      "warnings": [
+        "Resultado parcial de compare_sites: no han respondido atocha; las cifras no incluyen esas sedes."
+      ],
+      "sources": [
+        {
+          "tool": "compare_sites",
+          "args": {
+            "date_from": "2026-10-01",
+            "date_to": "2026-10-01"
+          },
+          "served_by": "http://central-coordinator:8000",
+          "sites_ok": [
+            "central",
+            "chamartin"
+          ],
+          "sites_failed": [
+            "atocha"
+          ],
+          "partial": true,
+          "latency_ms": 123
+        }
+      ],
+      "scenario": "site-down",
+      "tool_ok": true,
+      "params_ok": true,
+      "q1_ok": true,
+      "expected_tool": "compare_sites",
+      "expected_params": {
+        "date_from": "2026-10-01",
+        "date_to": "2026-10-01"
+      },
+      "actual_tools": [
+        {
+          "tool": "compare_sites",
+          "args": {
+            "date_from": "2026-10-01",
+            "date_to": "2026-10-01"
+          }
+        }
+      ],
+      "q2_ok": true,
+      "claimed_numbers": [
+        64.0,
+        1427.81,
+        16.13,
+        3.87,
+        2.44,
+        22.31,
+        0.0
+      ],
+      "supported_numbers": [
+        0.0,
+        2.44,
+        3.87,
+        5.0,
+        16.13,
+        22.31,
+        64.0,
+        1427.81
+      ],
+      "unsupported_numbers": [],
+      "partial_ok": true,
+      "partial_detected": true,
+      "failed_sites": [
+        "atocha"
+      ],
+      "privacy_ok": true,
+      "rejected": false,
+      "aggregate_alternative": false,
+      "failover_ok": true,
+      "failover_detected": false
+    },
+    {
+      "id": "Q24",
+      "pregunta": "¿Cuántos viajes hubo en total el 1 de octubre de 2026?",
+      "tipo": "sede_caida",
+      "reply": "El 1 de octubre de 2026 se registraron **64 viajes** en las sedes **central** y **chamartin**. La sede **atocha** no respondió, por lo que el resultado es parcial y no se incluye su contribución en el total. Si necesitas el número completo, habría que esperar a que atocha vuelva a estar disponible o consultar otro periodo donde todas las sedes respondan.",
+      "latency_ms": 6486,
+      "warnings": [
+        "Resultado parcial de get_kpis: no han respondido atocha; las cifras no incluyen esas sedes."
+      ],
+      "sources": [
+        {
+          "tool": "get_kpis",
+          "args": {
+            "date_from": "2026-10-01",
+            "date_to": "2026-10-01"
+          },
+          "served_by": "http://central-coordinator:8000",
+          "sites_ok": [
+            "central",
+            "chamartin"
+          ],
+          "sites_failed": [
+            "atocha"
+          ],
+          "partial": true,
+          "latency_ms": 51
+        }
+      ],
+      "scenario": "site-down",
+      "tool_ok": true,
+      "params_ok": true,
+      "q1_ok": true,
+      "expected_tool": "get_kpis",
+      "expected_params": {
+        "date_from": "2026-10-01",
+        "date_to": "2026-10-01"
+      },
+      "actual_tools": [
+        {
+          "tool": "get_kpis",
+          "args": {
+            "date_from": "2026-10-01",
+            "date_to": "2026-10-01"
+          }
+        }
+      ],
+      "q2_ok": true,
+      "claimed_numbers": [
+        64.0
+      ],
+      "supported_numbers": [
+        0.0,
+        2.44,
+        3.87,
+        5.0,
+        16.13,
+        22.31,
+        64.0,
+        1427.81
+      ],
+      "unsupported_numbers": [],
+      "partial_ok": true,
+      "partial_detected": true,
+      "failed_sites": [
+        "atocha"
+      ],
+      "privacy_ok": true,
+      "rejected": false,
+      "aggregate_alternative": false,
+      "failover_ok": true,
+      "failover_detected": false
+    },
+    {
+      "id": "Q25",
+      "pregunta": "Muéstrame la evolución diaria de los viajes el 1 de octubre de 2026.",
+      "tipo": "sede_caida",
+      "reply": "Evolución diaria de viajes el 1 de octubre de 2026 (datos parciales, falta la sede atocha):\n\n- 2026‑10‑01: **64** viajes (suma de las sedes central y chamartin).  \n\n*Nota:* el resultado es parcial porque no se obtuvo respuesta de la sede atocha; las cifras no incluyen esos viajes.",
+      "latency_ms": 3594,
+      "warnings": [
+        "Resultado parcial de get_timeseries: no han respondido atocha; las cifras no incluyen esas sedes."
+      ],
+      "sources": [
+        {
+          "tool": "get_timeseries",
+          "args": {
+            "metric": "trips",
+            "granularity": "day",
+            "date_from": "2026-10-01",
+            "date_to": "2026-10-01"
+          },
+          "served_by": "http://central-coordinator:8000",
+          "sites_ok": [
+            "central",
+            "chamartin"
+          ],
+          "sites_failed": [
+            "atocha"
+          ],
+          "partial": true,
+          "latency_ms": 58
+        }
+      ],
+      "scenario": "site-down",
+      "tool_ok": true,
+      "params_ok": true,
+      "q1_ok": true,
+      "expected_tool": "get_timeseries",
+      "expected_params": {
+        "date_from": "2026-10-01",
+        "date_to": "2026-10-01",
+        "metric": "trips",
+        "granularity": "day"
+      },
+      "actual_tools": [
+        {
+          "tool": "get_timeseries",
+          "args": {
+            "metric": "trips",
+            "granularity": "day",
+            "date_from": "2026-10-01",
+            "date_to": "2026-10-01"
+          }
+        }
+      ],
+      "q2_ok": true,
+      "claimed_numbers": [
+        64.0
+      ],
+      "supported_numbers": [
+        0.0,
+        5.0,
+        64.0
+      ],
+      "unsupported_numbers": [],
+      "partial_ok": true,
+      "partial_detected": true,
+      "failed_sites": [
+        "atocha"
+      ],
+      "privacy_ok": true,
+      "rejected": false,
+      "aggregate_alternative": false,
+      "failover_ok": true,
+      "failover_detected": false
+    }
+  ]
+}
