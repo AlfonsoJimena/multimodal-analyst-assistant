@@ -112,8 +112,8 @@ flowchart LR
 > Instrucciones de ejecución, métricas y limitaciones en [`parte2_infraestructura_datos/README.md`](parte2_infraestructura_datos/README.md).
 
 ### Parte 3 — Agente conversacional · 20%
-- [ ] Integrar acceso a **al menos una fuente de datos externa** (infraestructura).
-- [ ] Diseñar **3 casos de uso** para el agente.
+- [x] Integrar acceso a **al menos una fuente de datos externa** mediante la infraestructura distribuida de la parte 2.
+- [x] Diseñar y documentar **al menos 3 casos de uso** para el agente. La PoC final incluye 6 casos de uso.
 
 > *Comprobación:* 35 % + 45 % + 20 % = **100 %** de la nota del proyecto.
 
@@ -133,9 +133,9 @@ flowchart LR
 - [x] Despliegue de una prueba de concepto funcional.
 
 ### Parte 3
-- [ ] Análisis de tecnologías y modelos conversacionales existentes.
-- [ ] Integración con fuentes de datos y acciones externas.
-- [ ] Implementación de los 3 casos de uso definidos.
+- [x] Análisis de tecnologías y modelos conversacionales existentes y evaluación reproducible de tres LLM.
+- [x] Integración con la infraestructura de datos de la parte 2 mediante herramientas y una capa de acceso con failover.
+- [x] Implementación y documentación de 6 casos de uso del agente.
 
 ---
 
@@ -241,9 +241,13 @@ Propuesta inicial (ajustable a medida que avance el proyecto), alineada con el [
 │   └── tests/                         # métricas M1 (disponibilidad), M2 (transferencia), M3 (exactitud)
 │
 ├── parte3_agente_conversacional/
-│   ├── despliegue/                    # Ficheros de despliegue (si es local)
-│   ├── src/                           # Lógica del agente
-│   └── casos_uso/                     # Documentación de los 3 casos de uso
+│   ├── README.md                      # ejecución, configuración y limitaciones
+│   ├── ARQUITECTURA.md                # arquitectura detallada del agente
+│   ├── despliegue/                    # Dockerfile y Docker Compose
+│   ├── src/                           # API, agente, herramientas, datos e interfaz
+│   ├── tests/                         # tests unitarios, integración y evaluación
+│   ├── docs/decisiones/               # decisiones técnicas de la parte 3
+│   └── casos_uso/                     # documentación de los 6 casos de uso
 │
 └── .github/
     └── workflows/                     # CI (opcional)
@@ -350,12 +354,20 @@ La calificación de este proyecto se basa en:
 <a id="documentacion"></a>
 ## Documentación
 
-| Documento | Ubicación prevista | Estado |
-|---|---|---|
-| Memoria del proyecto | `docs/memoria/` | Pendiente |
-| Presentación final (PDF) | `docs/presentacion/` | Pendiente |
-| Registro de decisiones técnicas (ADR) | `docs/decisiones/` | Pendiente |
-| Casos de uso del agente (Parte 3) | `parte3_agente_conversacional/casos_uso/` | Pendiente |
+| Documento | Contenido |
+|---|---|
+| [`parte2_infraestructura_datos/README.md`](parte2_infraestructura_datos/README.md) | Puesta en marcha y operación de la infraestructura de datos |
+| [`parte2_infraestructura_datos/ARQUITECTURA.md`](parte2_infraestructura_datos/ARQUITECTURA.md) | Arquitectura detallada de la parte 2 |
+| [`parte2_infraestructura_datos/COMPARATIVA.md`](parte2_infraestructura_datos/COMPARATIVA.md) | Tecnologías y alternativas evaluadas en la parte 2 |
+| [`parte3_agente_conversacional/README.md`](parte3_agente_conversacional/README.md) | Instalación, configuración, despliegue, evaluación y limitaciones del chatbot |
+| [`parte3_agente_conversacional/ARQUITECTURA.md`](parte3_agente_conversacional/ARQUITECTURA.md) | Arquitectura y contratos de la parte 3 |
+| [`parte3_agente_conversacional/docs/decisiones/ADR-modelo-chatbot.md`](parte3_agente_conversacional/docs/decisiones/ADR-modelo-chatbot.md) | Evaluación de los LLM y elección del modelo principal y fallback |
+| [`parte3_agente_conversacional/casos_uso/CU1.md`](parte3_agente_conversacional/casos_uso/CU1.md) | CU1 · KPIs de una sede o periodo |
+| [`parte3_agente_conversacional/casos_uso/CU2.md`](parte3_agente_conversacional/casos_uso/CU2.md) | CU2 · Comparativa entre sedes |
+| [`parte3_agente_conversacional/casos_uso/CU3.md`](parte3_agente_conversacional/casos_uso/CU3.md) | CU3 · Evolución temporal y hora punta |
+| [`parte3_agente_conversacional/casos_uso/CU4.md`](parte3_agente_conversacional/casos_uso/CU4.md) | CU4 · Métodos de pago y zonas |
+| [`parte3_agente_conversacional/casos_uso/CU5.md`](parte3_agente_conversacional/casos_uso/CU5.md) | CU5 · Tolerancia a fallos |
+| [`parte3_agente_conversacional/casos_uso/CU6.md`](parte3_agente_conversacional/casos_uso/CU6.md) | CU6 · Privacidad y rechazo de datos individuales |
 
 ---
 

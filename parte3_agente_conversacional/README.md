@@ -57,6 +57,196 @@ curl -s localhost:8300/status -H "X-API-Key: $AGENT_API_TOKEN"
 - Sin `OPENROUTER_API_KEY` válida la interfaz arranca y muestra el estado,
   pero las preguntas responden «el modelo de lenguaje no responde».
 
+
+## Configuración
+
+La configuración se realiza mediante variables de entorno. El repositorio
+incluye `.env.example` como plantilla, pero el fichero `.env` real no se
+versiona ni se incluye en las imágenes Docker.
+
+Para empezar:
+
+```bash
+cp .env.example .env
+```
+
+Después hay que rellenar al menos `OPENROUTER_API_KEY` con una clave válida de
+OpenRouter.
+
+Las variables principales son:
+
+| Variable | Descripción | Valor por defecto |
+|---|---|---|
+| `OPENROUTER_API_KEY` | Clave de acceso a OpenRouter | — |
+| `LLM_MODEL` | Modelo principal del agente | `nvidia/nemotron-3-super-120b-a12b:free` |
+| `LLM_FALLBACK_MODEL` | Modelo utilizado si falla el principal | `nvidia/nemotron-3-ultra-550b-a55b:free` |
+| `LLM_TEMPERATURE` | Temperatura del modelo | `0.1` |
+| `LLM_TIMEOUT_S` | Timeout de las llamadas al LLM | `30` |
+| `MAX_TOOL_ROUNDS` | Máximo de rondas de herramientas por pregunta | `5` |
+| `COORDINATOR_URLS` | Coordinadores en orden de failover | `http://localhost:8100,http://localhost:8101,http://localhost:8102` |
+| `COORDINATOR_TIMEOUT_S` | Timeout del coordinador | `10` |
+| `MIN_TRIPS_PER_CELL` | Umbral mínimo de privacidad | `5` |
+| `AGENT_API_TOKEN` | Token entre la interfaz y la API; vacío en desarrollo | vacío |
+| `AGENT_API_URL` | URL de la API utilizada por Streamlit | `http://localhost:8300` |
+| `MAX_HISTORY_TURNS` | Turnos conservados en cada sesión | `6` |
+
+### Configuración con el mock
+
+La forma más sencilla de ejecutar la parte 3 sin depender de la
+infraestructura de datos es:
+
+```bash
+cp .env.example .env
+# rellenar OPENROUTER_API_KEY
+make chatbot-mock
+```
+
+El compose configura automáticamente el chatbot para utilizar el coordinador
+mock.
+
+La interfaz queda disponible en:
+
+- Streamlit: <http://localhost:8501>
+- API del agente: <http://localhost:8300>
+- coordinador mock: <http://localhost:8190>
+
+### Configuración con la parte 2
+
+Para utilizar los datos reales, primero deben estar levantados los
+coordinadores de la parte 2:
+
+```bash
+cd ../parte2_infraestructura_datos
+make up-all-coordinators
+```
+
+Después, desde `parte3_agente_conversacional/`:
+
+```bash
+make chatbot-up
+```
+
+El chatbot utiliza los coordinadores en este orden de failover:
+
+1. `central-coordinator`
+2. `chamartin-coordinator`
+3. `atocha-coordinator`
+
+## Evaluación del agente
+
+La evaluación automática del chatbot está en `tests/eval/`.
+
+La batería `tests/eval/preguntas.csv` contiene preguntas de distintos tipos:
+
+- normales;
+- ambiguas;
+- privacidad;
+- fuera de dominio;
+- fechas sin datos;
+- sede caída.
+
+Una evaluación se ejecuta con:
+
+```bash
+python -m tests.eval.run_eval --model <id-modelo>
+```
+
+También se pueden ejecutar los escenarios específicos de robustez:
+
+```bash
+python -m tests.eval.run_eval \
+  --model <id-modelo> \
+  --scenario site-down
+```
+
+```bash
+python -m tests.eval.run_eval \
+  --model <id-modelo> \
+  --scenario coordinator-down
+```
+
+Los resultados se guardan en `tests/eval/results/` en formatos JSON y
+Markdown.
+
+Las métricas utilizadas son:
+
+- **Q1 · Acierto de herramienta:** porcentaje de preguntas en las que se
+  utiliza la herramienta esperada con los parámetros correctos.
+- **Q2 · Exactitud numérica:** porcentaje de cifras de la respuesta que están
+  respaldadas por la salida de las herramientas.
+- **Privacidad:** porcentaje de peticiones de datos individuales rechazadas
+  correctamente ofreciendo una alternativa agregada.
+- **Aviso parcial:** porcentaje de respuestas que informan correctamente de
+  una sede caída.
+- **Failover:** porcentaje de respuestas obtenidas correctamente cuando falla
+  el coordinador principal.
+- **Latencia:** mediana y percentil 95 del tiempo de respuesta.
+
+### Modelos comparados
+
+Se evaluaron tres modelos gratuitos de OpenRouter:
+
+| Modelo | Q1 herramientas | Q2 cifras | Privacidad | Aviso parcial | Failover | Mediana |
+|---|---:|---:|---:|---:|---:|---:|
+| Nemotron 3 Super 120B A12B | 92.86 % | 100 % | 100 % | 100 % | 100 % | 3.607 s |
+| Qwen 3.8 27B | 85.71 % | 100 % | 75 % | 66.67 % | 100 % | 18.420 s |
+| Nemotron 3 Ultra 550B A55B | 100 % | 93.33 % | 100 % | 100 % | 100 % | 13.547 s |
+
+El modelo seleccionado como principal es:
+
+```text
+nvidia/nemotron-3-super-120b-a12b:free
+```
+
+El modelo de respaldo es:
+
+```text
+nvidia/nemotron-3-ultra-550b-a55b:free
+```
+
+Nemotron 3 Super fue el único candidato que cumplió simultáneamente los
+objetivos definidos de selección de herramientas, exactitud numérica,
+privacidad, robustez y latencia.
+
+El coste observado durante la evaluación fue de **0 céntimos por pregunta**,
+al utilizar las variantes gratuitas de los tres modelos.
+
+La justificación completa de la decisión está en
+[`docs/decisiones/ADR-modelo-chatbot.md`](docs/decisiones/ADR-modelo-chatbot.md).
+
+## Limitaciones conocidas
+
+- Los datos de **zonas** y **métodos de pago** son acumulados para todo el
+  periodo. No se pueden filtrar por fecha con los agregados disponibles en la
+  parte 2.
+- Las conversaciones se almacenan **en memoria**. El historial se pierde al
+  reiniciar la API y no existe persistencia compartida entre procesos.
+- La parte 3 despliega actualmente **un único nodo del chatbot**. La
+  tolerancia a fallos implementada corresponde a los coordinadores y sedes de
+  la parte 2, no a varias réplicas de la API del agente.
+- La disponibilidad de los modelos gratuitos depende de OpenRouter y de sus
+  proveedores. Durante la evaluación pueden producirse errores temporales
+  `429` por límites de uso o saturación.
+- El agente solo puede responder con las métricas y agregados expuestos por
+  sus herramientas. No tiene acceso a viajes individuales, conductores ni
+  pasajeros.
+- Las celdas con menos de `MIN_TRIPS_PER_CELL` viajes se ocultan por
+  privacidad.
+
+## Trabajo futuro
+
+Como posibles mejoras futuras se plantean:
+
+- persistir las sesiones y el historial fuera de memoria;
+- desplegar varias réplicas de la API del chatbot;
+- añadir métricas y observabilidad específicas del agente;
+- permitir filtros temporales para zonas y métodos de pago si la parte 2
+  incorpora esos agregados;
+- volver a evaluar los modelos cuando cambien las opciones gratuitas o sus
+  límites de uso;
+- ampliar la batería de evaluación con nuevas preguntas y casos límite.
+
+
 ## Puesta en marcha (desarrollo)
 
 ```bash
