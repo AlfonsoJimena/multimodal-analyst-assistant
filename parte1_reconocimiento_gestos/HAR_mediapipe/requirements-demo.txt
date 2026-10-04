@@ -1,0 +1,10 @@
+# Entorno probado para src/demo-multimodelo.py y src/evaluar-modelos.py
+# (Python 3.12, Ubuntu 24.04 en WSL2). Libreria del sistema: sudo apt install libgles2 libegl1 libgl1
+tensorflow==2.20.0
+keras==3.13.2
+mediapipe==1.0.1
+scikit-learn==1.6.1
+numpy==2.1.3
+protobuf==5.29.6
+pandas==2.2.3
+joblib
