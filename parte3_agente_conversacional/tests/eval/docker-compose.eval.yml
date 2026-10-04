@@ -1,0 +1,16 @@
+# Override usado exclusivamente por la evaluación de P3-16.
+#
+# Fuerza modelo principal y fallback al mismo candidato para evitar que
+# una petición evaluada termine siendo respondida por otro modelo.
+#
+# Uso junto al compose real:
+#   EVAL_LLM_MODEL=<modelo> docker compose -p chatbot \
+#     -f despliegue/docker-compose.chatbot.yml \
+#     -f tests/eval/docker-compose.eval.yml \
+#     up -d chatbot-api
+
+services:
+  chatbot-api:
+    environment:
+      LLM_MODEL: ${EVAL_LLM_MODEL:?EVAL_LLM_MODEL es obligatorio}
+      LLM_FALLBACK_MODEL: ${EVAL_LLM_MODEL:?EVAL_LLM_MODEL es obligatorio}

@@ -35,16 +35,21 @@ OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 # modelo de respaldo: timeout, rate limit, conexion, o cualquier otro
 # error que OpenRouter/el proveedor upstream devuelva como status HTTP
 # (402 sin credito, 404 modelo no encontrado, 5xx, etc).
+
+class LLMUnavailable(Exception):
+    """Ni el modelo principal ni el de respaldo han podido responder."""
+
+class LLMProviderResponseError(Exception):
+    """El proveedor respondió, pero sin una completion utilizable."""
+
+
 _RETRYABLE_EXCEPTIONS = (
     APITimeoutError,
     RateLimitError,
     APIConnectionError,
     APIStatusError,
+    LLMProviderResponseError,
 )
-
-
-class LLMUnavailable(Exception):
-    """Ni el modelo principal ni el de respaldo han podido responder."""
 
 
 @dataclass
@@ -116,7 +121,14 @@ class LLM:
             kwargs["tools"] = tools
 
         resp = self._client.chat.completions.create(**kwargs)
-        choice = resp.choices[0]
+
+        choices = getattr(resp, "choices", None)
+        if not choices:
+            raise LLMProviderResponseError(
+                f"{model} devolvió una respuesta sin choices."
+            )
+
+        choice = choices[0]
         usage = resp.usage
 
         return LLMResponse(

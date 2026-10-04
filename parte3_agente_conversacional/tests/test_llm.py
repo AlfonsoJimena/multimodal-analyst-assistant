@@ -11,8 +11,7 @@ import pytest
 from openai import APIStatusError, RateLimitError
 
 from src.agent.config import Config
-from src.agent.llm import LLM, LLMUnavailable
-
+from src.agent.llm import LLM, LLMProviderResponseError, LLMUnavailable
 
 def _config(**overrides: Any) -> Config:
     base = dict(
@@ -133,3 +132,89 @@ def test_chat_pasa_las_tools_cuando_se_le_dan():
     llm2 = LLM(config=_config(), client=client2)
     llm2.chat(messages=[{"role": "user", "content": "hola"}], tools=tools)
     assert captured["tools"] == tools
+
+
+def test_chat_usa_respaldo_si_el_principal_devuelve_choices_none():
+    invalid_response = SimpleNamespace(
+        model="modelo/principal",
+        choices=None,
+        usage=None,
+    )
+
+    client = _ScriptedClient(
+        [
+            invalid_response,
+            _fake_response("modelo/respaldo", "respuesta de respaldo"),
+        ]
+    )
+    llm = LLM(config=_config(), client=client)
+
+    result = llm.chat(
+        messages=[{"role": "user", "content": "hola"}]
+    )
+
+    assert result.model == "modelo/respaldo"
+    assert result.message.content == "respuesta de respaldo"
+    assert client.calls == [
+        "modelo/principal",
+        "modelo/respaldo",
+    ]
+
+
+def test_chat_usa_respaldo_si_el_principal_devuelve_choices_vacio():
+    invalid_response = SimpleNamespace(
+        model="modelo/principal",
+        choices=[],
+        usage=None,
+    )
+
+    client = _ScriptedClient(
+        [
+            invalid_response,
+            _fake_response("modelo/respaldo", "respuesta de respaldo"),
+        ]
+    )
+    llm = LLM(config=_config(), client=client)
+
+    result = llm.chat(
+        messages=[{"role": "user", "content": "hola"}]
+    )
+
+    assert result.model == "modelo/respaldo"
+    assert result.message.content == "respuesta de respaldo"
+    assert client.calls == [
+        "modelo/principal",
+        "modelo/respaldo",
+    ]
+
+
+def test_chat_lanza_llmunavailable_si_ambos_devuelven_choices_invalidos():
+    primary_response = SimpleNamespace(
+        model="modelo/principal",
+        choices=None,
+        usage=None,
+    )
+
+    fallback_response = SimpleNamespace(
+        model="modelo/respaldo",
+        choices=[],
+        usage=None,
+    )
+
+    client = _ScriptedClient(
+        [
+            primary_response,
+            fallback_response,
+        ]
+    )
+    llm = LLM(config=_config(), client=client)
+
+    with pytest.raises(LLMUnavailable):
+        llm.chat(
+            messages=[{"role": "user", "content": "hola"}]
+        )
+
+    assert client.calls == [
+        "modelo/principal",
+        "modelo/respaldo",
+    ]
