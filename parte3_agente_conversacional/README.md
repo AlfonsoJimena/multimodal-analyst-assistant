@@ -28,6 +28,8 @@ cp .env.example .env        # y rellena OPENROUTER_API_KEY
 make chatbot-mock           # mock + API + interfaz, sin la parte 2
 ```
 
+> Atajo desde la raíz del repo: `./start_chatbot.sh --mock` (crea el venv, valida la clave y levanta mock + API + interfaz).
+
 La interfaz queda en <http://localhost:8501> (API en 8300, mock en 8190).
 
 | Comando | Qué hace |
@@ -214,39 +216,6 @@ al utilizar las variantes gratuitas de los tres modelos.
 La justificación completa de la decisión está en
 [`docs/decisiones/ADR-modelo-chatbot.md`](docs/decisiones/ADR-modelo-chatbot.md).
 
-## Limitaciones conocidas
-
-- Los datos de **zonas** y **métodos de pago** son acumulados para todo el
-  periodo. No se pueden filtrar por fecha con los agregados disponibles en la
-  parte 2.
-- Las conversaciones se almacenan **en memoria**. El historial se pierde al
-  reiniciar la API y no existe persistencia compartida entre procesos.
-- La parte 3 despliega actualmente **un único nodo del chatbot**. La
-  tolerancia a fallos implementada corresponde a los coordinadores y sedes de
-  la parte 2, no a varias réplicas de la API del agente.
-- La disponibilidad de los modelos gratuitos depende de OpenRouter y de sus
-  proveedores. Durante la evaluación pueden producirse errores temporales
-  `429` por límites de uso o saturación.
-- El agente solo puede responder con las métricas y agregados expuestos por
-  sus herramientas. No tiene acceso a viajes individuales, conductores ni
-  pasajeros.
-- Las celdas con menos de `MIN_TRIPS_PER_CELL` viajes se ocultan por
-  privacidad.
-
-## Trabajo futuro
-
-Como posibles mejoras futuras se plantean:
-
-- persistir las sesiones y el historial fuera de memoria;
-- desplegar varias réplicas de la API del chatbot;
-- añadir métricas y observabilidad específicas del agente;
-- permitir filtros temporales para zonas y métodos de pago si la parte 2
-  incorpora esos agregados;
-- volver a evaluar los modelos cuando cambien las opciones gratuitas o sus
-  límites de uso;
-- ampliar la batería de evaluación con nuevas preguntas y casos límite.
-
-
 ## Puesta en marcha (desarrollo)
 
 ```bash
@@ -405,8 +374,36 @@ pytest --integration   # ademas, contra el coordinador real o el LLM
 El workflow `.github/workflows/parte3-tests.yml` ejecuta `pytest` en cada PR
 que toque `parte3_agente_conversacional/` (Python 3.12, sin red ni claves).
 
-## Estado
+## Limitaciones conocidas
 
-En construccion por issues (ver etiqueta `parte3`). Bloque 1 (cimientos y
-datos) → bloque 2 (herramientas) → bloque 3 (agente) → bloque 4 (interfaz y
-despliegue) → bloque 5 (calidad y entrega).
+- Los datos de **zonas** y **métodos de pago** son acumulados para todo el
+  periodo. No se pueden filtrar por fecha con los agregados disponibles en la
+  parte 2.
+- Las conversaciones se almacenan **en memoria**. El historial se pierde al
+  reiniciar la API y no existe persistencia compartida entre procesos.
+- La parte 3 despliega actualmente **un único nodo del chatbot**. La
+  tolerancia a fallos implementada corresponde a los coordinadores y sedes de
+  la parte 2, no a varias réplicas de la API del agente.
+- La disponibilidad de los modelos gratuitos depende de OpenRouter y de sus
+  proveedores. Durante la evaluación pueden producirse errores temporales
+  `429` por límites de uso o saturación.
+- El agente solo puede responder con las métricas y agregados expuestos por
+  sus herramientas. No tiene acceso a viajes individuales, conductores ni
+  pasajeros.
+- Las celdas con menos de `MIN_TRIPS_PER_CELL` viajes se ocultan por
+  privacidad.
+
+## Trabajo futuro
+
+Como posibles mejoras futuras se plantean:
+
+- persistir las sesiones y el historial fuera de memoria;
+- desplegar varias réplicas de la API del chatbot;
+- añadir métricas y observabilidad específicas del agente;
+- permitir filtros temporales para zonas y métodos de pago si la parte 2
+  incorpora esos agregados;
+- volver a evaluar los modelos cuando cambien las opciones gratuitas o sus
+  límites de uso;
+- ampliar la batería de evaluación con nuevas preguntas y casos límite.
+
+

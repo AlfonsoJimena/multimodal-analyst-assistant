@@ -50,10 +50,10 @@ class Config:
     def from_env(cls) -> "Config":
         return cls(
             openrouter_api_key=os.getenv("OPENROUTER_API_KEY", ""),
-            # Modelos PROVISIONALES: la eleccion definitiva es P3-08/P3-16.
-            llm_model=os.getenv("LLM_MODEL", "openai/gpt-4o-mini"),
+            # Modelos elegidos en P3-16 (ver README y docs/decisiones/ADR-modelo-chatbot.md).
+            llm_model=os.getenv("LLM_MODEL", "nvidia/nemotron-3-super-120b-a12b:free"),
             llm_fallback_model=os.getenv(
-                "LLM_FALLBACK_MODEL", "google/gemini-flash-1.5"
+                "LLM_FALLBACK_MODEL", "nvidia/nemotron-3-ultra-550b-a55b:free"
             ),
             llm_temperature=float(os.getenv("LLM_TEMPERATURE", "0.1")),
             llm_timeout_s=float(os.getenv("LLM_TIMEOUT_S", "30")),

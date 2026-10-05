@@ -131,6 +131,8 @@ resultado (filas conservadas, sedes y fuentes válidas, `trip_id` únicos).
 make up-all-coordinators
 ```
 
+> Atajo desde la raíz del repo: `./start_infra.sh` (crea el venv, levanta las sedes con sus coordinadores y la monitorización, y espera a que respondan).
+
 La primera vez construye las imágenes (varios minutos). Cada sede arranca
 Kafka, Postgres, el producer, los jobs de Spark, la `site_api` y su
 coordinador. `spark_batch_bronze` carga el histórico una vez y termina
