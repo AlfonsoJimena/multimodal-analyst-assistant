@@ -1,7 +1,7 @@
 """Cliente del coordinador de la parte 2, con failover.
 
-Es lo UNICO del chatbot que habla con la parte 2 (lo fija ARQUITECTURA.md
-de la parte 2). Cumple el contrato de `scripts/coordinator_failover.py`:
+Es lo UNICO del chatbot que habla con la parte 2. Cumple el contrato de
+`scripts/coordinator_failover.py`:
 
   - prueba las replicas en orden de failover (central -> chamartin -> atocha);
   - salta a la siguiente si no conecta, hay timeout o devuelve 5xx;
