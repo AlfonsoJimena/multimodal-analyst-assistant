@@ -12,9 +12,11 @@ Accuracy sobre las mismas 338 imágenes de test con mano detectada (de 342), con
 | CNN2 | `PIDS_6gestos_v1_CNN2_L0.keras` | L0 | 89,64 % |
 | FINE-TUNING1 | `PIDS_6gestos_v1_FINE-TUNING1_L0.keras` | L0 | 99,41 % |
 | FINE-TUNING2 | `PIDS_6gestos_v1_FINE-TUNING2_L0.keras` | L0 | 99,41 % |
-| MLP | `modelos_MLP/PIDS_v1_MLP.keras` | sin normalizar | 99,11 % |
+| MLP | `modelos_MLP/PIDS_6gestos_v1_MLP_L0.keras` | L0 | 99,41 %* |
 | SVM | `PIDS_6gestos_v1_SVM.pkl` + `PIDS_6gestos_v1_SVM_scaler.pkl` | L0 + StandardScaler | 96,15 % |
 | Random Forest | `modelo_rf/PIDS_6gestos_v1_RANDOM-FOREST.pkl` | L0 | 94,08 % |
+
+\* MLP: cifra de la matriz de confusión del notebook en Colab sobre estas mismas 338 imágenes (sin contar `NO_GESTURE`), no de `evaluar-modelos.py`. Falta confirmarla con el script.
 
 Acierto por gesto (%). Imágenes por gesto: 57, 55, 56, 57, 57 y 56.
 
@@ -24,21 +26,21 @@ Acierto por gesto (%). Imágenes por gesto: 57, 55, 56, 57, 57 y 56.
 | CNN2 | 100,0 | 98,2 | 100,0 | 93,0 | 54,4 | 92,9 |
 | FINE-TUNING1 | 100,0 | 98,2 | 100,0 | 100,0 | 100,0 | 98,2 |
 | FINE-TUNING2 | 100,0 | 100,0 | 100,0 | 100,0 | 100,0 | 96,4 |
-| MLP | 100,0 | 98,2 | 100,0 | 100,0 | 98,2 | 98,2 |
+| MLP | 100,0 | 98,2 | 100,0 | 100,0 | 100,0 | 98,2 |
 | SVM | 100,0 | 90,9 | 100,0 | 100,0 | 93,0 | 92,9 |
 | Random Forest | 100,0 | 92,7 | 92,9 | 100,0 | 87,7 | 91,1 |
 
 ## Preprocesado
 
 - **L0:** se resta la posición de la muñeca (landmark 0) al resto de landmarks; la muñeca queda sin cambios (`normalize_from_0_landmark` en `landmarksLib.py`). Un modelo entrenado con L0 se hunde si recibe los datos sin normalizar (comprobado con `evaluar-modelos.py --both-norm`).
-- **MLP:** el `.keras` guardado se comporta como entrenado sin normalizar (99,11 % sin normalizar, 46,75 % normalizando), aunque su notebook llame a `normalize_from_0_landmark`.
+- **MLP:** reentrenado con L0 el 5 de octubre de 2026 (#135). El modelo anterior, `modelos_MLP/PIDS_v1_MLP.keras`, se entrenó sin normalizar por la misma errata (99,11 % sin normalizar, 46,75 % normalizando) y se conserva para comparar; el demo ya no lo usa.
 - **SVM:** además de L0 usa `StandardScaler`. Hay que cargar siempre `PIDS_6gestos_v1_SVM_scaler.pkl` junto con el modelo.
 
 ## Notas
 
-- Los cuatro CNN se entrenaron primero sin normalizar por una errata en el notebook (`"LO"` con letra O en lugar de `"L0"`, así que la condición `norm_type == "L0"` nunca se cumplía). Se reentrenaron con L0 el 4 de octubre de 2026 y los ficheros antiguos se retiraron (siguen en el historial de git).
-- Cifras de Colab (394 muestras de test, incluidas 56 de `NO_GESTURE` sintéticas que todos aciertan): CNN1, FT1 y FT2 99,49 %; CNN2 91,12 %.
-- Tiempos de entrenamiento en Colab (GPU T4, misma sesión): CNN1 129 s, FT1 62 s, FT2 59 s, CNN2 131 s (300 épocas, `patience = 300`). FT1 y FT2 parten de los pesos de `CNN1_L0`.
+- Los cuatro CNN y el MLP se entrenaron primero sin normalizar por una errata en el notebook (`"LO"` con letra O en lugar de `"L0"`, así que la condición `norm_type == "L0"` nunca se cumplía). Las CNN se reentrenaron con L0 el 4 de octubre de 2026 (#134) y el MLP el 5 (#135). Los ficheros antiguos de las CNN se retiraron (siguen en el historial de git); el del MLP se conserva.
+- Cifras de Colab (394 muestras de test, incluidas 56 de `NO_GESTURE` sintéticas que todos aciertan): CNN1, FT1, FT2 y MLP 99,49 %; CNN2 91,12 %.
+- Tiempos de entrenamiento en Colab (GPU T4, misma sesión): CNN1 129 s, FT1 62 s, FT2 59 s, CNN2 131 s (300 épocas, `patience = 300`). MLP 43 s (sesión aparte; early stopping con `patience = 50`, paró en la época 173). FT1 y FT2 parten de los pesos de `CNN1_L0`.
 - Se evaluó también un LSTM que se descartó: no funcionaba con este preprocesado (10,7 %).
 
 ## Limitaciones

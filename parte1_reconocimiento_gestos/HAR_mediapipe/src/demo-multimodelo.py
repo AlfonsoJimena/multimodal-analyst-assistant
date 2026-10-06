@@ -29,7 +29,7 @@ MODELS = {
     'cnn2': dict(path='modelos/PIDS_6gestos_v1_CNN2_L0.keras', kind='keras', shape='cnn', norm=True),
     'ft1':  dict(path='modelos/PIDS_6gestos_v1_FINE-TUNING1_L0.keras', kind='keras', shape='cnn', norm=True),
     'ft2':  dict(path='modelos/PIDS_6gestos_v1_FINE-TUNING2_L0.keras', kind='keras', shape='cnn', norm=True),
-    'mlp':  dict(path='modelos/modelos_MLP/PIDS_v1_MLP.keras', kind='keras', shape='flat', norm=False),
+    'mlp':  dict(path='modelos/modelos_MLP/PIDS_6gestos_v1_MLP_L0.keras', kind='keras', shape='flat', norm=True),
     'svm':  dict(path='modelos/PIDS_6gestos_v1_SVM.pkl', scaler='modelos/PIDS_6gestos_v1_SVM_scaler.pkl',
                  kind='sklearn', shape='flat', norm=True),
     'rf':   dict(path='modelos/modelo_rf/PIDS_6gestos_v1_RANDOM-FOREST.pkl', kind='sklearn', shape='flat', norm=True),
