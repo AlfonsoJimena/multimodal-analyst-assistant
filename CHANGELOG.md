@@ -4,6 +4,11 @@ Todos los cambios notables del proyecto **multimodal-analyst-assistant** se docu
 
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y este proyecto se adhiere al [Versionado Semántico](https://semver.org/lang/es/).
 
+## [1.0.1] - 2026-10-06
+
+### Fixed
+- Parte 1: el demo multimodelo usa el MLP reentrenado con normalización L0 y se actualiza el README de modelos (#139).
+
 ## [1.0.0] - 2026-10-05
 
 Versión final de entrega del proyecto.
