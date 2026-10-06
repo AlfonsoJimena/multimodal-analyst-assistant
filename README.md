@@ -161,7 +161,6 @@ Guía completa: [`parte3_agente_conversacional/README.md`](parte3_agente_convers
 ├── parte1_reconocimiento_gestos/   # gestos: common/, HAR_mediapipe/ (src, modelos, notebooks)
 ├── parte2_infraestructura_datos/   # pipeline por sedes + coordinador + observabilidad (Makefile, deploy/, src/)
 ├── parte3_agente_conversacional/   # chatbot: src/ (api, agent, tools, data, ui), mock/, despliegue/, tests/
-├── docs/                           # memoria, presentacion y decisiones tecnicas
 ├── README.md
 └── LICENSE
 ```

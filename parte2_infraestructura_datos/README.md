@@ -9,8 +9,6 @@ que necesitan datos de varias sedes se responden combinando agregados.
 | Documento | Para qué |
 |---|---|
 | Este README | Qué es, cómo se ejecuta, cómo se consulta y cómo se prueba |
-| [`ARQUITECTURA.md`](ARQUITECTURA.md) | Cómo está montado por dentro, fichero a fichero |
-| [`COMPARATIVA.md`](COMPARATIVA.md) | Por qué cada tecnología y cómo cambiaría con E3, E4 y E8 |
 | [`tests/results/`](tests/results/) | Resultados medidos de las métricas M1, M2 y M3 |
 
 ---
@@ -389,8 +387,6 @@ sede colgada).
 ```
 parte2_infraestructura_datos/
 ├── README.md                  # este documento
-├── ARQUITECTURA.md            # arquitectura detallada, fichero a fichero
-├── COMPARATIVA.md             # alternativas evaluadas y adaptación a E3/E4/E8
 ├── Makefile                   # despliegue por sede
 ├── requirements.txt           # dependencias de las imágenes
 ├── requirements-dev.txt       # + pytest
@@ -671,9 +667,6 @@ el flujo histórico como para el flujo realtime.
 | **Consumo de memoria** | Cada job de Spark es una JVM de ~0,7 GB: las tres sedes completas ocupan unos 8–9 GB |
 | **Parquet sin formato transaccional** | Sin Delta Lake ni Iceberg, la idempotencia se garantiza a mano (checkpoints, `processed_batches`, carga única del histórico) |
 | **Dataset de muestra** | 999 viajes; con el dataset completo de NYC habría que revisar particionado y recursos |
-
-Las propuestas de mejora y la adaptación a otras restricciones están en
-[`COMPARATIVA.md`](COMPARATIVA.md).
 
 ---
 
